@@ -1,0 +1,42 @@
+{
+  "site": {
+    "origin": "https://YOUR-DOMAIN.com",
+    "bookUrl": "YOUR_BOOKING_LINK",
+    "formEndpoint": "YOUR_FORM_ENDPOINT",
+    "phone": "(000) 000-0000",
+    "phoneHref": "+10000000000",
+    "email": "hello@infinitysmartliving.com"
+  },
+  "cities": [
+    {
+      "city": "Coral Springs",
+      "areas": "Heron Bay, Eagle Trace, and the Country Club neighborhoods",
+      "intro": ""
+    },
+    {
+      "city": "Boca Raton",
+      "areas": "Boca West, Royal Palm Yacht & Country Club, and East Boca",
+      "intro": ""
+    },
+    {
+      "city": "Parkland",
+      "areas": "Heron Bay, Parkland Golf & Country Club, and Cascata",
+      "intro": ""
+    },
+    {
+      "city": "Pompano Beach",
+      "areas": "Old Pompano, Cresthaven, and the beachside district",
+      "intro": ""
+    },
+    {
+      "city": "Coconut Creek",
+      "areas": "Winston Park, Regency Lakes, and Township",
+      "intro": ""
+    },
+    {
+      "city": "Deerfield Beach",
+      "areas": "Deer Creek, The Cove, and Century Village",
+      "intro": ""
+    }
+  ]
+}
