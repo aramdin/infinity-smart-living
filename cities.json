@@ -1,7 +1,7 @@
 {
   "site": {
-    "origin": "https://YOUR-DOMAIN.com",
-    "bookUrl": "YOUR_BOOKING_LINK",
+    "origin": "https://infinitysmartliving.com",
+    "bookUrl": "https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa",
     "formEndpoint": "YOUR_FORM_ENDPOINT",
     "phone": "(000) 000-0000",
     "phoneHref": "+10000000000",

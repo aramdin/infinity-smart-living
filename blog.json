@@ -1,0 +1,77 @@
+{
+  "_comment": "Blog posts. Body HTML lives in posts/<file>. Add an entry here + a posts/ file, then run: node generate.mjs. Newest first (sorted by date at build).",
+  "posts": [
+    {
+      "slug": "why-smart-home-automation-worth-it",
+      "title": "Is Smart Home Automation Worth It? How It Changes Daily Life",
+      "description": "How smart home automation changes mornings, leaving home, evenings, and energy use, and how to decide if it is worth it for your South Florida home.",
+      "category": "Getting Started",
+      "date": "2026-06-23",
+      "read": 6,
+      "file": "posts/why-smart-home-automation-worth-it.html"
+    },
+    {
+      "slug": "smart-home-installation-cost-south-florida",
+      "title": "What Does Smart Home Installation Cost in South Florida? (2026 Guide)",
+      "description": "A 2026 guide to what drives smart home installation cost in South Florida, typical starting ranges, and how to budget room by room.",
+      "category": "Pricing",
+      "date": "2026-06-17",
+      "read": 7,
+      "file": "posts/smart-home-installation-cost-south-florida.html"
+    },
+    {
+      "slug": "smart-home-installation-near-me-choosing-installer",
+      "title": "Smart Home Installation Near Me: How to Choose a Local Installer",
+      "description": "How to choose a local smart home installer in South Florida: licensing, insurance, references, the questions to ask, and the red flags to avoid.",
+      "category": "Buying Guide",
+      "date": "2026-06-11",
+      "read": 7,
+      "file": "posts/smart-home-installation-near-me-choosing-installer.html"
+    },
+    {
+      "slug": "smart-lighting-installation-room-by-room",
+      "title": "Smart Lighting Installation: A Room-by-Room Guide",
+      "description": "A room-by-room smart lighting installation guide: scenes, dimming, smart bulbs vs installed switches, and why pro installation wins for whole-home use.",
+      "category": "Lighting",
+      "date": "2026-06-05",
+      "read": 6,
+      "file": "posts/smart-lighting-installation-room-by-room.html"
+    },
+    {
+      "slug": "smart-thermostats-florida-cut-ac-bill",
+      "title": "Smart Thermostats in Florida: Cut Your AC Bill Without the Guesswork",
+      "description": "How smart thermostat installation helps Florida homes manage cooling and humidity, plus scheduling, geofencing, multi-zone homes, and HVAC compatibility.",
+      "category": "Climate",
+      "date": "2026-05-29",
+      "read": 7,
+      "file": "posts/smart-thermostats-florida-cut-ac-bill.html"
+    },
+    {
+      "slug": "home-automation-what-to-automate-first",
+      "title": "Home Automation Services: What's Actually Worth Automating First",
+      "description": "New to home automation services? Here is what is actually worth automating first, the best payoff for the least cost, and how to avoid the five-app mess.",
+      "category": "Getting Started",
+      "date": "2026-05-22",
+      "read": 6,
+      "file": "posts/home-automation-what-to-automate-first.html"
+    },
+    {
+      "slug": "voice-control-whole-home-automation-guide",
+      "title": "Voice Control and Whole-Home Automation: A Beginner's Guide",
+      "description": "A beginner's guide to voice control and home automation: what voice does well, routines that run on their own, privacy basics, and one system instead of many apps.",
+      "category": "Voice",
+      "date": "2026-05-15",
+      "read": 6,
+      "file": "posts/voice-control-whole-home-automation-guide.html"
+    },
+    {
+      "slug": "free-smart-home-consultation-what-to-expect",
+      "title": "Free Smart Home Consultation: What to Expect (and How to Prep)",
+      "description": "What to expect from a free smart home consultation: how it works, how long it takes, what to prepare, and how the custom layout and honest quote work.",
+      "category": "Getting Started",
+      "date": "2026-05-08",
+      "read": 6,
+      "file": "posts/free-smart-home-consultation-what-to-expect.html"
+    }
+  ]
+}
