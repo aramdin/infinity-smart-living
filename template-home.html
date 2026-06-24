@@ -566,31 +566,46 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
 // The user ALWAYS advances to booking, even if the POST fails.
 const FORM_ENDPOINT = "{{FORM_ENDPOINT}}";
 
-// --- capture tracking params (UTM + ad click IDs) so they ride along with the lead ---
-var ISL_TRACK_KEYS = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid','msclkid'];
+// --- marketing attribution: capture UTM + ad click IDs so they ride along with the lead ---
+// On landing, stash any attribution params so they survive navigation to another page before submit.
+var ISL_ATTR_KEYS = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid','msclkid'];
 (function(){
   try {
     var qs = new URLSearchParams(location.search);
-    var stored = JSON.parse(sessionStorage.getItem('isl_track') || '{}');
-    ISL_TRACK_KEYS.forEach(function(k){ var v = qs.get(k); if (v) stored[k] = v; });
-    if (!stored.landing_url) stored.landing_url = location.href;
-    if (!stored.referrer)    stored.referrer = document.referrer || '';
-    sessionStorage.setItem('isl_track', JSON.stringify(stored));
+    var stored = JSON.parse(sessionStorage.getItem('isl_attr') || '{}');
+    ISL_ATTR_KEYS.forEach(function(k){ var v = qs.get(k); if (v) stored[k] = v; });
+    sessionStorage.setItem('isl_attr', JSON.stringify(stored));
   } catch (e) {}
 })();
-function islTracking(){ try { return JSON.parse(sessionStorage.getItem('isl_track') || '{}'); } catch (e) { return {}; } }
 
 document.getElementById('leadForm').addEventListener('submit', async function(e){
   e.preventDefault();
-  try { var _u = new URL(location.href); _u.searchParams.set('lead','sent'); history.replaceState(null, '', _u); } catch (err) {}
-  const payload = Object.assign({
+
+  // prefer attribution captured on the landing page, fall back to the live URL params at submit
+  var params = new URLSearchParams(location.search);
+  var stored = {};
+  try { stored = JSON.parse(sessionStorage.getItem('isl_attr') || '{}'); } catch (err) {}
+  function attr(k){ return stored[k] || params.get(k) || ''; }
+
+  const payload = {
     name: document.getElementById('name').value.trim(),
     phone: document.getElementById('phone').value.trim(),
     city: document.getElementById('city').value.trim(),
+    consent: document.getElementById('consent').checked,
     source_url: location.href,
     page: document.title,
-    consent: document.getElementById('consent').checked
-  }, islTracking());
+    utm_source: attr('utm_source'),
+    utm_medium: attr('utm_medium'),
+    utm_campaign: attr('utm_campaign'),
+    utm_term: attr('utm_term'),
+    utm_content: attr('utm_content'),
+    gclid: attr('gclid'),
+    fbclid: attr('fbclid'),
+    msclkid: attr('msclkid'),
+    landing_url: location.href,
+    referrer: document.referrer || ''
+  };
+
   try {
     if (FORM_ENDPOINT && FORM_ENDPOINT.indexOf('FORM_ENDPOINT') === -1 && FORM_ENDPOINT.indexOf('{{') === -1) {
       await fetch(FORM_ENDPOINT, {
@@ -601,6 +616,8 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
       });
     }
   } catch (err) { /* never block the booking step */ }
+
+  try { var _u = new URL(location.href); _u.searchParams.set('lead','sent'); history.replaceState(null, '', _u); } catch (err) {}
   document.getElementById('formFields').style.display = 'none';
   document.getElementById('formSuccess').classList.add('show');
 });
