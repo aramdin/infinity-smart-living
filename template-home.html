@@ -252,11 +252,38 @@ footer ul a:hover{color:var(--cyan)}
   .nav-cta .btn-primary{padding:.58rem .9rem;font-size:.86rem}
   .nav-links{display:none}
   .menu-btn{display:block}
+  header.nav-open .nav-links{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:flex-start;background:#fff;border-bottom:1px solid var(--line);padding:16px 24px 20px;gap:1.05rem;box-shadow:0 20px 30px -18px rgba(5,25,65,.45)}
+  header.nav-open .nav-links a{font-size:1.06rem;color:var(--ink);font-weight:600}
   .sol-grid,.tgrid{grid-template-columns:1fr}
   .section{padding:72px 0}
   .hero{padding:54px 0 70px}
-  .cta{padding:48px 24px}
+  .cta{padding:44px 22px;border-radius:22px}
+  .hero-bg{display:none}
+  .wrap{padding:0 18px}
+  .section-head{margin-bottom:38px}
+  .why-card{padding:30px 24px}
+  .control{padding:18px}
+  .strip-inner{gap:12px 22px;padding:20px 0}
+  .foot-grid{gap:28px 24px}
   .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:460px){
+  .wrap{padding:0 16px}
+  .hero-copy h1{font-size:clamp(2rem,8.6vw,2.55rem)}
+  .hero-copy h1 .city-name{font-size:clamp(1.9rem,8vw,2.55rem)}
+  .hero-copy p.lead{font-size:1.05rem}
+  .section{padding:54px 0}
+  .section-head h2{font-size:1.58rem}
+  .cta{padding:40px 20px}
+  .cta h2{font-size:1.55rem}
+  .cta p{font-size:1rem}
+  .why-card{padding:26px 20px}
+  .why-card .stat{font-size:2.6rem}
+  .pkg{padding:28px 22px}
+  .pkg .price{font-size:2.1rem}
+  .strip-inner span.lbl{width:100%;text-align:center;margin:0 0 4px}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:24px 20px}
+  .foot-bot{flex-direction:column;align-items:flex-start;gap:.45rem}
 }
 @media(prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
@@ -309,11 +336,6 @@ footer ul a:hover{color:var(--cyan)}
 
 <!-- HERO + FORM -->
 <section class="hero" id="book">
-  <div class="hero-bg" aria-hidden="true">
-    <svg viewBox="0 0 600 400" fill="none">
-      <path d="M120 200c0-44 36-80 80-80s80 36 80 80-36 80-80 80-80-36-80-80zm160 0c0-44 36-80 80-80s80 36 80 80-36 80-80 80-80-36-80-80z" stroke="#00B2FC" stroke-width="2" opacity=".4"/>
-    </svg>
-  </div>
   <div class="wrap hero-grid">
     <div class="hero-copy reveal">
       <span class="eyebrow">Free virtual consultation</span>
@@ -374,11 +396,11 @@ footer ul a:hover{color:var(--cyan)}
 <!-- WORKS WITH STRIP -->
 <div class="strip">
   <div class="wrap strip-inner">
-    <span class="lbl">Works with the tech you already own</span>
+    <span class="lbl">An Amazon Alexa smart home, professionally installed</span>
     <span class="brand">Amazon Alexa</span>
-    <span class="brand">Google Home</span>
-    <span class="brand">Apple Home</span>
-    <span class="brand">Lutron</span>
+    <span class="brand">Echo Show</span>
+    <span class="brand">Echo Dot</span>
+    <span class="brand">Alexa Routines</span>
   </div>
 </div>
 
@@ -445,7 +467,7 @@ footer ul a:hover{color:var(--cyan)}
       <div class="sol reveal">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
         <h3>One-App Control</h3>
-        <p>Every device in one place on your phone, no five-app juggling.</p>
+        <p>Your whole Alexa smart home in one app, no five-app juggling.</p>
       </div>
     </div>
   </div>
@@ -534,6 +556,8 @@ footer ul a:hover{color:var(--cyan)}
 <script>
 const header=document.getElementById('top');
 addEventListener('scroll',()=>{header.classList.toggle('scrolled',scrollY>10)});
+const menuBtn=document.querySelector('.menu-btn');
+if(menuBtn){menuBtn.addEventListener('click',()=>{const open=header.classList.toggle('nav-open');menuBtn.setAttribute('aria-expanded',open)});document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>{header.classList.remove('nav-open');menuBtn.setAttribute('aria-expanded','false')}));}
 const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
 document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%3*60)+'ms';io.observe(el)});
 

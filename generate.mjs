@@ -98,6 +98,19 @@ const BLOG_CSS = `<style>
 .card-body h2{font-size:1.18rem;font-weight:700;line-height:1.28;color:var(--ink);margin:0}
 .card-body p{color:var(--slate);font-size:.96rem;line-height:1.55;margin:0;flex:1}
 .card-meta{color:#9aa7bd;font-size:.84rem;font-weight:600}
+@media(max-width:680px){
+  .post-hero{padding:60px 0 42px}
+  .post-body{padding:38px 20px 24px}
+  .cta-box{padding:1.6rem;margin:2.2rem 0 1rem}
+  .cta-box h3{font-size:1.3rem}
+  .blog-index{padding:50px 0 36px}
+  .post-grid{gap:20px;margin-top:30px}
+}
+@media(max-width:460px){
+  .post-hero h1{font-size:clamp(1.7rem,7.6vw,2.2rem)}
+  .post-body p,.post-body ul,.post-body ol{font-size:1.02rem}
+  .post-body h2{font-size:1.4rem}
+}
 </style>`;
 
 const blogHeader = `<header id="top">
