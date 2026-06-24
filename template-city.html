@@ -337,11 +337,6 @@ footer ul a:hover{color:var(--cyan)}
 
 <!-- HERO + FORM -->
 <section class="hero" id="book">
-  <div class="hero-bg" aria-hidden="true">
-    <svg viewBox="0 0 600 400" fill="none">
-      <path d="M120 200c0-44 36-80 80-80s80 36 80 80-36 80-80 80-80-36-80-80zm160 0c0-44 36-80 80-80s80 36 80 80-36 80-80 80-80-36-80-80z" stroke="#00B2FC" stroke-width="2" opacity=".4"/>
-    </svg>
-  </div>
   <div class="wrap hero-grid">
     <div class="hero-copy reveal">
       <span class="eyebrow">Free virtual consultation · {{CITY}}, FL</span>
@@ -585,6 +580,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
 const FORM_ENDPOINT = "{{FORM_ENDPOINT}}";
 document.getElementById('leadForm').addEventListener('submit', async function(e){
   e.preventDefault();
+  try { history.replaceState(null, '', location.pathname + '?lead=sent' + location.hash); } catch (err) {}
   const payload = {
     name: document.getElementById('name').value.trim(),
     phone: document.getElementById('phone').value.trim(),

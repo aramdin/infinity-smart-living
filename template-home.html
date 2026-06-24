@@ -567,6 +567,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
 const FORM_ENDPOINT = "{{FORM_ENDPOINT}}";
 document.getElementById('leadForm').addEventListener('submit', async function(e){
   e.preventDefault();
+  try { history.replaceState(null, '', location.pathname + '?lead=sent' + location.hash); } catch (err) {}
   const payload = {
     name: document.getElementById('name').value.trim(),
     phone: document.getElementById('phone').value.trim(),

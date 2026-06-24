@@ -2,7 +2,7 @@
 <!-- =========================================================
      CITY TEMPLATE, generates one page per city in cities.json.
      Edit this template, set values in cities.json, then run:  node generate.mjs
-     Tokens: Parkland Heron Bay, Parkland Golf & Country Club, and Cascata We install and set up smart homes across Parkland and nearby, including Heron Bay, Parkland Golf & Country Club, and Cascata. Whether you want to start with one room or do the whole house, we make it simple. https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa YOUR_FORM_ENDPOINT
+     Tokens: Parkland Heron Bay, Parkland Golf & Country Club, and Cascata We install and set up smart homes across Parkland and nearby, including Heron Bay, Parkland Golf & Country Club, and Cascata. Whether you want to start with one room or do the whole house, we make it simple. https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa https://services.leadconnectorhq.com/hooks/Owuc0ZFmPTpX9JcHhLjE/webhook-trigger/fda2080f-da6a-441b-9e0f-0e408ce6bfe4
      (000) 000-0000 +10000000000 hello@infinitysmartliving.com
      ========================================================= -->
 <html lang="en">
@@ -337,11 +337,6 @@ footer ul a:hover{color:var(--cyan)}
 
 <!-- HERO + FORM -->
 <section class="hero" id="book">
-  <div class="hero-bg" aria-hidden="true">
-    <svg viewBox="0 0 600 400" fill="none">
-      <path d="M120 200c0-44 36-80 80-80s80 36 80 80-36 80-80 80-80-36-80-80zm160 0c0-44 36-80 80-80s80 36 80 80-36 80-80 80-80-36-80-80z" stroke="#00B2FC" stroke-width="2" opacity=".4"/>
-    </svg>
-  </div>
   <div class="wrap hero-grid">
     <div class="hero-copy reveal">
       <span class="eyebrow">Free virtual consultation · Parkland, FL</span>
@@ -366,7 +361,7 @@ footer ul a:hover{color:var(--cyan)}
         <h3>Book your free consultation</h3>
         <p class="sub">Three quick details and we'll reach out to set up your free walkthrough.</p>
         <!-- Fires to GHL via the fetch() handler at the bottom of this file. -->
-        <form id="leadForm" action="YOUR_FORM_ENDPOINT" method="POST">
+        <form id="leadForm" action="https://services.leadconnectorhq.com/hooks/Owuc0ZFmPTpX9JcHhLjE/webhook-trigger/fda2080f-da6a-441b-9e0f-0e408ce6bfe4" method="POST">
           <div class="field">
             <label for="name">Full name</label>
             <input id="name" name="name" type="text" placeholder="Jane Smith" required>
@@ -582,9 +577,10 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
 // Lead form -> GHL inbound webhook, then reveal the booking calendar
 // (the highest-converting pattern). The endpoint is stamped from cities.json.
 // The user ALWAYS advances to booking, even if the POST fails.
-const FORM_ENDPOINT = "YOUR_FORM_ENDPOINT";
+const FORM_ENDPOINT = "https://services.leadconnectorhq.com/hooks/Owuc0ZFmPTpX9JcHhLjE/webhook-trigger/fda2080f-da6a-441b-9e0f-0e408ce6bfe4";
 document.getElementById('leadForm').addEventListener('submit', async function(e){
   e.preventDefault();
+  try { history.replaceState(null, '', location.pathname + '?lead=sent' + location.hash); } catch (err) {}
   const payload = {
     name: document.getElementById('name').value.trim(),
     phone: document.getElementById('phone').value.trim(),
