@@ -7,6 +7,15 @@
      ========================================================= -->
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QHTJ4PTKQV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-QHTJ4PTKQV');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart Home Installation & Home Automation in South Florida | Infinity Smart Living</title>
@@ -84,11 +93,16 @@ header.scrolled{border-color:var(--line);box-shadow:0 6px 20px -16px rgba(5,25,6
 /* ---------- hero ---------- */
 .hero{position:relative;padding:84px 0 96px;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
-.hero-bg svg{position:absolute;right:-6%;top:-8%;width:760px;max-width:90vw;opacity:.5}
+.hero-bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-bg .hero-shade{position:absolute;inset:0;background:rgba(5,25,65,.55)}
 .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
-.hero-copy h1{font-size:clamp(2.4rem,5vw,3.65rem);font-weight:800}
-.hero-copy h1 .accent{color:var(--cyan-deep)}
-.hero-copy p.lead{font-size:1.18rem;color:var(--slate);margin:1.4rem 0 2rem;max-width:34ch}
+.hero .eyebrow{color:#fff}
+.hero-copy h1{font-size:clamp(2.4rem,5vw,3.65rem);font-weight:800;color:#fff}
+.hero-copy h1 .accent{color:var(--cyan)}
+.hero-copy p.lead{font-size:1.18rem;color:rgba(255,255,255,.92);margin:1.4rem 0 2rem;max-width:34ch}
+.hero-copy .hero-trust{color:rgba(255,255,255,.86)}
+.hero-copy .hero-trust b{color:#fff}
+.hero-copy .hero-feat{color:rgba(255,255,255,.92)}
 .hero-actions{display:flex;gap:.9rem;flex-wrap:wrap}
 .hero-trust{display:flex;align-items:center;gap:1.4rem;margin-top:2.4rem;color:var(--slate);font-size:.9rem;flex-wrap:wrap}
 .hero-trust .stars{color:var(--cyan);letter-spacing:2px}
@@ -144,11 +158,12 @@ header.scrolled{border-color:var(--line);box-shadow:0 6px 20px -16px rgba(5,25,6
 
 /* solutions grid */
 .sol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.sol{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:28px;transition:transform .22s,box-shadow .22s,border-color .22s}
+.sol{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:transform .22s,box-shadow .22s,border-color .22s}
 .sol:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:transparent}
-.sol .ic{width:50px;height:50px;border-radius:13px;background:var(--surface-2);display:grid;place-items:center;color:var(--cyan-deep);margin-bottom:18px}
-.sol:hover .ic{background:var(--cyan);color:var(--ink)}
-.sol .ic svg{width:25px;height:25px}
+.sol-img{height:170px;overflow:hidden}
+.sol-img img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.sol:hover .sol-img img{transform:scale(1.05)}
+.sol-txt{padding:22px 24px 26px}
 .sol h3{font-size:1.18rem;margin-bottom:.5rem}
 .sol p{color:var(--slate);font-size:.96rem}
 
@@ -258,7 +273,6 @@ footer ul a:hover{color:var(--cyan)}
   .section{padding:72px 0}
   .hero{padding:54px 0 70px}
   .cta{padding:44px 22px;border-radius:22px}
-  .hero-bg{display:none}
   .wrap{padding:0 18px}
   .section-head{margin-bottom:38px}
   .why-card{padding:30px 24px}
@@ -336,6 +350,7 @@ footer ul a:hover{color:var(--cyan)}
 
 <!-- HERO + FORM -->
 <section class="hero" id="book">
+  <div class="hero-bg"><img src="/images/home-hero.jpg" alt="Bright, warm-lit modern living room" width="1600" height="1068"><span class="hero-shade"></span></div>
   <div class="wrap hero-grid">
     <div class="hero-copy reveal">
       <span class="eyebrow">Free virtual consultation</span>
@@ -348,9 +363,9 @@ footer ul a:hover{color:var(--cyan)}
         <span>Serving <b>South Florida</b></span>
       </div>
       <ul style="list-style:none;margin-top:1.8rem;display:flex;flex-direction:column;gap:.7rem">
-        <li style="display:flex;gap:.6rem;align-items:center;color:var(--slate)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Free custom smart-home layout for your home</li>
-        <li style="display:flex;gap:.6rem;align-items:center;color:var(--slate)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Clear, honest pricing, no obligation</li>
-        <li style="display:flex;gap:.6rem;align-items:center;color:var(--slate)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>A licensed local installer handles the whole install</li>
+        <li class="hero-feat" style="display:flex;gap:.6rem;align-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Free custom smart-home layout for your home</li>
+        <li class="hero-feat" style="display:flex;gap:.6rem;align-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Clear, honest pricing, no obligation</li>
+        <li class="hero-feat" style="display:flex;gap:.6rem;align-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>A licensed local installer handles the whole install</li>
       </ul>
     </div>
 
@@ -455,24 +470,32 @@ footer ul a:hover{color:var(--cyan)}
     </div>
     <div class="sol-grid">
       <div class="sol reveal">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18h6M10 21h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2h6c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/></svg></div>
-        <h3>Smart Lighting Installation</h3>
-        <p>Dimmers and one-tap scenes for every room, Morning, Movie, Good Night.</p>
+        <div class="sol-img"><img src="/images/card-lighting.jpg" alt="Warm dimmable lighting in a living room" width="800" height="1421" loading="lazy"></div>
+        <div class="sol-txt">
+          <h3>Smart Lighting Installation</h3>
+          <p>Dimmers and one-tap scenes for every room, Morning, Movie, Good Night.</p>
+        </div>
       </div>
       <div class="sol reveal">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 14.76V5a2 2 0 1 0-4 0v9.76a4 4 0 1 0 4 0z"/></svg></div>
-        <h3>Smart Thermostats & Climate</h3>
-        <p>Smart thermostats and sensors that keep every room comfortable and learn your routine.</p>
+        <div class="sol-img"><img src="/images/card-thermostat.jpg" alt="Sleek wall thermostat in a modern home" width="800" height="1200" loading="lazy"></div>
+        <div class="sol-txt">
+          <h3>Smart Thermostats &amp; Climate</h3>
+          <p>Smart thermostats and sensors that keep every room comfortable and learn your routine.</p>
+        </div>
       </div>
       <div class="sol reveal">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg></div>
-        <h3>Voice & Home Automation</h3>
-        <p>Just say it, or let routines run themselves. Everything responds the way you'd expect.</p>
+        <div class="sol-img"><img src="/images/card-speaker.jpg" alt="A smart speaker on a table at home" width="800" height="532" loading="lazy"></div>
+        <div class="sol-txt">
+          <h3>Voice &amp; Home Automation</h3>
+          <p>Just say it, or let routines run themselves. Everything responds the way you'd expect.</p>
+        </div>
       </div>
       <div class="sol reveal">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-        <h3>One-App Control</h3>
-        <p>Your whole Alexa smart home in one app, no five-app juggling.</p>
+        <div class="sol-img"><img src="/images/card-living.jpg" alt="A cozy modern living room" width="800" height="786" loading="lazy"></div>
+        <div class="sol-txt">
+          <h3>One-App Control</h3>
+          <p>Your whole Alexa smart home in one app, no five-app juggling.</p>
+        </div>
       </div>
     </div>
   </div>

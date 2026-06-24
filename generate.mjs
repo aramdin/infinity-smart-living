@@ -63,10 +63,24 @@ const MONTHS = ['January','February','March','April','May','June',
   'July','August','September','October','November','December'];
 const fmtDate = (iso) => { const [y, m, d] = iso.split('-').map(Number); return `${MONTHS[m - 1]} ${d}, ${y}`; };
 
-// Inline SVG banner — the post "image". Brand gradient + circuit motif, varied by index.
+// Brand gradient sits behind each post photo as a fallback + side fill, varied by index.
 const ANGLES = [135, 120, 150, 162, 110, 142, 128, 156];
 const grad = (i) => `linear-gradient(${ANGLES[i % ANGLES.length]}deg,#06203f 0%,#0a4f8c 52%,#00B2FC 100%)`;
-const DECO = `<svg class="deco" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M90 150c0-33 27-60 60-60s60 27 60 60-27 60-60 60-60-27-60-60zm120 0c0-33 27-60 60-60s60 27 60 60-27 60-60 60-60-27-60-60zm120 0c0-33 27-60 60-60s60 27 60 60-27 60-60 60-60-27-60-60zm120 0c0-33 27-60 60-60s60 27 60 60-27 60-60 60-60-27-60-60z" stroke="#fff" stroke-width="2" opacity=".45"/></svg>`;
+
+// Real intrinsic dimensions of each post photo: [heroHeight, thumbHeight] (widths 1600 / 800),
+// used for explicit width/height attributes so the images do not cause layout shift.
+const IMG_DIMS = {
+  'why-smart-home-automation-worth-it': [1067, 533],
+  'smart-home-installation-cost-south-florida': [1067, 533],
+  'smart-home-installation-near-me-choosing-installer': [1067, 533],
+  'smart-lighting-installation-room-by-room': [900, 450],
+  'smart-thermostats-florida-cut-ac-bill': [900, 450],
+  'home-automation-what-to-automate-first': [1067, 534],
+  'voice-control-whole-home-automation-guide': [1068, 534],
+  'free-smart-home-consultation-what-to-expect': [1068, 534],
+};
+const heroH = (slug) => (IMG_DIMS[slug] || [900])[0];
+const thumbH = (slug) => (IMG_DIMS[slug] || [0, 533])[1];
 
 const BLOG_CSS = `<style>
 .post-hero{position:relative;overflow:hidden;padding:100px 0 60px;color:#fff;text-align:center}
@@ -74,7 +88,8 @@ const BLOG_CSS = `<style>
 .post-hero h1{font-size:clamp(2rem,4.6vw,3.05rem);font-weight:800;line-height:1.1;margin:.6rem 0 .8rem;color:#fff}
 .post-hero .post-cat{display:inline-block;font-family:var(--font-display);font-weight:600;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;background:rgba(255,255,255,.18);padding:.36rem .8rem;border-radius:999px}
 .post-hero .post-meta{color:rgba(255,255,255,.86);font-size:.92rem;margin:0}
-.post-hero .deco{position:absolute;inset:0;z-index:0;width:100%;height:100%}
+.post-hero .hero-photo{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover}
+.post-hero .hero-shade{position:absolute;inset:0;z-index:0;background:rgba(5,25,65,.55)}
 .post-body{max-width:720px;margin:0 auto;padding:54px 24px 30px}
 .post-body h2{font-size:clamp(1.4rem,2.6vw,1.9rem);font-weight:800;margin:2.2rem 0 .8rem;color:var(--ink)}
 .post-body h3{font-size:1.2rem;font-weight:700;margin:1.6rem 0 .55rem;color:var(--ink)}
@@ -93,7 +108,8 @@ const BLOG_CSS = `<style>
 .post-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -22px rgba(5,25,65,.5)}
 .card-hero{position:relative;height:152px;display:flex;align-items:flex-end;padding:16px;overflow:hidden}
 .card-hero .post-cat{position:relative;z-index:1;font-family:var(--font-display);font-weight:600;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:rgba(3,18,40,.32);padding:.3rem .65rem;border-radius:999px}
-.card-hero .deco{position:absolute;inset:0;width:100%;height:100%;opacity:.6}
+.card-hero .card-photo{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover}
+.card-hero::after{content:"";position:absolute;inset:0;z-index:0;background:rgba(5,25,65,.30)}
 .card-body{padding:20px 22px 24px;display:flex;flex-direction:column;gap:.55rem;flex:1}
 .card-body h2{font-size:1.18rem;font-weight:700;line-height:1.28;color:var(--ink);margin:0}
 .card-body p{color:var(--slate);font-size:.96rem;line-height:1.55;margin:0;flex:1}
@@ -171,6 +187,15 @@ const origin = (site.origin || 'https://YOUR-DOMAIN.com').replace(/\/$/, '');
 const blogShell = ({ title, description, canonical, body }) => `<!doctype html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QHTJ4PTKQV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-QHTJ4PTKQV');
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title}</title>
@@ -199,7 +224,8 @@ posts.forEach((post, i) => {
   const inner = readFileSync(`./${post.file}`, 'utf8').trim();
   const body = `<main>
 <section class="post-hero" style="background:${grad(i)}">
-  ${DECO}
+  <img class="hero-photo" src="/images/blog-${post.slug}.jpg" alt="${post.title}" width="1600" height="${heroH(post.slug)}">
+  <span class="hero-shade"></span>
   <div class="pwrap">
     <span class="post-cat">${post.category}</span>
     <h1>${post.title}</h1>
@@ -228,7 +254,7 @@ ${inner}
 
 // --- blog index ---
 const cards = posts.map((post, i) => `      <a class="post-card" href="/blog/${post.slug}">
-        <div class="card-hero" style="background:${grad(i)}">${DECO}<span class="post-cat">${post.category}</span></div>
+        <div class="card-hero" style="background:${grad(i)}"><img class="card-photo" src="/images/blog-${post.slug}-thumb.jpg" alt="${post.title}" width="800" height="${thumbH(post.slug)}" loading="lazy"><span class="post-cat">${post.category}</span></div>
         <div class="card-body">
           <h2>${post.title}</h2>
           <p>${post.description}</p>
@@ -303,6 +329,15 @@ const LINK_UTM = '?utm_source=linktree&utm_medium=bio&utm_campaign=links';
 const linksHtml = `<!doctype html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QHTJ4PTKQV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-QHTJ4PTKQV');
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Infinity Smart Living | Links</title>
