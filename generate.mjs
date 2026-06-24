@@ -118,6 +118,7 @@ const blogHeader = `<header id="top">
     <a href="/" aria-label="infinity smart living home"><img class="logo" src="${logo}" alt="infinity smart living"></a>
     <nav class="nav-links" aria-label="Primary">
       <a href="/packages">Packages</a>
+      <a href="/guarantee">Guarantee</a>
       <a href="/blog">Blog</a>
     </nav>
     <div class="nav-cta">
@@ -139,6 +140,7 @@ const blogFooter = `<footer>
           <li><a href="/">Home</a></li>
           <li><a href="/packages">Packages</a></li>
           <li><a href="/blog">Blog</a></li>
+          <li><a href="/guarantee">Guarantee</a></li>
         </ul>
       </div>
       <div>
@@ -255,6 +257,47 @@ writeFileSync('blog.html', blogShell({
 }));
 pages.push('blog.html');
 console.log('✓ blog.html (index)');
+
+// --- guarantee page ---
+const guaranteeBody = `<main>
+<section class="post-hero" style="background:linear-gradient(135deg,#06203f 0%,#0a4f8c 55%,#00B2FC 100%)">
+  <div class="pwrap">
+    <span class="post-cat">Our promise</span>
+    <h1>The 30-Day Money-Back Guarantee</h1>
+    <p class="post-meta">Free consultation and floor plan, then 30 days to live with your Alexa smart home</p>
+  </div>
+</section>
+<article class="post-body">
+<p>We want you confident at every step, before you spend a dollar and after your smart home is installed. That is why the planning is free and the finished system is backed by a 30-day money-back guarantee.</p>
+<h2>Free before you commit</h2>
+<p>Your consultation and your custom Alexa floor plan cost nothing. Share your floor plan or a few measurements and we map your smart lighting, thermostats, and voice control onto your actual home. You see the full plan and a clear project range before you decide. Like it and you move forward. Do not like it and you keep the plan and owe nothing.</p>
+<h2>30 days to live with it</h2>
+<p>Once a licensed local installer completes your Alexa smart home, the guarantee begins. Live with it for 30 days. Use the lighting scenes, the thermostats, and the voice routines in your daily life. If it is not right for your home, you are covered.</p>
+<h2>How the guarantee works</h2>
+<ul>
+<li>Book a free virtual consultation and receive your custom Alexa floor plan at no cost.</li>
+<li>Approve the plan and a licensed local installer schedules and completes the work.</li>
+<li>Live with your new smart home for 30 days.</li>
+<li>If you are not satisfied within those 30 days, contact us and we will make it right.</li>
+</ul>
+<h2>Simple and honest</h2>
+<p>No pressure and no surprises. The plan is yours to keep either way, the pricing is clear before any work begins, and the guarantee gives you a full month to be sure. For how service agreements and installer work are handled, see our <a href="/terms">Terms</a>.</p>
+<div class="cta-box">
+  <h3>Book your free smart home consultation</h3>
+  <p>See your custom Alexa floor plan and an honest project range before you spend a dollar. Serving Coral Springs, Boca Raton, Parkland, Pompano Beach, Coconut Creek, and Deerfield Beach.</p>
+  <a href="${site.bookUrl}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Book free consult →</a>
+</div>
+</article>
+</main>`;
+writeFileSync('guarantee.html', blogShell({
+  title: '30-Day Money-Back Guarantee | Infinity Smart Living',
+  description: 'Your smart home consultation and custom Alexa floor plan are free, and your installed Alexa system is backed by a 30-day money-back guarantee. Serving South Florida.',
+  canonical: 'guarantee',
+  body: guaranteeBody,
+}));
+pages.push('guarantee.html');
+console.log('✓ guarantee.html');
+
 
 // --- sitemap.xml (clean URLs, matching vercel.json cleanUrls) ---
 const cleanPath = (u) => (u === '' ? '' : u.replace(/\.html$/, ''));
