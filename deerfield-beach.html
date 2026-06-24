@@ -10,7 +10,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart Home Installation in Deerfield Beach, FL | Infinity Smart Living</title>
-<meta name="description" content="Smart home installation and home automation in Deerfield Beach, FL. Book a free smart home consultation and we design a custom layout for your home, then handle the install. Your local Deerfield Beach smart home installer.">
+<meta name="description" content="Smart home installation and home automation in Deerfield Beach, FL. Book a free smart home consultation and we design a custom layout for your home, then a licensed local installer handles the install. Your local Deerfield Beach smart home installer.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -341,7 +341,7 @@ footer ul a:hover{color:var(--cyan)}
     <div class="hero-copy reveal">
       <span class="eyebrow">Free virtual consultation · Deerfield Beach, FL</span>
       <h1>Smart home installation in <span class="accent city-name">Deerfield Beach, FL</span></h1>
-      <p class="lead"><b>See your smart home before you spend a dollar.</b> Book a free virtual consult, we map your floor plan, build a custom layout for your exact home, then handle the install.</p>
+      <p class="lead"><b>See your smart home before you spend a dollar.</b> Book a free virtual consult, we map your floor plan, build a custom layout for your exact home, then a licensed local installer handles the install.</p>
       <div class="hero-trust" style="margin-top:1.8rem">
         <span class="stars">★★★★★</span>
         <span><b>4.9</b>/5 from local homeowners</span>
@@ -351,7 +351,7 @@ footer ul a:hover{color:var(--cyan)}
       <ul style="list-style:none;margin-top:1.8rem;display:flex;flex-direction:column;gap:.7rem">
         <li style="display:flex;gap:.6rem;align-items:center;color:var(--slate)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Free custom smart-home layout for your home</li>
         <li style="display:flex;gap:.6rem;align-items:center;color:var(--slate)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Clear, honest pricing, no obligation</li>
-        <li style="display:flex;gap:.6rem;align-items:center;color:var(--slate)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>We handle the whole install</li>
+        <li style="display:flex;gap:.6rem;align-items:center;color:var(--slate)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>A licensed local installer handles the whole install</li>
       </ul>
     </div>
 
@@ -432,7 +432,7 @@ footer ul a:hover{color:var(--cyan)}
       <div class="step reveal">
         <div class="num">3</div>
         <h3>Get your plan</h3>
-        <p>You get a clear layout and price, and we handle the install. Plans typically start at $5,000.</p>
+        <p>You get a clear layout and price, and a licensed local installer handles the install. Plans typically start at $5,000.</p>
       </div>
     </div>
     <div style="text-align:center;margin-top:48px">
@@ -509,7 +509,7 @@ footer ul a:hover{color:var(--cyan)}
       <h2>Smart home installation in Deerfield Beach</h2>
     </div>
     <p style="color:var(--slate);font-size:1.06rem;margin-bottom:14px">We install and set up smart homes across Deerfield Beach and nearby, including Deer Creek, The Cove, and Century Village. Whether you want to start with one room or do the whole house, we make it simple.</p>
-    <p style="color:var(--slate);font-size:1.06rem">Looking for a smart home installer in Deerfield Beach? We handle home automation in Deerfield Beach from end to end: smart lighting, climate, and voice, all in one app with no monthly lock-in. Your free smart home consultation maps your floor plan and builds a custom layout for your Deerfield Beach home, and our local team handles the install. Plans typically start at $5,000.</p>
+    <p style="color:var(--slate);font-size:1.06rem">Looking for a smart home installer in Deerfield Beach? We make home automation in Deerfield Beach simple, from end to end: smart lighting, climate, and voice, all in one app with no monthly lock-in. Your free smart home consultation maps your floor plan and builds a custom layout for your Deerfield Beach home, and a vetted, licensed local installer handles the install. Plans typically start at $5,000.</p>
   </div>
 </section>
 
@@ -593,7 +593,7 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
     if (FORM_ENDPOINT && FORM_ENDPOINT.indexOf('FORM_ENDPOINT') === -1 && FORM_ENDPOINT.indexOf('{{') === -1) {
       await fetch(FORM_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=UTF-8' }, // text/plain avoids a CORS preflight to GHL; body is still JSON
+        headers: { 'Content-Type': 'application/json' }, // GHL inbound webhook requires application/json; its CORS preflight is allowed (Access-Control-Allow-Origin: *)
         body: JSON.stringify(payload)
       });
     }
