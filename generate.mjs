@@ -298,6 +298,49 @@ writeFileSync('guarantee.html', blogShell({
 pages.push('guarantee.html');
 console.log('✓ guarantee.html');
 
+// --- links page (linktree-style: bare logo + buttons, noindex, NOT in sitemap/nav/footer) ---
+const LINK_UTM = '?utm_source=linktree&utm_medium=bio&utm_campaign=links';
+const linksHtml = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Infinity Smart Living | Links</title>
+<meta name="description" content="Quick links for Infinity Smart Living: book a free consultation, see packages and pricing, and explore our Amazon Alexa smart home service in South Florida.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="${origin}/links">
+${styleBlock}
+<style>
+body.links-page{background:var(--surface);min-height:100vh}
+.links-wrap{width:100%;max-width:480px;margin:0 auto;padding:58px 22px 48px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.links-logo{height:46px;width:auto;margin-bottom:16px}
+.links-tag{color:var(--slate);font-size:1.05rem;line-height:1.55;margin:0 0 28px;max-width:32ch}
+.links-stack{width:100%;display:flex;flex-direction:column;gap:14px}
+.link-btn{display:block;width:100%;text-align:center;padding:18px 22px;border-radius:14px;font-family:var(--font-display);font-weight:600;font-size:1.05rem;border:1.5px solid var(--line);color:var(--ink);background:#fff;transition:transform .15s ease,box-shadow .15s ease,border-color .15s}
+.link-btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px -14px rgba(5,25,65,.4);border-color:var(--cyan)}
+.link-btn.primary{background:var(--cyan);border-color:var(--cyan);box-shadow:0 10px 26px -8px rgba(0,178,252,.6)}
+.link-btn.primary:hover{background:#1cbcff}
+</style>
+</head>
+<body class="links-page">
+<main class="links-wrap">
+  <img class="links-logo" src="${logo}" alt="Infinity Smart Living">
+  <p class="links-tag">Your complete Amazon Alexa smart home. Serving Broward County and South Palm Beach.</p>
+  <div class="links-stack">
+    <a class="link-btn primary" href="${site.bookUrl}${LINK_UTM}" target="_blank" rel="noopener">Book a Free Consultation</a>
+    <a class="link-btn" href="/${LINK_UTM}">Visit Our Website</a>
+    <a class="link-btn" href="/packages${LINK_UTM}">Packages &amp; Pricing</a>
+    <a class="link-btn" href="/guarantee${LINK_UTM}">Our 30-Day Money-Back Guarantee</a>
+    <a class="link-btn" href="tel:+17543454871">Call Us: (754) 345-4871</a>
+    <a class="link-btn" href="/blog${LINK_UTM}">Smart Home Guides</a>
+  </div>
+</main>
+</body>
+</html>`;
+writeFileSync('links.html', linksHtml);
+console.log('✓ links.html (bare bio page, noindex, excluded from sitemap/nav/footer)');
+
+
 
 // --- sitemap.xml (clean URLs, matching vercel.json cleanUrls) ---
 const cleanPath = (u) => (u === '' ? '' : u.replace(/\.html$/, ''));
