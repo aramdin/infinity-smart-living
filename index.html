@@ -565,21 +565,37 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
 // (the highest-converting pattern). The endpoint is stamped from cities.json.
 // The user ALWAYS advances to booking, even if the POST fails.
 const FORM_ENDPOINT = "https://services.leadconnectorhq.com/hooks/Owuc0ZFmPTpX9JcHhLjE/webhook-trigger/fda2080f-da6a-441b-9e0f-0e408ce6bfe4";
+
+// --- capture tracking params (UTM + ad click IDs) so they ride along with the lead ---
+var ISL_TRACK_KEYS = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid','msclkid'];
+(function(){
+  try {
+    var qs = new URLSearchParams(location.search);
+    var stored = JSON.parse(sessionStorage.getItem('isl_track') || '{}');
+    ISL_TRACK_KEYS.forEach(function(k){ var v = qs.get(k); if (v) stored[k] = v; });
+    if (!stored.landing_url) stored.landing_url = location.href;
+    if (!stored.referrer)    stored.referrer = document.referrer || '';
+    sessionStorage.setItem('isl_track', JSON.stringify(stored));
+  } catch (e) {}
+})();
+function islTracking(){ try { return JSON.parse(sessionStorage.getItem('isl_track') || '{}'); } catch (e) { return {}; } }
+
 document.getElementById('leadForm').addEventListener('submit', async function(e){
   e.preventDefault();
-  try { history.replaceState(null, '', location.pathname + '?lead=sent' + location.hash); } catch (err) {}
-  const payload = {
+  try { var _u = new URL(location.href); _u.searchParams.set('lead','sent'); history.replaceState(null, '', _u); } catch (err) {}
+  const payload = Object.assign({
     name: document.getElementById('name').value.trim(),
     phone: document.getElementById('phone').value.trim(),
     city: document.getElementById('city').value.trim(),
     source_url: location.href,
     page: document.title,
     consent: document.getElementById('consent').checked
-  };
+  }, islTracking());
   try {
     if (FORM_ENDPOINT && FORM_ENDPOINT.indexOf('FORM_ENDPOINT') === -1 && FORM_ENDPOINT.indexOf('{{') === -1) {
       await fetch(FORM_ENDPOINT, {
         method: 'POST',
+        keepalive: true,
         headers: { 'Content-Type': 'application/json' }, // GHL inbound webhook requires application/json; its CORS preflight is allowed (Access-Control-Allow-Origin: *)
         body: JSON.stringify(payload)
       });
