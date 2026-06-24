@@ -156,6 +156,7 @@ const blogFooter = `<footer>
         </ul>
       </div>
     </div>
+    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">30-Day Money-Back Guarantee · Free consultation and floor plan</div>
     <div class="foot-bot">
       <span>© 2026 infinity smart living. All rights reserved.</span>
       <span><a href="/privacy" style="color:inherit">Privacy</a> · <a href="/terms" style="color:inherit">Terms</a></span>
