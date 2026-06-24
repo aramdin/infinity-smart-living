@@ -320,6 +320,8 @@ body.links-page{background:var(--surface);min-height:100vh}
 .link-btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px -14px rgba(5,25,65,.4);border-color:var(--cyan)}
 .link-btn.primary{background:var(--cyan);border-color:var(--cyan);box-shadow:0 10px 26px -8px rgba(0,178,252,.6)}
 .link-btn.primary:hover{background:#1cbcff}
+.link-btn.guarantee{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 12px 28px -10px rgba(5,25,65,.55)}
+.link-btn.guarantee:hover{background:var(--ink-2);border-color:var(--ink-2)}
 </style>
 </head>
 <body class="links-page">
@@ -328,9 +330,8 @@ body.links-page{background:var(--surface);min-height:100vh}
   <p class="links-tag">Your complete Amazon Alexa smart home. Serving Broward County and South Palm Beach.</p>
   <div class="links-stack">
     <a class="link-btn primary" href="${site.bookUrl}${LINK_UTM}" target="_blank" rel="noopener">Book a Free Consultation</a>
+    <a class="link-btn guarantee" href="/guarantee${LINK_UTM}">Our 30-Day Money-Back Guarantee</a>
     <a class="link-btn" href="/${LINK_UTM}">Visit Our Website</a>
-    <a class="link-btn" href="/packages${LINK_UTM}">Packages &amp; Pricing</a>
-    <a class="link-btn" href="/guarantee${LINK_UTM}">Our 30-Day Money-Back Guarantee</a>
     <a class="link-btn" href="tel:+17543454871">Call Us: (754) 345-4871</a>
     <a class="link-btn" href="/blog${LINK_UTM}">Smart Home Guides</a>
   </div>
