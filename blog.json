@@ -2,6 +2,36 @@
   "_comment": "Blog posts. Body HTML lives in posts/<file>. Add an entry here + a posts/ file, then run: node generate.mjs. Newest first (sorted by date at build).",
   "posts": [
     {
+      "slug": "what-is-a-smart-home",
+      "title": "What Is a Smart Home? A Plain-English Guide for Florida Homeowners",
+      "metaTitle": "What Is a Smart Home? A Simple Guide for Homeowners",
+      "description": "A clear, jargon-free guide to what a smart home is, how it works with Amazon Alexa, and where to start. Written for everyday homeowners.",
+      "category": "Getting Started",
+      "date": "2026-07-06",
+      "read": 7,
+      "file": "posts/what-is-a-smart-home.html"
+    },
+    {
+      "slug": "smart-home-automation-explained",
+      "title": "What Is Smart Home Automation and How Does It Work?",
+      "metaTitle": "Smart Home Automation Explained (No Jargon)",
+      "description": "Smart home automation made simple. Learn how routines, voice control, and Alexa work together to run your home hands free.",
+      "category": "Automation",
+      "date": "2026-07-06",
+      "read": 8,
+      "file": "posts/smart-home-automation-explained.html"
+    },
+    {
+      "slug": "best-smart-home-devices-to-start-with",
+      "title": "The Best Smart Home Devices to Start With in 2026",
+      "metaTitle": "Best Smart Home Devices to Start With in 2026",
+      "description": "A beginner-friendly list of the smart home devices worth starting with, all built around Amazon Alexa and easy to use.",
+      "category": "Buying Guide",
+      "date": "2026-07-06",
+      "read": 8,
+      "file": "posts/best-smart-home-devices-to-start-with.html"
+    },
+    {
       "slug": "why-smart-home-automation-worth-it",
       "title": "Is Smart Home Automation Worth It? How It Changes Daily Life",
       "description": "How smart home automation changes mornings, leaving home, evenings, and energy use, and how to decide if it is worth it for your South Florida home.",

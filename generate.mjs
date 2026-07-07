@@ -11,7 +11,7 @@
 // blog.json (+ a posts/ file per article), then re-run this script.
 // privacy.html / terms.html are static and left untouched.
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 
 const cfg = JSON.parse(readFileSync('./cities.json', 'utf8'));
 const site = cfg.site;
@@ -184,7 +184,7 @@ const blogFooter = `<footer>
 
 const origin = (site.origin || 'https://YOUR-DOMAIN.com').replace(/\/$/, '');
 
-const blogShell = ({ title, description, canonical, body }) => `<!doctype html>
+const blogShell = ({ title, ogTitle, description, canonical, ogType = 'article', image = '', jsonLd = '', body }) => `<!doctype html>
 <html lang="en">
 <head>
 <!-- Google tag (gtag.js) -->
@@ -201,10 +201,11 @@ const blogShell = ({ title, description, canonical, body }) => `<!doctype html>
 <title>${title}</title>
 <meta name="description" content="${description}">
 <link rel="canonical" href="${origin}/${canonical}">
-<meta property="og:title" content="${title}">
+<meta property="og:title" content="${ogTitle || title}">
 <meta property="og:description" content="${description}">
-<meta property="og:type" content="article">
-${styleBlock}
+<meta property="og:type" content="${ogType}">
+<meta property="og:url" content="${origin}/${canonical}">
+${image ? `<meta property="og:image" content="${image}">\n` : ''}${jsonLd ? `<script type="application/ld+json">${jsonLd}</script>\n` : ''}${styleBlock}
 ${BLOG_CSS}
 </head>
 <body>
@@ -222,9 +223,29 @@ mkdirSync('blog', { recursive: true });
 
 posts.forEach((post, i) => {
   const inner = readFileSync(`./${post.file}`, 'utf8').trim();
+  // Only render the hero photo when the image file actually exists; otherwise the
+  // brand gradient behind it stands in on its own (no broken image, no layout shift).
+  const heroImg = existsSync(`images/blog-${post.slug}.jpg`)
+    ? `\n  <img class="hero-photo" src="/images/blog-${post.slug}.jpg" alt="${post.title}" width="1600" height="${heroH(post.slug)}">`
+    : '';
+  const ogImage = existsSync(`images/blog-${post.slug}.jpg`) ? `${origin}/images/blog-${post.slug}.jpg` : '';
+  const metaTitle = post.metaTitle || post.title;
+  const canonical = `blog/${post.slug}`;
+  const jsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.description,
+    datePublished: post.date,
+    dateModified: post.date,
+    author: { '@type': 'Organization', name: 'Infinity Smart Living', url: origin },
+    publisher: { '@type': 'Organization', name: 'Infinity Smart Living', url: origin },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${origin}/${canonical}` },
+    url: `${origin}/${canonical}`,
+    ...(ogImage ? { image: ogImage } : {}),
+  });
   const body = `<main>
-<section class="post-hero" style="background:${grad(i)}">
-  <img class="hero-photo" src="/images/blog-${post.slug}.jpg" alt="${post.title}" width="1600" height="${heroH(post.slug)}">
+<section class="post-hero" style="background:${grad(i)}">${heroImg}
   <span class="hero-shade"></span>
   <div class="pwrap">
     <span class="post-cat">${post.category}</span>
@@ -243,9 +264,12 @@ ${inner}
 </article>
 </main>`;
   writeFileSync(`blog/${post.slug}.html`, blogShell({
-    title: `${post.title} | Infinity Smart Living`,
+    title: `${metaTitle} | Infinity Smart Living`,
+    ogTitle: post.title,
     description: post.description,
-    canonical: `blog/${post.slug}`,
+    canonical,
+    image: ogImage,
+    jsonLd,
     body,
   }));
   pages.push(`blog/${post.slug}.html`);
@@ -254,7 +278,7 @@ ${inner}
 
 // --- blog index ---
 const cards = posts.map((post, i) => `      <a class="post-card" href="/blog/${post.slug}">
-        <div class="card-hero" style="background:${grad(i)}"><img class="card-photo" src="/images/blog-${post.slug}-thumb.jpg" alt="${post.title}" width="800" height="${thumbH(post.slug)}" loading="lazy"><span class="post-cat">${post.category}</span></div>
+        <div class="card-hero" style="background:${grad(i)}">${existsSync(`images/blog-${post.slug}-thumb.jpg`) ? `<img class="card-photo" src="/images/blog-${post.slug}-thumb.jpg" alt="${post.title}" width="800" height="${thumbH(post.slug)}" loading="lazy">` : ''}<span class="post-cat">${post.category}</span></div>
         <div class="card-body">
           <h2>${post.title}</h2>
           <p>${post.description}</p>
@@ -379,6 +403,13 @@ console.log('✓ links.html (bare bio page, noindex, excluded from sitemap/nav/f
 
 
 // --- sitemap.xml (clean URLs, matching vercel.json cleanUrls) ---
+// Glob every generated page under blog/ so no blog URL can be dropped from the
+// sitemap on a rebuild, even one added outside this script. Union + dedupe with
+// the pages already collected above (blog/<slug>.html get pushed as posts render).
+for (const f of readdirSync('blog').filter((f) => f.endsWith('.html'))) {
+  const rel = `blog/${f}`;
+  if (!pages.includes(rel)) pages.push(rel);
+}
 const cleanPath = (u) => (u === '' ? '' : u.replace(/\.html$/, ''));
 const sitemap =
   `<?xml version="1.0" encoding="UTF-8"?>\n` +
