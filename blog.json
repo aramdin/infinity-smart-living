@@ -2,6 +2,36 @@
   "_comment": "Blog posts. Body HTML lives in posts/<file>. Add an entry here + a posts/ file, then run: node generate.mjs. Newest first (sorted by date at build).",
   "posts": [
     {
+      "slug": "smart-home-technology-trends-2026",
+      "title": "Smart Home Technology in 2026: The Trends That Actually Matter",
+      "metaTitle": "Smart Home Technology Trends to Watch in 2026",
+      "description": "The smart home technology trends that matter in 2026: Matter and Thread, smarter voice assistants, energy management, and automation that runs itself.",
+      "category": "Trends",
+      "date": "2026-07-10",
+      "read": 7,
+      "file": "posts/smart-home-technology-trends-2026.html"
+    },
+    {
+      "slug": "how-to-set-up-a-smart-home",
+      "title": "How to Set Up a Smart Home: A Step-by-Step Guide for Beginners",
+      "metaTitle": "How to Set Up a Smart Home: Step-by-Step for Beginners",
+      "description": "Learn how to set up a smart home step by step: assess your Wi-Fi, pick an ecosystem, add your first devices, build routines, and expand room by room.",
+      "category": "Getting Started",
+      "date": "2026-07-10",
+      "read": 8,
+      "file": "posts/how-to-set-up-a-smart-home.html"
+    },
+    {
+      "slug": "best-smart-home-hubs",
+      "title": "The Best Smart Home Hubs in 2026 (And How to Pick One)",
+      "metaTitle": "Best Smart Home Hubs in 2026 (And How to Pick One)",
+      "description": "Comparing the best smart home hubs of 2026, from Amazon Echo to Home Assistant, plus how Matter and Thread change which hub you should buy.",
+      "category": "Buying Guide",
+      "date": "2026-07-10",
+      "read": 8,
+      "file": "posts/best-smart-home-hubs.html"
+    },
+    {
       "slug": "what-is-a-smart-home",
       "title": "What Is a Smart Home? A Plain-English Guide for Florida Homeowners",
       "metaTitle": "What Is a Smart Home? A Simple Guide for Homeowners",
