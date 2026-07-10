@@ -78,6 +78,12 @@ const IMG_DIMS = {
   'home-automation-what-to-automate-first': [1067, 534],
   'voice-control-whole-home-automation-guide': [1068, 534],
   'free-smart-home-consultation-what-to-expect': [1068, 534],
+  'what-is-a-smart-home': [1018, 509],
+  'smart-home-automation-explained': [1068, 534],
+  'best-smart-home-devices-to-start-with': [1067, 533],
+  'best-smart-home-hubs': [1067, 533],
+  'how-to-set-up-a-smart-home': [1067, 533],
+  'smart-home-technology-trends-2026': [1068, 534],
 };
 const heroH = (slug) => (IMG_DIMS[slug] || [900])[0];
 const thumbH = (slug) => (IMG_DIMS[slug] || [0, 533])[1];
