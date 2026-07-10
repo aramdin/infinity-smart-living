@@ -198,6 +198,9 @@ const blogShell = ({ title, ogTitle, description, canonical, ogType = 'article',
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon-navy-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>${title}</title>
 <meta name="description" content="${description}">
 <link rel="canonical" href="${origin}/${canonical}">
