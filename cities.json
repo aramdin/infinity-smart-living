@@ -37,6 +37,76 @@
       "city": "Deerfield Beach",
       "areas": "Deer Creek, The Cove, and Century Village",
       "intro": ""
+    },
+    {
+      "city": "Delray Beach",
+      "areas": "Lake Ida, Delray Dunes, and the Atlantic Avenue corridor",
+      "intro": ""
+    },
+    {
+      "city": "Boynton Beach",
+      "areas": "Hunters Run, Canyon Lakes, and Renaissance Commons",
+      "intro": ""
+    },
+    {
+      "city": "Fort Lauderdale",
+      "areas": "Victoria Park, Coral Ridge, and Harbor Beach",
+      "intro": ""
+    },
+    {
+      "city": "Weston",
+      "areas": "Weston Hills, Savanna, and The Ridges",
+      "intro": ""
+    },
+    {
+      "city": "Plantation",
+      "areas": "Plantation Acres, Jacaranda Lakes, and Hawks Landing",
+      "intro": ""
+    },
+    {
+      "city": "Lighthouse Point",
+      "areas": "Coral Key Villas, Venetian Isles, and the marina district",
+      "intro": ""
+    },
+    {
+      "city": "Margate",
+      "areas": "Oriole Estates, Paradise Gardens, and Holiday Springs",
+      "intro": ""
+    },
+    {
+      "city": "Tamarac",
+      "areas": "The Woodlands, Kings Point, and the Mainlands",
+      "intro": ""
+    },
+    {
+      "city": "Sunrise",
+      "areas": "Welleby, Sunrise Lakes, and Sawgrass Estates",
+      "intro": ""
+    },
+    {
+      "city": "Davie",
+      "areas": "Shenandoah, Forest Ridge, and Long Lake Ranches",
+      "intro": ""
+    },
+    {
+      "city": "Pembroke Pines",
+      "areas": "SilverLakes, Chapel Trail, and Grand Palms",
+      "intro": ""
+    },
+    {
+      "city": "Cooper City",
+      "areas": "Rock Creek, Embassy Lakes, and Monterra",
+      "intro": ""
+    },
+    {
+      "city": "Oakland Park",
+      "areas": "Coral Heights, North Andrews Gardens, and Lloyd Estates",
+      "intro": ""
+    },
+    {
+      "city": "Wilton Manors",
+      "areas": "Highland Estates, Wilton Drive, and the Middle River waterfront",
+      "intro": ""
     }
   ]
 }
