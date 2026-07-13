@@ -2,6 +2,26 @@
   "_comment": "Blog posts. Body HTML lives in posts/<file>. Add an entry here + a posts/ file, then run: node generate.mjs. Newest first (sorted by date at build).",
   "posts": [
     {
+      "slug": "best-video-doorbells",
+      "title": "The Best Video Doorbells in 2026 (Tested Picks for Every Budget)",
+      "metaTitle": "Best Video Doorbells in 2026 (Picks for Every Budget)",
+      "description": "The best video doorbell picks of 2026 for every budget: wired vs battery, subscription vs local storage, and models that survive Florida heat.",
+      "category": "Security",
+      "date": "2026-07-13",
+      "read": 7,
+      "file": "posts/best-video-doorbells.html"
+    },
+    {
+      "slug": "best-smart-locks",
+      "title": "The Best Smart Locks in 2026 (And How to Choose)",
+      "metaTitle": "The Best Smart Locks in 2026 (And How to Choose)",
+      "description": "The best smart locks of 2026 compared: deadbolt vs retrofit, keypad and fingerprint entry, Matter support, battery life, and rental-friendly picks.",
+      "category": "Security",
+      "date": "2026-07-13",
+      "read": 8,
+      "file": "posts/best-smart-locks.html"
+    },
+    {
       "slug": "smart-home-technology-trends-2026",
       "title": "Smart Home Technology in 2026: The Trends That Actually Matter",
       "metaTitle": "Smart Home Technology Trends to Watch in 2026",

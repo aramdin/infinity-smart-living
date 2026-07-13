@@ -84,6 +84,8 @@ const IMG_DIMS = {
   'best-smart-home-hubs': [1067, 533],
   'how-to-set-up-a-smart-home': [1067, 533],
   'smart-home-technology-trends-2026': [1068, 534],
+  'best-video-doorbells': [1200, 600],
+  'best-smart-locks': [1067, 533],
 };
 const heroH = (slug) => (IMG_DIMS[slug] || [900])[0];
 const thumbH = (slug) => (IMG_DIMS[slug] || [0, 533])[1];
