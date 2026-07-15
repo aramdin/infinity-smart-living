@@ -340,6 +340,7 @@ const guaranteeBody = `<main>
   </div>
 </section>
 <article class="post-body">
+<p><strong>Full guarantee terms are being finalized.</strong></p>
 <p>We want you confident before you spend a dollar. Your virtual consultation and your custom room-by-room plan are free, and you review the full plan and your project price before you make any decision.</p>
 <h2>Free before you commit</h2>
 <p>Your consultation and your custom Amazon Alexa plan cost nothing. Share your floor plan or a few measurements and we map your smart lighting, thermostats, and voice control onto your actual home, room by room. You see the full plan and your project price before you decide. Like it and you move forward. Do not like it and you keep the plan and owe nothing.</p>
