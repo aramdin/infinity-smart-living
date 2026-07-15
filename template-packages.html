@@ -19,10 +19,10 @@
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon-navy-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<title>Smart Home Packages, Installation & Pricing | Infinity Smart Living</title>
+<title>Smart Home Packages & Installation | Infinity Smart Living</title>
 <meta name="description" content="Smart home installation packages for real homes in South Florida. Lighting, climate, voice, and whole-home automation, professionally installed. One app, one plan, no monthly lock-in.">
 <link rel="canonical" href="https://infinitysmartliving.com/packages">
-<meta property="og:title" content="Smart Home Packages, Installation &amp; Pricing | Infinity Smart Living">
+<meta property="og:title" content="Smart Home Packages &amp; Installation | Infinity Smart Living">
 <meta property="og:description" content="Smart home packages for South Florida homes: lighting, climate, voice, and whole-home automation on Amazon Alexa, professionally installed.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://infinitysmartliving.com/packages">
@@ -188,8 +188,9 @@ header.scrolled{border-color:var(--line);box-shadow:0 6px 20px -16px rgba(5,25,6
   font-family:var(--font-display);font-weight:700;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;padding:.35rem .9rem;border-radius:999px}
 .pkg .p-name{font-family:var(--font-display);font-weight:600;font-size:1.05rem;color:var(--cyan-deep)}
 .pkg.feature .p-name{color:var(--cyan)}
-.pkg .price{font-family:var(--font-display);font-weight:800;font-size:2.5rem;letter-spacing:-.03em;margin:.5rem 0 .2rem}
-.pkg .price small{font-size:.95rem;font-weight:500;color:var(--slate)}
+.pkg .p-price-note{font-family:var(--font-display);font-weight:700;font-size:1.02rem;line-height:1.4;color:var(--ink);margin:.2rem 0 18px}
+.pkg.feature .p-price-note{color:#fff}
+.pkg .p-actions{display:flex;flex-direction:column;gap:.6rem}
 .pkg.feature .price small{color:#9fb4d8}
 .pkg .p-desc{font-size:.92rem;color:var(--slate);margin-bottom:20px;min-height:42px}
 .pkg.feature .p-desc{color:#b9c8e6}
@@ -198,6 +199,10 @@ header.scrolled{border-color:var(--line);box-shadow:0 6px 20px -16px rgba(5,25,6
 .pkg li svg{width:18px;height:18px;color:var(--cyan-deep);flex-shrink:0;margin-top:3px}
 .pkg.feature li svg{color:var(--cyan)}
 .pkg .btn{width:100%;justify-content:center}
+.plan-banner{background:var(--ink);color:#fff;border-radius:var(--radius);padding:34px 40px;display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap}
+.plan-banner p{font-family:var(--font-display);font-weight:600;font-size:1.18rem;line-height:1.5;margin:0;max-width:52ch;color:#fff}
+.plan-banner-actions{display:flex;gap:.7rem;flex-wrap:wrap;flex-shrink:0}
+@media(max-width:680px){.plan-banner{padding:26px 22px;flex-direction:column;align-items:flex-start;gap:18px}.plan-banner-actions{width:100%}.plan-banner-actions .btn{flex:1;justify-content:center}}
 
 /* why us */
 .why-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:60px;align-items:center}
@@ -308,6 +313,23 @@ footer ul a:hover{color:var(--cyan)}
   html{scroll-behavior:auto}
 }
 :focus-visible{outline:3px solid var(--cyan);outline-offset:2px;border-radius:6px}
+/* --- call CTA + mobile sticky bar (B2) --- */
+.nav-call{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-display);font-weight:700;font-size:.95rem;color:var(--ink);white-space:nowrap}
+.nav-call:hover{color:var(--cyan-deep)}
+.nav-call svg{width:17px;height:17px;stroke:var(--cyan-deep);flex-shrink:0}
+.nav-call .nav-call-lbl{display:none}
+.mobile-cta-bar{display:none}
+@media(max-width:680px){
+  .nav-call .nav-call-num{display:none}
+  .nav-call .nav-call-lbl{display:inline}
+  .mobile-cta-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;box-shadow:0 -6px 20px -10px rgba(5,25,65,.45)}
+  .mobile-cta-bar a{flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;padding:15px 8px;font-family:var(--font-display);font-weight:700;font-size:1rem}
+  .mobile-cta-bar svg{width:18px;height:18px;stroke:currentColor;flex-shrink:0}
+  .mcb-call{background:var(--ink);color:#fff}
+  .mcb-book{background:var(--cyan);color:var(--ink)}
+  body{padding-bottom:58px}
+}
+@media(max-width:460px){ .nav-call{display:none} }
 </style>
 </head>
 <body>
@@ -324,6 +346,7 @@ footer ul a:hover{color:var(--cyan)}
       <a href="#reviews">Reviews</a>
     </nav>
     <div class="nav-cta">
+      <a href="tel:{{PHONE_HREF}}" class="nav-call" aria-label="Call {{PHONE}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">{{PHONE}}</span><span class="nav-call-lbl">Call</span></a>
       <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-primary">Book free consult</a>
       <button class="menu-btn" aria-label="Open menu">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -341,6 +364,7 @@ footer ul a:hover{color:var(--cyan)}
       <p class="lead">Lighting, climate, voice and whole-home automation, built on Amazon Alexa and professionally installed. One app, one assistant, no tangled gadgets, no monthly lock-in.</p>
       <div class="hero-actions">
         <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Book free consultation</a>
+        <a href="tel:{{PHONE_HREF}}" class="btn btn-ghost btn-lg">Call {{PHONE}}</a>
         <a href="#how" class="btn btn-ghost btn-lg">See how it works</a>
       </div>
       <div class="hero-trust">
@@ -414,6 +438,19 @@ footer ul a:hover{color:var(--cyan)}
   </div>
 </div>
 
+<!-- FREE PLAN BANNER -->
+<section class="section" style="padding:64px 0">
+  <div class="wrap">
+    <div class="plan-banner reveal">
+      <p>Every home is different. Your free plan shows your exact scope and price before you decide anything.</p>
+      <div class="plan-banner-actions">
+        <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Get my free plan</a>
+        <a href="tel:{{PHONE_HREF}}" class="btn btn-light btn-lg">Call {{PHONE}}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- SOLUTIONS -->
 <section class="section" id="solutions">
   <div class="wrap">
@@ -474,7 +511,7 @@ footer ul a:hover{color:var(--cyan)}
       <div class="step reveal">
         <div class="num">1</div>
         <h3>Tell us about your home</h3>
-        <p>Fill out the form or call. We set up a short video or phone walkthrough, room by room, at a time that works for you.</p>
+        <p>Fill out the form or call {{PHONE}}. We set up a short video or phone walkthrough, room by room, at a time that works for you.</p>
       </div>
       <div class="step reveal">
         <div class="num">2</div>
@@ -491,18 +528,19 @@ footer ul a:hover{color:var(--cyan)}
 </section>
 
 <!-- PACKAGES -->
+<!-- PRICES REMOVED FROM PUBLIC SITE per owner decision. Authoritative numbers live in SMART HOME PRICING sheet. TODO $9,000 vs $10,000 and Always On vs Care tiers pending group meeting.
+     Source-of-record tier numbers (do NOT render on the public site): Foundation $5,000 · Connected Home $7,000 · Whole Home $9,000 · Always On support plan $99/mo. -->
 <section class="section" id="packages">
   <div class="wrap">
     <div class="section-head center reveal">
       <span class="eyebrow" style="justify-content:center">Packages</span>
-      <h2>Straightforward pricing, no surprises</h2>
-      <p>Fixed-price packages, professionally installed, usually in a single visit. Every home is quoted to its space; these are real starting configurations, not bait. Book a free consultation for an exact plan and price for your home.</p>
+      <h2>Straightforward packages, no surprises</h2>
+      <p>Professionally installed Amazon Alexa packages, usually in a single visit. Every home is scoped to its own space. You see your full plan and your exact price before you decide.</p>
     </div>
     <div class="pkgs">
       <div class="pkg reveal">
         <div class="p-name">Foundation</div>
-        <div class="price">$5,000</div>
-        <p class="p-desc">The smart-home base, voice, comfort, and lighting, installed and dialed in.</p>
+        <p class="p-desc">Walk in the door and say good night, and the house dims the lights and sets the temperature for you. Your main rooms answer to your voice, and the thermostats hold each zone where your family likes it. It is the simplest way to start living with Amazon Alexa running the everyday basics.</p>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Alexa voice setup, Echo Show + Echo Dots</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>2 smart thermostats, up to 2 HVAC zones</li>
@@ -510,13 +548,16 @@ footer ul a:hover{color:var(--cyan)}
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Smart hub + Wi-Fi check & mesh node</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Custom scenes, walkthrough & 90-day warranty</li>
         </ul>
-        <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-ghost">Choose Foundation</a>
+        <div class="p-price-note">Your exact price comes with your free plan.</div>
+        <div class="p-actions">
+          <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-primary">Get my free plan</a>
+          <a href="tel:{{PHONE_HREF}}" class="btn btn-ghost">Call {{PHONE}}</a>
+        </div>
       </div>
       <div class="pkg feature reveal">
         <span class="tag">Most popular</span>
         <div class="p-name">Connected Home</div>
-        <div class="price">$7,000</div>
-        <p class="p-desc">The sweet spot, adds whole-home dimming, automations, and a second voice hub.</p>
+        <p class="p-desc">Mornings, evenings, and leaving the house each run on their own, so the lights and climate follow your routine without a thought. Halls, the laundry, and the garage switch themselves off after you pass through. With Amazon Alexa in a second room, you can ask for what you need from wherever you are standing.</p>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Everything in Foundation</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Smart dimmers across main living areas</li>
@@ -524,12 +565,15 @@ footer ul a:hover{color:var(--cyan)}
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Echo Show for a second room</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Morning / Away / Night automations + 1-yr warranty</li>
         </ul>
-        <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-primary">Choose Connected Home</a>
+        <div class="p-price-note">Your exact price comes with your free plan.</div>
+        <div class="p-actions">
+          <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-primary">Get my free plan</a>
+          <a href="tel:{{PHONE_HREF}}" class="btn btn-light">Call {{PHONE}}</a>
+        </div>
       </div>
       <div class="pkg reveal">
         <div class="p-name">Whole Home</div>
-        <div class="price">$9,000</div>
-        <p class="p-desc">Full coverage, comfort, climate, and entertainment designed end to end.</p>
+        <p class="p-desc">Every room in the house responds, from the lighting in each space to the climate in every zone. One word or one tap sets a whole scene, whether you are settling in for a movie or heading out for the day. This is the complete Amazon Alexa home, designed end to end and tuned to how your household actually lives.</p>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Everything in Connected Home</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Whole-home lighting in every room</li>
@@ -537,10 +581,14 @@ footer ul a:hover{color:var(--cyan)}
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Expanded climate zones + whole-home Wi-Fi mesh</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Priority support + extended warranty</li>
         </ul>
-        <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-ghost">Choose Whole Home</a>
+        <div class="p-price-note">Your exact price comes with your free plan.</div>
+        <div class="p-actions">
+          <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-primary">Get my free plan</a>
+          <a href="tel:{{PHONE_HREF}}" class="btn btn-ghost">Call {{PHONE}}</a>
+        </div>
       </div>
     </div>
-    <p style="text-align:center;color:var(--slate);font-size:.9rem;margin-top:26px">Optional <strong style="color:var(--ink)">Always On</strong> plan, $99/mo for unlimited support, an annual tune-up visit, and one free hardware replacement a year. Never required.</p>
+    <p style="text-align:center;color:var(--slate);font-size:.9rem;margin-top:26px">Optional <strong style="color:var(--ink)">Always On</strong> support plan for unlimited support, an annual tune-up visit, and one free hardware replacement a year. The monthly price is included in your free plan. Never required.</p>
   </div>
 </section>
 
@@ -586,7 +634,7 @@ footer ul a:hover{color:var(--cyan)}
     </div>
     <div class="tgrid">
       <div class="tcard reveal">
-        <p>You see the full room-by-room plan and your project price before you commit.</p>
+        <p>You see the full room-by-room plan and your exact price before you commit.</p>
       </div>
       <div class="tcard reveal">
         <p>Licensed local pros do the work: a licensed local electrician under contract handles the regulated electrical work.</p>
@@ -630,6 +678,19 @@ footer ul a:hover{color:var(--cyan)}
   </div>
 </section>
 
+<!-- FREE PLAN BANNER (repeat) -->
+<section class="section" style="padding:64px 0 0">
+  <div class="wrap">
+    <div class="plan-banner reveal">
+      <p>Every home is different. Your free plan shows your exact scope and price before you decide anything.</p>
+      <div class="plan-banner-actions">
+        <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Get my free plan</a>
+        <a href="tel:{{PHONE_HREF}}" class="btn btn-light btn-lg">Call {{PHONE}}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- CTA -->
 <section class="section" id="quote">
   <div class="wrap">
@@ -637,9 +698,10 @@ footer ul a:hover{color:var(--cyan)}
       
       <h2>Ready for a home that just works?</h2>
       <p>Book your free virtual consultation. We'll map your home, build a free custom smart-home layout, and quote it honestly, no pressure.</p>
+      <p style="margin-top:1.1rem">Prefer to talk it through? Call {{PHONE}} and we'll walk your home with you.</p>
       <div class="cta-actions">
         <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Book your free consultation</a>
-        <a href="tel:{{PHONE_HREF}}" class="btn btn-light btn-lg">Or call us</a>
+        <a href="tel:{{PHONE_HREF}}" class="btn btn-light btn-lg">Call {{PHONE}}</a>
       </div>
     </div>
   </div>
@@ -722,5 +784,10 @@ document.querySelectorAll('.switch').forEach(s=>{
   s.addEventListener('click',()=>{s.classList.toggle('on');s.classList.toggle('off')});
 });
 </script>
+<!-- MOBILE STICKY CALL BAR (mobile viewports only) -->
+<div class="mobile-cta-bar" aria-label="Quick contact">
+  <a href="tel:{{PHONE_HREF}}" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
+  <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="mcb-book">Free plan</a>
+</div>
 </body>
 </html>

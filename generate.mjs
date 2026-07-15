@@ -152,6 +152,7 @@ const blogHeader = `<header id="top">
       <a href="/blog">Blog</a>
     </nav>
     <div class="nav-cta">
+      <a href="tel:${site.phoneHref}" class="nav-call" aria-label="Call ${site.phone}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">${site.phone}</span><span class="nav-call-lbl">Call</span></a>
       <a href="${site.bookUrl}" target="_blank" rel="noopener" class="btn btn-primary">Book free consult</a>
     </div>
   </div>
@@ -233,6 +234,11 @@ ${BLOG_CSS}
 ${blogHeader}
 ${body}
 ${blogFooter}
+<!-- MOBILE STICKY CALL BAR (mobile viewports only) -->
+<div class="mobile-cta-bar" aria-label="Quick contact">
+  <a href="tel:${site.phoneHref}" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
+  <a href="${site.bookUrl}" target="_blank" rel="noopener" class="mcb-book">Free plan</a>
+</div>
 </body>
 </html>
 `;
@@ -280,6 +286,7 @@ ${inner}
   <h3>Book your free smart home consultation</h3>
   <p>See a custom layout and an honest quote for your home before you spend a dollar. Serving Coral Springs, Boca Raton, Parkland, Pompano Beach, Coconut Creek, and Deerfield Beach.</p>
   <a href="${site.bookUrl}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Book free consult</a>
+  <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
 </div>
 <p class="back"><a href="/blog">← All articles</a></p>
 </article>
@@ -358,6 +365,7 @@ const guaranteeBody = `<main>
   <h3>Book your free smart home consultation</h3>
   <p>See your custom Alexa room-by-room plan and your project price before you spend a dollar. Serving Coral Springs, Boca Raton, Parkland, Pompano Beach, Coconut Creek, and Deerfield Beach.</p>
   <a href="${site.bookUrl}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Book free consult</a>
+  <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
 </div>
 </article>
 </main>`;

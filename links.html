@@ -323,6 +323,23 @@ footer ul a:hover{color:var(--cyan)}
 .consent{display:flex;gap:.55rem;align-items:flex-start;font-size:.76rem;color:var(--slate);line-height:1.5;margin:2px 0 4px;text-align:left}
 .consent input{margin-top:.18rem;width:16px;height:16px;flex-shrink:0;accent-color:var(--cyan);cursor:pointer}
 .consent a{color:var(--cyan-deep);font-weight:600}
+/* --- call CTA + mobile sticky bar (B2) --- */
+.nav-call{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-display);font-weight:700;font-size:.95rem;color:var(--ink);white-space:nowrap}
+.nav-call:hover{color:var(--cyan-deep)}
+.nav-call svg{width:17px;height:17px;stroke:var(--cyan-deep);flex-shrink:0}
+.nav-call .nav-call-lbl{display:none}
+.mobile-cta-bar{display:none}
+@media(max-width:680px){
+  .nav-call .nav-call-num{display:none}
+  .nav-call .nav-call-lbl{display:inline}
+  .mobile-cta-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;box-shadow:0 -6px 20px -10px rgba(5,25,65,.45)}
+  .mobile-cta-bar a{flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;padding:15px 8px;font-family:var(--font-display);font-weight:700;font-size:1rem}
+  .mobile-cta-bar svg{width:18px;height:18px;stroke:currentColor;flex-shrink:0}
+  .mcb-call{background:var(--ink);color:#fff}
+  .mcb-book{background:var(--cyan);color:var(--ink)}
+  body{padding-bottom:58px}
+}
+@media(max-width:460px){ .nav-call{display:none} }
 </style>
 <style>
 body.links-page{background:var(--surface);min-height:100vh}
