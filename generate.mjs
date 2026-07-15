@@ -30,6 +30,12 @@ const base = {
   EMAIL: site.email,
 };
 
+// Footer "Service areas" links to every city page, so no city page is orphaned
+// (internal linking for local SEO). Rendered into templates via {{CITY_LINKS}}.
+base.CITY_LINKS = cfg.cities
+  .map((c) => `<a href="/${slugify(c.city)}" style="color:#cfe0ff">${c.city}</a>`)
+  .join(' · ');
+
 const homeTpl = readFileSync('./template-home.html', 'utf8');
 
 // --- homepage + packages page ---
@@ -183,6 +189,10 @@ const blogFooter = `<footer>
       </div>
     </div>
     <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom room-by-room plan · No obligation</div>
+    <div class="foot-areas" style="padding:22px 0;margin-top:8px;border-top:1px solid rgba(255,255,255,.1)">
+      <h4 style="margin-bottom:12px">Smart home service areas</h4>
+      <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">${base.CITY_LINKS}</p>
+    </div>
     <div class="foot-bot">
       <span>© 2026 Simple Safe Technologies LLC DBA Infinity Smart Living. All rights reserved.</span>
       <span><a href="/privacy" style="color:inherit">Privacy</a> · <a href="/terms" style="color:inherit">Terms</a></span>
