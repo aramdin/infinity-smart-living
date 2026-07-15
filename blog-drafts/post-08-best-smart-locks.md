@@ -18,7 +18,7 @@ compliance_note: "Scope expanded July 2026 (owner approved): cameras, video door
 
 # The Best Smart Locks in 2026 (And How to Choose)
 
-Picking the best smart locks in 2026 is less about finding the one perfect model and more about answering three questions: do you replace the deadbolt or keep it, how do you want to unlock (keypad, fingerprint, phone, or all three), and does the lock speak your smart home system's language? Get those right and several excellent locks fit; get them wrong and even a great lock is the wrong buy. This guide walks the decisions, compares the five locks worth shortlisting, and covers the rental-host use case where smart locks flat-out shine.
+Picking the best smart locks in 2026 is less about finding the one perfect model and more about answering three questions: do you replace the deadbolt or keep it, how do you want to get in (keypad, fingerprint, phone, or all three), and does the lock speak your smart home system's language? Get those right and several excellent locks fit; get them wrong and even a great lock is the wrong buy. This guide walks the decisions, compares the five locks worth shortlisting, and covers the rental-host use case where smart locks flat-out shine.
 
 ## Replace the deadbolt, or retrofit what you have?
 
@@ -26,9 +26,9 @@ Full-replacement smart locks swap your entire deadbolt for a new one with a keyp
 
 Retrofit locks instead mount on the inside of your door over the existing deadbolt's thumb turn. The outside of the door does not change at all, your existing keys keep working, and installation is a screwdriver and ten minutes. Retrofit is the answer for renters, HOA-sensitive doors, and anyone attached to their current keys, with the trade-off that there is no keypad outside unless you add one.
 
-## Keypad, fingerprint, or phone: how you will actually unlock
+## Keypad, fingerprint, or phone: how you will actually get in
 
-Codes are the workhorse: every family member gets one, guests get temporary ones, and nobody is locked out because a phone died. Fingerprint readers are faster than codes and kids love them, though outdoor readers can get finicky with wet hands, worth knowing in a rainy climate. Phone and voice unlocking are the conveniences you use with full hands, and auto-unlock as you arrive is genuinely great when it is set up well. The best locks offer all of the above, so the household can mix habits.
+Codes are the workhorse: every family member gets one, guests get temporary ones, and nobody is locked out because a phone died. Fingerprint readers are faster than codes and kids love them, though outdoor readers can get finicky with wet hands, worth knowing in a rainy climate. Phone and voice entry are the conveniences you use with full hands, and auto-entry as you arrive is genuinely great when it is set up well. The best locks offer all of the above, so the household can mix habits.
 
 ## The best smart locks of 2026, compared
 
@@ -36,7 +36,7 @@ Codes are the workhorse: every family member gets one, guests get temporary ones
 |---|---|---|---|---|
 | Schlage Encode Plus | Most homes | Full replacement | Keypad, phone, key | Rock-solid hardware, Matter support, no extra hub |
 | Yale Assure Lock 2 | Flexible setups | Full replacement | Keypad, phone, optional key-free | Modular radios, clean design, key-free option |
-| August Smart Lock (4th Gen) | Keeping your keys | Retrofit | Phone, auto-unlock, key | Ten-minute install, door stays unchanged outside |
+| August Smart Lock (4th Gen) | Keeping your keys | Retrofit | Phone, auto-entry, key | Ten-minute install, door stays unchanged outside |
 | Ultraloq U-Bolt Pro | Fingerprint fans | Full replacement | Fingerprint, keypad, phone, key | Six ways in, fast reliable reader |
 | Aqara Smart Lock U100 | Value + iPhone homes | Full replacement | Fingerprint, keypad, phone, key | Premium features at a mid price |
 
@@ -44,7 +44,7 @@ Codes are the workhorse: every family member gets one, guests get temporary ones
 
 A lock is a ten-year purchase, so buy one that speaks standards, not just an app. Matter support means the lock works with Alexa, Google, and Apple systems alike and will outlive brand roadmaps; the Schlage, Yale, and Aqara above all offer it. In an Alexa home, a compatible lock joins routines naturally: the goodnight phrase locks the door, and the door announces itself through your Echo speakers. If you are still choosing the system itself, start with our guide to the best smart home hubs in 2026.
 
-The lock also pairs naturally with a camera at the door: see who is there, then unlock from the same ecosystem. We cover that half in our guide to the best video doorbells in 2026.
+The lock also pairs naturally with a camera at the door: see who is there, then let them in from the same ecosystem. We cover that half in our guide to the best video doorbells in 2026.
 
 ## The Airbnb and rental superpower
 

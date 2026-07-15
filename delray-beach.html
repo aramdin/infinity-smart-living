@@ -361,7 +361,7 @@ footer ul a:hover{color:var(--cyan)}
     <div class="hero-copy reveal">
       <span class="eyebrow">Free virtual consultation · Delray Beach, FL</span>
       <h1>Smart home installation in <span class="accent city-name">Delray Beach, FL</span></h1>
-      <p class="lead"><b>See your smart home before you spend a dollar.</b> Book a free virtual consult, we map your floor plan, build a custom layout for your exact home, then a licensed local installer handles the install.</p>
+      <p class="lead">See your Delray Beach home's custom plan and price before you spend a dollar. Book a free virtual consult and we map your floor plan room by room.</p>
       <div class="hero-trust" style="margin-top:1.8rem">
         <span>Free plan and price before you decide</span>
         <span>•</span>
@@ -382,31 +382,32 @@ footer ul a:hover{color:var(--cyan)}
         <!-- Fires to GHL via the fetch() handler at the bottom of this file. -->
         <form id="leadForm" action="https://services.leadconnectorhq.com/hooks/Owuc0ZFmPTpX9JcHhLjE/webhook-trigger/fda2080f-da6a-441b-9e0f-0e408ce6bfe4" method="POST">
           <div class="field">
-            <label for="name">Full name</label>
-            <input id="name" name="name" type="text" placeholder="Jane Smith" required>
+            <label for="name">First name</label>
+            <input id="name" name="name" type="text" placeholder="Jane" required>
           </div>
           <div class="field">
-            <label for="phone">Phone number</label>
+            <label for="phone">Mobile number</label>
             <input id="phone" name="phone" type="tel" placeholder="(555) 123-4567" required>
           </div>
           <div class="field">
-            <label for="city">City</label>
-            <input id="city" name="city" type="text" value="Delray Beach" placeholder="Delray Beach" required>
+            <label for="zip">ZIP code</label>
+            <input id="zip" name="zip" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="33076" required>
           </div>
+          <input type="hidden" id="city" name="city" value="Delray Beach">
           <label class="consent">
             <input type="checkbox" id="consent" name="consent" required>
-            <span>I agree to receive calls and text messages from Infinity Smart Living at the number I provided about my consultation, including by automated means. Consent is not a condition of purchase. Msg &amp; data rates may apply; reply STOP to opt out. I agree to the <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms</a>.</span>
+            <span>I agree that Infinity Smart Living and the licensed local electrician under contract for my project may call and text me at the number I provide about my inquiry, plan, and services, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help. I agree to the <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms</a>.</span>
           </label>
-          <button type="submit" class="btn btn-primary btn-lg">Get my free consultation →</button>
+          <button type="submit" class="btn btn-primary btn-lg">Get my free Alexa home plan</button>
         </form>
-        <p class="form-alt">Prefer to pick a time now? <a href="https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa" target="_blank" rel="noopener">Book a slot →</a></p>
+        <p class="form-alt">Prefer to pick a time now? <a href="https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa" target="_blank" rel="noopener">Book a slot</a></p>
         <p class="privacy">We'll use your details to schedule your consultation and follow up about your plan. No spam, ever.</p>
       </div>
       <div class="success" id="formSuccess">
         <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div>
         <h3>You're all set!</h3>
         <p>Pick a time that works and we'll see you on the call.</p>
-        <a href="https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa" target="_blank" rel="noopener" class="btn btn-primary btn-lg" style="width:100%;justify-content:center">Choose your time →</a>
+        <a href="https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa" target="_blank" rel="noopener" class="btn btn-primary btn-lg" style="width:100%;justify-content:center">Choose your time</a>
         <p class="privacy">Or we'll call you shortly to schedule.</p>
       </div>
     </div>
@@ -430,32 +431,23 @@ footer ul a:hover{color:var(--cyan)}
     <div class="section-head center reveal">
       <span class="eyebrow" style="justify-content:center">How it works</span>
       <h2>How It Works in Delray Beach</h2>
+      <p>Three steps to your Alexa smart home. The plan is free.</p>
     </div>
     <div class="steps">
       <div class="step reveal">
         <div class="num">1</div>
-        <h3>Reach out</h3>
-        <p>Fill out the form or call. Tell us about your Delray Beach home.</p>
+        <h3>Tell us about your home</h3>
+        <p>Fill out the form or call. We set up a short video or phone walkthrough, room by room, at a time that works for you.</p>
       </div>
       <div class="step reveal">
         <div class="num">2</div>
-        <h3>Quick phone call</h3>
-        <p>We call you back fast, no pressure.</p>
+        <h3>Get your free Alexa plan</h3>
+        <p>We map your floor plan and show you exactly what goes in each room, what it will do, and what the project costs. Smart lighting, thermostats, and voice control, laid out before you spend a dollar.</p>
       </div>
       <div class="step reveal">
         <div class="num">3</div>
-        <h3>Free virtual consultation</h3>
-        <p>A short video or phone session to walk through your home.</p>
-      </div>
-      <div class="step reveal">
-        <div class="num">4</div>
-        <h3>Your free Alexa floor plan</h3>
-        <p>Share your floor plan or measurements and we map your full smart home onto it, with a clear project range, before you pay anything.</p>
-      </div>
-      <div class="step reveal">
-        <div class="num">5</div>
-        <h3>A licensed local installer completes the work</h3>
-        <p>Then licensed local installers complete the work, and you have local support after.</p>
+        <h3>Your install, handled</h3>
+        <p>Say yes and we schedule everything. Licensed local installers complete your system, a licensed local electrician under contract handles the regulated electrical work, and we set up your routines before anyone leaves. One point of contact, start to finish.</p>
       </div>
     </div>
     <div style="text-align:center;margin-top:48px">
@@ -498,7 +490,25 @@ footer ul a:hover{color:var(--cyan)}
 </section>
 
 <!-- SOCIAL PROOF -->
-<!-- REVIEWS SECTION SLOT: placeholder testimonials removed as unsubstantiated; replacement block pending -->
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow" style="justify-content:center">What you can count on</span>
+      <h2>Why homeowners start here</h2>
+    </div>
+    <div class="tgrid">
+      <div class="tcard reveal">
+        <p>You see the full room-by-room plan and your project price before you commit.</p>
+      </div>
+      <div class="tcard reveal">
+        <p>Licensed local pros do the work: a licensed local electrician under contract handles the regulated electrical work.</p>
+      </div>
+      <div class="tcard reveal">
+        <p>Everything lives in one Amazon Alexa app, designed to work together from day one.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
 
 <!-- LOCAL SECTION (unique copy per city helps SEO; set "intro" in cities.json) -->
@@ -609,6 +619,7 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
     name: document.getElementById('name').value.trim(),
     phone: document.getElementById('phone').value.trim(),
     city: document.getElementById('city').value.trim(),
+    zip: document.getElementById('zip').value.trim(),
     consent: document.getElementById('consent').checked,
     source_url: location.href,
     page: document.title,

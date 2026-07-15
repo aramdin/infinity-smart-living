@@ -44,7 +44,7 @@ For most of the homes we design, the Ring lineup is the natural pick: it lives i
 
 ## A video doorbell and a smart lock are better together
 
-The doorbell tells you who is at the door; a smart lock lets you do something about it. See the delivery, unlock for a trusted neighbor from the same app, and lock up again when they leave. If the front door is why you are shopping, plan both at once, because the pairing determines which brands make sense. Our guide to the best smart locks in 2026 covers the other half of the combination.
+The doorbell tells you who is at the door; a smart lock lets you do something about it. See the delivery, let in a trusted neighbor from the same app, and lock up again when they leave. If the front door is why you are shopping, plan both at once, because the pairing determines which brands make sense. Our guide to the best smart locks in 2026 covers the other half of the combination.
 
 ## Will it survive a South Florida summer?
 
@@ -62,7 +62,7 @@ Wired is better if you have doorbell wiring: no charging, faster response, and s
 
 ### Which video doorbell works best with Alexa?
 
-Ring. It is an Amazon brand, so visitor announcements on Echo speakers, two-way talk, and routines are the most seamless of any doorbell, which is why it is our default in Alexa-based designs.
+Ring. It is an Amazon brand, so visitor announcements on Echo speakers, two-way talk, and routines are the most integrated of any doorbell, which is why it is our default in Alexa-based designs.
 
 ## Get the front door designed, not just bought
 
