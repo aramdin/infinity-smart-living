@@ -73,7 +73,7 @@ This is where working with a designer changes the outcome. At Infinity Smart Liv
 
 You get a free virtual consultation and a free custom floor plan that shows exactly which devices go where and which routines make sense for your household. Everything is planned to work together from the first day, so you skip the trial and error.
 
-We design the plan. When you are ready to install, we connect you with licensed local installers who do the work and contract directly with you. You end up with automation made for your home and trusted local hands to set it up.
+We design the plan and give you one clear price. When you are ready to install, you order your package from Infinity, and licensed local installers complete the work. You end up with automation made for your home and trusted local hands to set it up.
 
 If you own a home in Coral Springs, Boca Raton, Parkland, Pompano Beach, Coconut Creek, or Deerfield Beach, we can show you what a well-planned smart home feels like.
 

@@ -79,7 +79,7 @@ Finally, decide whether you want to piece it together yourself or have it design
 
 This is where Infinity Smart Living comes in. We design Alexa-based smart home plans built around your actual home and the way you live in it. You get a free virtual consultation and a free custom floor plan that maps out exactly what goes where, so nothing is guesswork.
 
-We handle the design. When you are ready to install, we connect you with licensed local installers who do the work and contract directly with you. You get a plan made for your home and trusted local hands to put it in place.
+We handle the design and pricing, and you order your package from Infinity. When you are ready to install, licensed local installers complete the work. You get a plan made for your home and trusted local hands to put it in place.
 
 If you live in Coral Springs, Boca Raton, Parkland, Pompano Beach, Coconut Creek, or Deerfield Beach, we would love to show you what is possible.
 
