@@ -72,7 +72,7 @@ That is it. A short, focused set that works together from day one and leaves ple
 
 The best starter set depends on your home and how you live in it. That is exactly what Infinity Smart Living helps with.
 
-You get a free virtual consultation and a free custom floor plan that maps out which devices make sense for your household and where they go, so you buy only what you will actually use. We design the plan around Amazon Alexa, and when you are ready to install, we connect you with licensed local installers who do the work and contract directly with you.
+You get a free virtual consultation and a free custom floor plan that maps out which devices make sense for your household and where they go, so you buy only what you will actually use. We design the plan around Amazon Alexa and give you one clear price, and when you are ready to install, you order from Infinity and licensed local installers complete the work.
 
 If you live in Coral Springs, Boca Raton, Parkland, Pompano Beach, Coconut Creek, or Deerfield Beach, we can help you start smart.
 
