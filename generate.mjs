@@ -171,13 +171,12 @@ const blogHeader = `<header id="top">
   <div class="wrap nav">
     <a href="/" aria-label="infinity smart living home"><img class="logo" src="${logo}" alt="infinity smart living"></a>
     <nav class="nav-links" aria-label="Primary">
-      <a href="/packages">Packages</a>
       <a href="/guarantee">Guarantee</a>
       <a href="/blog">Blog</a>
     </nav>
     <div class="nav-cta">
       <a href="tel:${site.phoneHref}" class="nav-call" aria-label="Call ${site.phone}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">${site.phone}</span><span class="nav-call-lbl">Call</span></a>
-      <a href="${site.bookUrl}" target="_blank" rel="noopener" class="btn btn-primary">Book free consult</a>
+      <a href="/#book" class="btn btn-primary">Get My Free Smart-Home Plan</a>
     </div>
   </div>
 </header>`;
@@ -193,7 +192,6 @@ const blogFooter = `<footer>
         <h4>Company</h4>
         <ul>
           <li><a href="/">Home</a></li>
-          <li><a href="/packages">Packages</a></li>
           <li><a href="/blog">Blog</a></li>
           <li><a href="/guarantee">Guarantee</a></li>
         </ul>
@@ -209,11 +207,11 @@ const blogFooter = `<footer>
       <div>
         <h4>Get started</h4>
         <ul>
-          <li><a href="${site.bookUrl}" target="_blank" rel="noopener">Book free consult</a></li>
+          <li><a href="/#book">Get My Free Smart-Home Plan</a></li>
         </ul>
       </div>
     </div>
-    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom room-by-room plan · No obligation · <a href="/guarantee" style="color:inherit">30-Day Money-Back Guarantee</a></div>
+    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom room-by-room plan · No obligation · <a href="/guarantee" style="color:inherit">30-Day Satisfaction Guarantee</a></div>
     <div class="foot-areas" style="padding:22px 0;margin-top:8px;border-top:1px solid rgba(255,255,255,.1)">
       <h4 style="margin-bottom:12px">Smart home service areas</h4>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">${base.CITY_LINKS}</p>
@@ -261,7 +259,7 @@ ${blogFooter}
 <!-- MOBILE STICKY CALL BAR (mobile viewports only) -->
 <div class="mobile-cta-bar" aria-label="Quick contact">
   <a href="tel:${site.phoneHref}" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
-  <a href="${site.bookUrl}" target="_blank" rel="noopener" class="mcb-book">Free plan</a>
+  <a href="/#book" class="mcb-book">Get free plan</a>
 </div>
 ${trackingEvents}
 </body>
@@ -310,7 +308,7 @@ ${inner}
 <div class="cta-box">
   <h3>Book your free smart home consultation</h3>
   <p>See a custom layout and an honest quote for your home before you spend a dollar. Serving homeowners across Broward County, Boca Raton, Delray Beach, and Boynton Beach.</p>
-  <a href="${site.bookUrl}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Book free consult</a>
+  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Smart-Home Plan</a>
   <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
 </div>
 <p class="back"><a href="/blog">← All articles</a></p>
@@ -366,37 +364,24 @@ const guaranteeBody = `<main>
 <section class="post-hero" style="background:linear-gradient(135deg,#06203f 0%,#0a4f8c 55%,#00B2FC 100%)">
   <div class="pwrap">
     <span class="post-cat">Our promise</span>
-    <h1>The 30-Day Money-Back Guarantee</h1>
+    <h1>The 30-Day Satisfaction Guarantee</h1>
     <p class="post-meta">A free plan before you spend a dollar, and 30 days to be sure after your install.</p>
   </div>
 </section>
 <article class="post-body">
-<p>We want you confident before you spend a dollar. Your virtual consultation and your custom room-by-room plan are free, and you review the full plan and your exact price before you make any decision.</p>
-<h2>Free before you commit</h2>
-<p>Your consultation and your custom Amazon Alexa plan cost nothing. Share your floor plan or a few measurements and we map your smart lighting, thermostats, and voice control onto your actual home, room by room. You see the full plan and your exact price before you decide. Like it and you move forward. Do not like it and you keep the plan and owe nothing.</p>
-<h2>30 days to live with it</h2>
-<p>After your install is complete, live with your system for 30 days. If it is not right for your home, contact us and we will make it right, up to a full refund. Full guarantee details are confirmed in your written proposal.</p>
-<h2>No pressure, no obligation</h2>
-<p>There is no cost and no obligation to get your plan. You decide if and when to move forward. When you do, a licensed local electrician under contract handles the regulated electrical work and licensed local installers complete your Alexa smart home.</p>
-<h2>How it works</h2>
-<ul>
-<li>Book a free virtual consultation and receive your custom Amazon Alexa room-by-room plan at no cost.</li>
-<li>Review the full plan and your exact price before you decide anything.</li>
-<li>Approve the plan and licensed local installers schedule and complete the work.</li>
-</ul>
-<h2>Simple and honest</h2>
-<p>No pressure and no surprises. The plan is yours to keep either way, and your exact price is clear before any work begins. For how the agreement and the licensed local electrician are handled, see our <a href="/terms">Terms</a>.</p>
+<p>Book a free consultation and we design a custom room-by-room plan for your exact home. You see the full plan and your project price before you decide. Like it and you move forward. Don't like it and you keep the plan and owe nothing.</p>
+<p>After your installation, live with your system for 30 days. If anything is not right, tell us and we will make it right — adjustments, device swaps, and rework at no charge. If we cannot make it right, we will refund you as set out in your <a href="/terms">project agreement</a>.</p>
 <div class="cta-box">
   <h3>Book your free smart home consultation</h3>
   <p>See your custom Alexa room-by-room plan and your exact price before you spend a dollar. Serving homeowners across Broward County, Boca Raton, Delray Beach, and Boynton Beach.</p>
-  <a href="${site.bookUrl}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Book free consult</a>
+  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Smart-Home Plan</a>
   <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
 </div>
 </article>
 </main>`;
 writeFileSync('guarantee.html', blogShell({
-  title: 'The 30-Day Money-Back Guarantee | Infinity Smart Living',
-  description: 'A free custom Amazon Alexa room-by-room plan before you spend a dollar, plus a 30-day money-back guarantee after your install. Serving South Florida.',
+  title: 'The 30-Day Satisfaction Guarantee | Infinity Smart Living',
+  description: 'A free custom Amazon Alexa room-by-room plan before you spend a dollar, plus a 30-day satisfaction guarantee after your install. Serving South Florida.',
   canonical: 'guarantee',
   body: guaranteeBody,
 }));
@@ -446,7 +431,7 @@ body.links-page{background:var(--surface);min-height:100vh}
   <img class="links-logo" src="${logo}" alt="Infinity Smart Living">
   <p class="links-tag">Your complete Amazon Alexa smart home. Serving Broward County and South Palm Beach.</p>
   <div class="links-stack">
-    <a class="link-btn primary" href="${site.bookUrl}${LINK_UTM}" target="_blank" rel="noopener">Book a Free Consultation</a>
+    <a class="link-btn primary" href="/${LINK_UTM}#book">Book a Free Consultation</a>
     <a class="link-btn guarantee" href="/guarantee${LINK_UTM}">Free Plan, No Obligation</a>
     <a class="link-btn" href="/${LINK_UTM}">Visit Our Website</a>
     <a class="link-btn" href="tel:+17543454871">Call Us: (754) 345-4871</a>

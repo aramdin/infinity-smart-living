@@ -2,7 +2,7 @@
 <!-- =========================================================
      CITY TEMPLATE, generates one page per city in cities.json.
      Edit this template, set values in cities.json, then run:  node generate.mjs
-     Tokens: Cooper City Rock Creek, Embassy Lakes, and Monterra We install and set up smart homes across Cooper City and nearby, including Rock Creek, Embassy Lakes, and Monterra. Whether you want to start with one room or do the whole house, we make it simple. https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa https://services.leadconnectorhq.com/hooks/Owuc0ZFmPTpX9JcHhLjE/webhook-trigger/fda2080f-da6a-441b-9e0f-0e408ce6bfe4
+     Tokens: Cooper City Rock Creek, Embassy Lakes, and Monterra We install and set up smart homes across Cooper City and nearby, including Rock Creek, Embassy Lakes, and Monterra. Whether you want to start with one room or do the whole house, we make it simple. booking URL, form endpoint,
      (754) 345-4871 +17543454871 info@infinitysmartliving.com
      ========================================================= -->
 <html lang="en">
@@ -365,7 +365,7 @@ footer ul a:hover{color:var(--cyan)}
     </nav>
     <div class="nav-cta">
       <a href="tel:+17543454871" data-loc="nav" class="nav-call" aria-label="Call (754) 345-4871"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">(754) 345-4871</span><span class="nav-call-lbl">Call</span></a>
-      <a href="https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa" target="_blank" rel="noopener" class="btn btn-primary">Book free consult</a>
+      <a href="#book" class="btn btn-primary">Get My Free Smart-Home Plan</a>
       <button class="menu-btn" aria-label="Open menu">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
@@ -388,14 +388,14 @@ footer ul a:hover{color:var(--cyan)}
       <ul style="list-style:none;margin-top:1.8rem;display:flex;flex-direction:column;gap:.7rem">
         <li style="display:flex;gap:.6rem;align-items:center;color:var(--slate)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Free custom smart-home layout for your home</li>
         <li style="display:flex;gap:.6rem;align-items:center;color:var(--slate)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Clear, honest pricing, no obligation</li>
-        <li style="display:flex;gap:.6rem;align-items:center;color:var(--slate)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>A licensed local installer handles the whole install</li>
+        <li style="display:flex;gap:.6rem;align-items:center;color:var(--slate)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Licensed electrical work is performed by the licensed electrician under contract on your project.</li>
       </ul>
     </div>
 
     <!-- LEAD FORM -->
     <div class="lead-card reveal">
       <div id="formFields">
-        <h3>Book your free consultation</h3>
+        <h3>Step 1 of 2 — Get your free smart-home plan</h3>
         <p class="sub">Three quick details and we'll reach out to set up your free walkthrough.</p>
         <!-- Fires to GHL via the fetch() handler at the bottom of this file. -->
         <form id="leadForm" action="https://services.leadconnectorhq.com/hooks/Owuc0ZFmPTpX9JcHhLjE/webhook-trigger/fda2080f-da6a-441b-9e0f-0e408ce6bfe4" method="POST">
@@ -416,18 +416,17 @@ footer ul a:hover{color:var(--cyan)}
             <input type="checkbox" id="consent" name="consent" required>
             <span>I agree that Infinity Smart Living and the licensed local electrician under contract for my project may call and text me at the number I provide about my inquiry, plan, and services, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help. I agree to the <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms</a>.</span>
           </label>
-          <button type="submit" class="btn btn-primary btn-lg">Get my free Alexa home plan</button>
+          <button type="submit" class="btn btn-primary btn-lg">Get My Free Smart-Home Plan</button>
           <a href="tel:+17543454871" data-loc="hero" class="btn btn-ghost btn-lg">Call (754) 345-4871</a>
         </form>
-        <p class="form-alt">Prefer to pick a time now? <a href="https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa" target="_blank" rel="noopener">Book a slot</a></p>
         <p class="privacy">We'll use your details to schedule your consultation and follow up about your plan. No spam, ever.</p>
       </div>
       <div class="success" id="formSuccess">
         <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div>
-        <h3>You're all set!</h3>
-        <p>Pick a time that works and we'll see you on the call.</p>
-        <a href="https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa" target="_blank" rel="noopener" class="btn btn-primary btn-lg" style="width:100%;justify-content:center">Choose your time</a>
-        <p class="privacy">Or we'll call you shortly to schedule.</p>
+        <h3>Step 2 of 2 — Choose your consultation time</h3>
+        <p>Your request has been received. Pick a time below to lock in your free consultation, or call <a href="tel:+17543454871" data-loc="step2">(754) 345-4871</a>.</p>
+        <iframe src="https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa" style="width:100%;border:none;overflow:hidden;min-height:720px" scrolling="no" id="ghl-booking-calendar" title="Choose your consultation time"></iframe>
+        <script src="https://api.leadconnectorhq.com/js/form_embed.js" type="text/javascript"></script>
       </div>
     </div>
   </div>
@@ -470,7 +469,7 @@ footer ul a:hover{color:var(--cyan)}
       </div>
     </div>
     <div style="text-align:center;margin-top:48px">
-      <a href="#book" class="btn btn-primary btn-lg">Book my free consultation</a>
+      <a href="#book" class="btn btn-primary btn-lg">Get My Free Smart-Home Plan</a>
     </div>
   </div>
 </section>
@@ -526,7 +525,7 @@ footer ul a:hover{color:var(--cyan)}
         <p>Everything lives in one Amazon Alexa app, designed to work together from day one.</p>
       </div>
       <div class="tcard reveal">
-        <p>Backed by our 30-day money-back guarantee.</p>
+        <p>Backed by our 30-day satisfaction guarantee.</p>
       </div>
     </div>
   </div>
@@ -553,7 +552,7 @@ footer ul a:hover{color:var(--cyan)}
       <p>Book a free virtual consultation. We'll build a custom layout for your home and quote it honestly, no pressure.</p>
       <p style="margin-top:1.1rem">Prefer to talk it through? Call (754) 345-4871 and we'll walk your home with you.</p>
       <div class="cta-actions">
-        <a href="https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Book your free consultation</a>
+        <a href="#book" class="btn btn-primary btn-lg">Get My Free Smart-Home Plan</a>
         <a href="tel:+17543454871" data-loc="final_cta" class="btn btn-light btn-lg">Call (754) 345-4871</a>
       </div>
     </div>
@@ -588,11 +587,11 @@ footer ul a:hover{color:var(--cyan)}
       <div>
         <h4>Get started</h4>
         <ul>
-          <li><a href="https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa" target="_blank" rel="noopener">Book free consult</a></li>
+          <li><a href="#book">Get My Free Smart-Home Plan</a></li>
         </ul>
       </div>
     </div>
-    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom room-by-room plan · No obligation · <a href="/guarantee" style="color:inherit">30-Day Money-Back Guarantee</a></div>
+    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom room-by-room plan · No obligation · <a href="/guarantee" style="color:inherit">30-Day Satisfaction Guarantee</a></div>
     <div class="foot-areas" style="padding:22px 0;margin-top:8px;border-top:1px solid rgba(255,255,255,.1)">
       <h4 style="margin-bottom:12px">Smart home service areas</h4>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0"><a href="/coral-springs" style="color:#cfe0ff">Coral Springs</a> · <a href="/boca-raton" style="color:#cfe0ff">Boca Raton</a> · <a href="/parkland" style="color:#cfe0ff">Parkland</a> · <a href="/pompano-beach" style="color:#cfe0ff">Pompano Beach</a> · <a href="/coconut-creek" style="color:#cfe0ff">Coconut Creek</a> · <a href="/deerfield-beach" style="color:#cfe0ff">Deerfield Beach</a> · <a href="/delray-beach" style="color:#cfe0ff">Delray Beach</a> · <a href="/boynton-beach" style="color:#cfe0ff">Boynton Beach</a> · <a href="/fort-lauderdale" style="color:#cfe0ff">Fort Lauderdale</a> · <a href="/weston" style="color:#cfe0ff">Weston</a> · <a href="/plantation" style="color:#cfe0ff">Plantation</a> · <a href="/lighthouse-point" style="color:#cfe0ff">Lighthouse Point</a> · <a href="/margate" style="color:#cfe0ff">Margate</a> · <a href="/tamarac" style="color:#cfe0ff">Tamarac</a> · <a href="/sunrise" style="color:#cfe0ff">Sunrise</a> · <a href="/davie" style="color:#cfe0ff">Davie</a> · <a href="/pembroke-pines" style="color:#cfe0ff">Pembroke Pines</a> · <a href="/cooper-city" style="color:#cfe0ff">Cooper City</a> · <a href="/oakland-park" style="color:#cfe0ff">Oakland Park</a> · <a href="/wilton-manors" style="color:#cfe0ff">Wilton Manors</a></p>
@@ -679,12 +678,14 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
   try { var _u = new URL(location.href); _u.searchParams.set('lead','sent'); history.replaceState(null, '', _u); } catch (err) {}
   document.getElementById('formFields').style.display = 'none';
   document.getElementById('formSuccess').classList.add('show');
+  // Step 2 revealed: notify GTM/GA4 that the booking calendar is now visible.
+  try { (window.dataLayer = window.dataLayer || []).push({ event: 'calendar_view' }); } catch (e) {}
 });
 </script>
 <!-- MOBILE STICKY CALL BAR (mobile viewports only) -->
 <div class="mobile-cta-bar" aria-label="Quick contact">
   <a href="tel:+17543454871" data-loc="sticky_bar" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
-  <a href="https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa" target="_blank" rel="noopener" class="mcb-book">Free plan</a>
+  <a href="#book" class="mcb-book">Get free plan</a>
 </div>
 <script>
 (function(){
