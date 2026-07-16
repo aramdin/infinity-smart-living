@@ -515,5 +515,22 @@ footer ul a:hover{color:var(--cyan)}
   <a href="tel:+17543454871" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
   <a href="https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa" target="_blank" rel="noopener" class="mcb-book">Free plan</a>
 </div>
+<script>
+(function(){
+  function track(name, params){
+    try { if (typeof window.gtag === 'function') { window.gtag('event', name, params || {}); } } catch (e) {}
+  }
+  document.addEventListener('click', function(e){
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    if (href.indexOf('tel:') === 0) {
+      track('call_click', { link_location: a.getAttribute('data-loc') || 'page', page_path: location.pathname });
+    } else if (href.indexOf('leadconnectorhq.com') !== -1) {
+      track('booking_click', { page_path: location.pathname });
+    }
+  }, true);
+})();
+</script>
 </body>
 </html>

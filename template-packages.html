@@ -346,7 +346,7 @@ footer ul a:hover{color:var(--cyan)}
       <a href="#reviews">Reviews</a>
     </nav>
     <div class="nav-cta">
-      <a href="tel:{{PHONE_HREF}}" class="nav-call" aria-label="Call {{PHONE}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">{{PHONE}}</span><span class="nav-call-lbl">Call</span></a>
+      <a href="tel:{{PHONE_HREF}}" data-loc="nav" class="nav-call" aria-label="Call {{PHONE}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">{{PHONE}}</span><span class="nav-call-lbl">Call</span></a>
       <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-primary">Book free consult</a>
       <button class="menu-btn" aria-label="Open menu">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -364,7 +364,7 @@ footer ul a:hover{color:var(--cyan)}
       <p class="lead">Lighting, climate, voice and whole-home automation, built on Amazon Alexa and professionally installed. One app, one assistant, no tangled gadgets, no monthly lock-in.</p>
       <div class="hero-actions">
         <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Book free consultation</a>
-        <a href="tel:{{PHONE_HREF}}" class="btn btn-ghost btn-lg">Call {{PHONE}}</a>
+        <a href="tel:{{PHONE_HREF}}" data-loc="hero" class="btn btn-ghost btn-lg">Call {{PHONE}}</a>
         <a href="#how" class="btn btn-ghost btn-lg">See how it works</a>
       </div>
       <div class="hero-trust">
@@ -789,8 +789,9 @@ document.querySelectorAll('.switch').forEach(s=>{
 </script>
 <!-- MOBILE STICKY CALL BAR (mobile viewports only) -->
 <div class="mobile-cta-bar" aria-label="Quick contact">
-  <a href="tel:{{PHONE_HREF}}" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
+  <a href="tel:{{PHONE_HREF}}" data-loc="sticky_bar" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
   <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="mcb-book">Free plan</a>
 </div>
+{{TRACKING}}
 </body>
 </html>

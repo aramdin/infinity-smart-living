@@ -368,7 +368,7 @@ footer ul a:hover{color:var(--cyan)}
       <a href="#possible">What's possible</a>
     </nav>
     <div class="nav-cta">
-      <a href="tel:{{PHONE_HREF}}" class="nav-call" aria-label="Call {{PHONE}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">{{PHONE}}</span><span class="nav-call-lbl">Call</span></a>
+      <a href="tel:{{PHONE_HREF}}" data-loc="nav" class="nav-call" aria-label="Call {{PHONE}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">{{PHONE}}</span><span class="nav-call-lbl">Call</span></a>
       <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-primary">Book free consult</a>
       <button class="menu-btn" aria-label="Open menu">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -422,7 +422,7 @@ footer ul a:hover{color:var(--cyan)}
             <span>I agree that Infinity Smart Living and the licensed local electrician under contract for my project may call and text me at the number I provide about my inquiry, plan, and services, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help. I agree to the <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms</a>.</span>
           </label>
           <button type="submit" class="btn btn-primary btn-lg">Get my free Alexa home plan</button>
-          <a href="tel:{{PHONE_HREF}}" class="btn btn-ghost btn-lg">Call {{PHONE}}</a>
+          <a href="tel:{{PHONE_HREF}}" data-loc="hero" class="btn btn-ghost btn-lg">Call {{PHONE}}</a>
         </form>
         <p class="form-alt">Prefer to pick a time now? <a href="{{BOOK_URL}}" target="_blank" rel="noopener">Book a slot</a></p>
         <p class="privacy">We'll use your details to schedule your consultation and follow up about your plan. No spam, ever.</p>
@@ -556,7 +556,7 @@ footer ul a:hover{color:var(--cyan)}
       <p style="margin-top:1.1rem">Prefer to talk it through? Call {{PHONE}} and we'll walk your home with you.</p>
       <div class="cta-actions">
         <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Book your free consultation</a>
-        <a href="tel:{{PHONE_HREF}}" class="btn btn-light btn-lg">Call {{PHONE}}</a>
+        <a href="tel:{{PHONE_HREF}}" data-loc="final_cta" class="btn btn-light btn-lg">Call {{PHONE}}</a>
       </div>
     </div>
   </div>
@@ -660,16 +660,23 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
     referrer: document.referrer || ''
   };
 
+  var leadOk = false;
   try {
     if (FORM_ENDPOINT && FORM_ENDPOINT.indexOf('FORM_ENDPOINT') === -1 && FORM_ENDPOINT.indexOf('{{') === -1) {
-      await fetch(FORM_ENDPOINT, {
+      var res = await fetch(FORM_ENDPOINT, {
         method: 'POST',
         keepalive: true,
         headers: { 'Content-Type': 'application/json' }, // GHL inbound webhook requires application/json; its CORS preflight is allowed (Access-Control-Allow-Origin: *)
         body: JSON.stringify(payload)
       });
+      leadOk = !!(res && res.ok);
     }
   } catch (err) { /* never block the booking step */ }
+
+  // GA4 lead conversion: fire only after a genuine 2xx from GHL, before the confirmation UI.
+  if (leadOk) {
+    try { if (typeof gtag === 'function') gtag('event', 'generate_lead', { page_path: location.pathname, form_city: payload.city || 'none' }); } catch (e) {}
+  }
 
   try { var _u = new URL(location.href); _u.searchParams.set('lead','sent'); history.replaceState(null, '', _u); } catch (err) {}
   document.getElementById('formFields').style.display = 'none';
@@ -678,8 +685,9 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
 </script>
 <!-- MOBILE STICKY CALL BAR (mobile viewports only) -->
 <div class="mobile-cta-bar" aria-label="Quick contact">
-  <a href="tel:{{PHONE_HREF}}" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
+  <a href="tel:{{PHONE_HREF}}" data-loc="sticky_bar" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
   <a href="{{BOOK_URL}}" target="_blank" rel="noopener" class="mcb-book">Free plan</a>
 </div>
+{{TRACKING}}
 </body>
 </html>
