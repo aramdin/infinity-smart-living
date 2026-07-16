@@ -189,7 +189,7 @@ const blogFooter = `<footer>
         </ul>
       </div>
     </div>
-    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom room-by-room plan · No obligation</div>
+    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom room-by-room plan · No obligation · <a href="/guarantee" style="color:inherit">30-Day Money-Back Guarantee</a></div>
     <div class="foot-areas" style="padding:22px 0;margin-top:8px;border-top:1px solid rgba(255,255,255,.1)">
       <h4 style="margin-bottom:12px">Smart home service areas</h4>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">${base.CITY_LINKS}</p>
@@ -337,20 +337,20 @@ pages.push('blog.html');
 console.log('✓ blog.html (index)');
 
 // --- guarantee page ---
-// TODO restore guarantee terms once Dustin finalizes refund mechanics
 const guaranteeBody = `<main>
 <section class="post-hero" style="background:linear-gradient(135deg,#06203f 0%,#0a4f8c 55%,#00B2FC 100%)">
   <div class="pwrap">
     <span class="post-cat">Our promise</span>
-    <h1>Free Plan, No Obligation</h1>
-    <p class="post-meta">A free virtual consultation and a free custom room-by-room plan, reviewed before you decide anything</p>
+    <h1>The 30-Day Money-Back Guarantee</h1>
+    <p class="post-meta">A free plan before you spend a dollar, and 30 days to be sure after your install.</p>
   </div>
 </section>
 <article class="post-body">
-<p><strong>Full guarantee terms are being finalized.</strong></p>
 <p>We want you confident before you spend a dollar. Your virtual consultation and your custom room-by-room plan are free, and you review the full plan and your exact price before you make any decision.</p>
 <h2>Free before you commit</h2>
 <p>Your consultation and your custom Amazon Alexa plan cost nothing. Share your floor plan or a few measurements and we map your smart lighting, thermostats, and voice control onto your actual home, room by room. You see the full plan and your exact price before you decide. Like it and you move forward. Do not like it and you keep the plan and owe nothing.</p>
+<h2>30 days to live with it</h2>
+<p>After your install is complete, live with your system for 30 days. If it is not right for your home, contact us and we will make it right, up to a full refund. Full guarantee details are confirmed in your written proposal.</p>
 <h2>No pressure, no obligation</h2>
 <p>There is no cost and no obligation to get your plan. You decide if and when to move forward. When you do, a licensed local electrician under contract handles the regulated electrical work and licensed local installers complete your Alexa smart home.</p>
 <h2>How it works</h2>
@@ -370,8 +370,8 @@ const guaranteeBody = `<main>
 </article>
 </main>`;
 writeFileSync('guarantee.html', blogShell({
-  title: 'Free Plan, No Obligation | Infinity Smart Living',
-  description: 'Your smart home consultation and custom Amazon Alexa room-by-room plan are free. Review the full plan and your exact price before you decide. Serving South Florida.',
+  title: 'The 30-Day Money-Back Guarantee | Infinity Smart Living',
+  description: 'A free custom Amazon Alexa room-by-room plan before you spend a dollar, plus a 30-day money-back guarantee after your install. Serving South Florida.',
   canonical: 'guarantee',
   body: guaranteeBody,
 }));
