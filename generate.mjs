@@ -176,7 +176,7 @@ const blogHeader = `<header id="top">
     </nav>
     <div class="nav-cta">
       <a href="tel:${site.phoneHref}" class="nav-call" aria-label="Call ${site.phone}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">${site.phone}</span><span class="nav-call-lbl">Call</span></a>
-      <a href="/#book" class="btn btn-primary">Get My Free Smart-Home Plan</a>
+      <a href="/#book" class="btn btn-primary">Get My Free Smart Home Layout</a>
     </div>
   </div>
 </header>`;
@@ -207,11 +207,11 @@ const blogFooter = `<footer>
       <div>
         <h4>Get started</h4>
         <ul>
-          <li><a href="/#book">Get My Free Smart-Home Plan</a></li>
+          <li><a href="/#book">Get My Free Smart Home Layout</a></li>
         </ul>
       </div>
     </div>
-    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom room-by-room plan · No obligation · <a href="/guarantee" style="color:inherit">30-Day Satisfaction Guarantee</a></div>
+    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and smart home layout · No obligation · <a href="/guarantee" style="color:inherit">30-Day Satisfaction Guarantee</a></div>
     <div class="foot-areas" style="padding:22px 0;margin-top:8px;border-top:1px solid rgba(255,255,255,.1)">
       <h4 style="margin-bottom:12px">Smart home service areas</h4>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">${base.CITY_LINKS}</p>
@@ -259,7 +259,7 @@ ${blogFooter}
 <!-- MOBILE STICKY CALL BAR (mobile viewports only) -->
 <div class="mobile-cta-bar" aria-label="Quick contact">
   <a href="tel:${site.phoneHref}" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
-  <a href="/#book" class="mcb-book">Get free plan</a>
+  <a href="/#book" class="mcb-book">Free layout</a>
 </div>
 ${trackingEvents}
 </body>
@@ -308,7 +308,7 @@ ${inner}
 <div class="cta-box">
   <h3>Book your free smart home consultation</h3>
   <p>See a custom layout and an honest quote for your home before you spend a dollar. Serving homeowners across Broward County, Boca Raton, Delray Beach, and Boynton Beach.</p>
-  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Smart-Home Plan</a>
+  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Smart Home Layout</a>
   <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
 </div>
 <p class="back"><a href="/blog">← All articles</a></p>
@@ -342,7 +342,7 @@ const blogIndexBody = `<main>
     <div class="section-head center">
       <span class="eyebrow" style="justify-content:center">Smart home guides</span>
       <h1 style="font-size:clamp(2.1rem,4.4vw,3rem);font-weight:800;margin:.5rem 0 .6rem">Smart home advice for South Florida homeowners</h1>
-      <p style="color:var(--slate);max-width:60ch;margin:0 auto">Free, practical guides on smart home automation, lighting, climate, and getting set up the right way. When you are ready, book a free consultation and we will map a plan for your home.</p>
+      <p style="color:var(--slate);max-width:60ch;margin:0 auto">Free, practical guides on smart home automation, lighting, climate, and getting set up the right way. When you are ready, book a free consultation and we will map a smart home layout for your home.</p>
     </div>
     <div class="post-grid">
 ${cards}
@@ -365,23 +365,23 @@ const guaranteeBody = `<main>
   <div class="pwrap">
     <span class="post-cat">Our promise</span>
     <h1>The 30-Day Satisfaction Guarantee</h1>
-    <p class="post-meta">A free plan before you spend a dollar, and 30 days to be sure after your install.</p>
+    <p class="post-meta">A free smart home layout before you spend a dollar, and 30 days to be sure after your install.</p>
   </div>
 </section>
 <article class="post-body">
-<p>Book a free consultation and we design a custom room-by-room plan for your exact home. You see the full plan and your project price before you decide. Like it and you move forward. Don't like it and you keep the plan and owe nothing.</p>
+<p>Book a free consultation and we design your smart home layout, room by room, for your exact home. You see the full layout and your project price before you decide. Like it and you move forward. Don't like it and you keep the layout and owe nothing.</p>
 <p>After your installation, live with your system for 30 days. If anything is not right, tell us and we will make it right — adjustments, device swaps, and rework at no charge. If we cannot make it right, we will refund you as set out in your <a href="/terms">project agreement</a>.</p>
 <div class="cta-box">
   <h3>Book your free smart home consultation</h3>
-  <p>See your custom Alexa room-by-room plan and your exact price before you spend a dollar. Serving homeowners across Broward County, Boca Raton, Delray Beach, and Boynton Beach.</p>
-  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Smart-Home Plan</a>
+  <p>See your free Amazon Alexa smart home layout and your exact price before you spend a dollar. Serving homeowners across Broward County, Boca Raton, Delray Beach, and Boynton Beach.</p>
+  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Smart Home Layout</a>
   <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
 </div>
 </article>
 </main>`;
 writeFileSync('guarantee.html', blogShell({
   title: 'The 30-Day Satisfaction Guarantee | Infinity Smart Living',
-  description: 'A free custom Amazon Alexa room-by-room plan before you spend a dollar, plus a 30-day satisfaction guarantee after your install. Serving South Florida.',
+  description: 'A free Amazon Alexa smart home layout, mapped room by room, before you spend a dollar, plus a 30-day satisfaction guarantee after your install. Serving South Florida.',
   canonical: 'guarantee',
   body: guaranteeBody,
 }));
@@ -431,8 +431,8 @@ body.links-page{background:var(--surface);min-height:100vh}
   <img class="links-logo" src="${logo}" alt="Infinity Smart Living">
   <p class="links-tag">Your complete Amazon Alexa smart home. Serving Broward County and South Palm Beach.</p>
   <div class="links-stack">
-    <a class="link-btn primary" href="/${LINK_UTM}#book">Book a Free Consultation</a>
-    <a class="link-btn guarantee" href="/guarantee${LINK_UTM}">Free Plan, No Obligation</a>
+    <a class="link-btn primary" href="/${LINK_UTM}#book">Get My Free Smart Home Layout</a>
+    <a class="link-btn guarantee" href="/guarantee${LINK_UTM}">Free Layout, No Obligation</a>
     <a class="link-btn" href="/${LINK_UTM}">Visit Our Website</a>
     <a class="link-btn" href="tel:+17543454871">Call Us: (754) 345-4871</a>
     <a class="link-btn" href="/blog${LINK_UTM}">Smart Home Guides</a>
