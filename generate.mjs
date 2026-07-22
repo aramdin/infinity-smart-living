@@ -218,7 +218,7 @@ const blogFooter = `<footer>
         </ul>
       </div>
     </div>
-    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and smart home layout · No obligation · <a href="/guarantee" style="color:inherit">30-Day Satisfaction Guarantee</a></div>
+    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom floor plan · No obligation · <a href="/guarantee" style="color:inherit">30-Day Satisfaction Guarantee</a></div>
     <div class="foot-areas" style="padding:22px 0;margin-top:8px;border-top:1px solid rgba(255,255,255,.1)">
       <h4 style="margin-bottom:12px">Smart home service areas</h4>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">${base.CITY_LINKS}</p>
@@ -372,7 +372,7 @@ const blogIndexBody = `<main>
     <div class="section-head center">
       <span class="eyebrow" style="justify-content:center">Smart home guides</span>
       <h1 style="font-size:clamp(2.1rem,4.4vw,3rem);font-weight:800;margin:.5rem 0 .6rem">Smart home advice for South Florida homeowners</h1>
-      <p style="color:var(--slate);max-width:60ch;margin:0 auto">Free, practical guides on smart home automation, lighting, climate, and getting set up the right way. When you are ready, book a free consultation and we will map a smart home layout for your home.</p>
+      <p style="color:var(--slate);max-width:60ch;margin:0 auto">Free, practical guides on smart home automation, lighting, climate, and getting set up the right way. When you are ready, book a free consultation and we will map a smart home floor plan for your home.</p>
     </div>
     <div class="post-grid">
 ${cards}
@@ -395,16 +395,16 @@ const guaranteeBody = `<main>
   <div class="pwrap">
     <span class="post-cat">Our promise</span>
     <h1>The 30-Day Satisfaction Guarantee</h1>
-    <p class="post-meta">A free smart home layout before you spend a dollar, and 30 days to be sure after your install.</p>
+    <p class="post-meta">A free smart home floor plan before you spend a dollar, and 30 days to be sure after your install.</p>
   </div>
 </section>
 <article class="post-body">
-<p>Book a free consultation and we design your smart home layout, room by room, for your exact home. You see the full layout and your project price before you decide. Like it and you move forward. Don't like it and you keep the layout and owe nothing.</p>
+<p>Book a free consultation and we design your smart home floor plan, room by room, for your exact home. You see the full floor plan and your project price before you decide. Like it and you move forward. Don't like it and you keep the floor plan and owe nothing.</p>
 <p>After your installation, live with your system for 30 days. If anything is not right, tell us and we will make it right with adjustments, device swaps, and rework at no charge. If we cannot make it right, we will refund you as set out in your <a href="/terms">project agreement</a>.</p>
 <!-- PROOF SLOT: named customer quote about the guarantee being honored (name + city) goes here. Reserve for real reviews. -->
 <div class="cta-box">
   <h3>Book your free smart home consultation</h3>
-  <p>See your free Amazon Alexa smart home layout and your exact price before you spend a dollar. Serving homeowners across Broward County, Boca Raton, Delray Beach, and Boynton Beach.</p>
+  <p>See your free Amazon Alexa smart home floor plan and your exact price before you spend a dollar. Serving homeowners across Broward County, Boca Raton, Delray Beach, and Boynton Beach.</p>
   <a href="/#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
   <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
 </div>
@@ -412,7 +412,7 @@ const guaranteeBody = `<main>
 </main>`;
 writeFileSync('guarantee.html', blogShell({
   title: 'The 30-Day Satisfaction Guarantee | Infinity Smart Living',
-  description: 'A free Amazon Alexa smart home layout, mapped room by room, before you spend a dollar, plus a 30-day satisfaction guarantee after your install. Serving South Florida.',
+  description: 'A free Amazon Alexa smart home floor plan, mapped room by room, before you spend a dollar, plus a 30-day satisfaction guarantee after your install. Serving South Florida.',
   canonical: 'guarantee',
   body: guaranteeBody,
 }));
@@ -677,7 +677,7 @@ body.links-page{background:var(--surface);min-height:100vh}
   <p class="links-tag">Your complete Amazon Alexa smart home. Serving Broward County and South Palm Beach.</p>
   <div class="links-stack">
     <a class="link-btn primary" href="/${LINK_UTM}#book">Get My Free Floor Plan</a>
-    <a class="link-btn guarantee" href="/guarantee${LINK_UTM}">Free Layout, No Obligation</a>
+    <a class="link-btn guarantee" href="/guarantee${LINK_UTM}">Free Floor Plan, No Obligation</a>
     <a class="link-btn" href="/${LINK_UTM}">Visit Our Website</a>
     <a class="link-btn" href="tel:+17543454871">Call Us: (754) 345-4871</a>
     <a class="link-btn" href="/blog${LINK_UTM}">Smart Home Guides</a>
