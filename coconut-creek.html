@@ -2,7 +2,8 @@
 <!-- =========================================================
      CITY TEMPLATE, generates one page per city in cities.json.
      Edit this template, set values in cities.json, then run:  node generate.mjs
-     Tokens: Coconut Creek Winston Park, Regency Lakes, and Township We install and set up smart homes across Coconut Creek and nearby, including Winston Park, Regency Lakes, and Township. Whether you want to start with one room or do the whole house, we make it simple. booking URL, form endpoint,
+     Tokens: Coconut Creek Winston Park, Regency Lakes, and Township <p style="color:var(--slate);font-size:1.06rem;margin-bottom:1rem">Coconut Creek runs from the active 55 and over condos of Wynmoor to the family neighborhoods of Winston Park, Regency Lakes, and the Township. Every home is a little different, so we map your Alexa lighting, climate, and voice room by room, whether you want to start with one room or set up the whole house.</p>
+     booking URL, form endpoint,
      (754) 345-4871 +17543454871 info@infinitysmartliving.com
      ========================================================= -->
 <html lang="en">
@@ -343,6 +344,7 @@ footer ul a:hover{color:var(--cyan)}
 @media(max-width:680px){
   .nav-call .nav-call-num{display:none}
   .nav-call .nav-call-lbl{display:inline}
+  .nav-cta .btn-primary{display:none}
   .mobile-cta-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;box-shadow:0 -6px 20px -10px rgba(5,25,65,.45)}
   .mobile-cta-bar a{flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;padding:15px 8px;font-family:var(--font-display);font-weight:700;font-size:1rem}
   .mobile-cta-bar svg{width:18px;height:18px;stroke:currentColor;flex-shrink:0}
@@ -365,7 +367,7 @@ footer ul a:hover{color:var(--cyan)}
     </nav>
     <div class="nav-cta">
       <a href="tel:+17543454871" data-loc="nav" class="nav-call" aria-label="Call (754) 345-4871"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">(754) 345-4871</span><span class="nav-call-lbl">Call</span></a>
-      <a href="#book" class="btn btn-primary">Get My Free Smart Home Layout</a>
+      <a href="#book" class="btn btn-primary">Get My Free Floor Plan</a>
       <button class="menu-btn" aria-label="Open menu">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
@@ -374,6 +376,7 @@ footer ul a:hover{color:var(--cyan)}
 </header>
 
 <!-- HERO + FORM -->
+<!-- PROOF SLOT: add a real finished-install photo (ideally a recent Coconut Creek project) to the hero when showcase-home assets exist. -->
 <section class="hero" id="book">
   <div class="wrap hero-grid">
     <div class="hero-copy reveal">
@@ -416,7 +419,8 @@ footer ul a:hover{color:var(--cyan)}
             <input type="checkbox" id="consent" name="consent" required>
             <span>I agree that Infinity Smart Living and the licensed local electrician under contract for my project may call and text me at the number I provide about my inquiry, plan, and services, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help. I agree to the <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms</a>.</span>
           </label>
-          <button type="submit" class="btn btn-primary btn-lg">Get My Free Smart Home Layout</button>
+          <button type="submit" class="btn btn-primary btn-lg">Get My Free Floor Plan</button>
+          <!-- PROOF SLOT: one line trust stat under the form button (star rating + homes-done count). Reserve for showcase-home assets. -->
           <a href="tel:+17543454871" data-loc="hero" class="btn btn-ghost btn-lg">Call (754) 345-4871</a>
         </form>
         <p class="privacy">We'll use your details to schedule your consultation and follow up about your layout. No spam, ever.</p>
@@ -469,7 +473,7 @@ footer ul a:hover{color:var(--cyan)}
       </div>
     </div>
     <div style="text-align:center;margin-top:48px">
-      <a href="#book" class="btn btn-primary btn-lg">Get My Free Smart Home Layout</a>
+      <a href="#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
     </div>
   </div>
 </section>
@@ -533,12 +537,14 @@ footer ul a:hover{color:var(--cyan)}
 
 
 <!-- LOCAL SECTION (unique copy per city helps SEO; set "intro" in cities.json) -->
+<!-- PROOF SLOT: recent Coconut Creek project (photo + one line on what we installed) goes in this section when assets exist. -->
 <section class="section alt" id="local">
   <div class="wrap" style="max-width:800px">
     <div class="section-head reveal" style="margin-bottom:20px">
       <span class="eyebrow">Local install</span>
       <h2>Smart Home Installation in Coconut Creek</h2>
     </div>
+    <p style="color:var(--slate);font-size:1.06rem;margin-bottom:1rem">Coconut Creek runs from the active 55 and over condos of Wynmoor to the family neighborhoods of Winston Park, Regency Lakes, and the Township. Every home is a little different, so we map your Alexa lighting, climate, and voice room by room, whether you want to start with one room or set up the whole house.</p>
     <p style="color:var(--slate);font-size:1.06rem">Book a free virtual consultation and we build your free smart home layout at no cost. Share your floor plan or a few measurements and we map your smart lighting, thermostats, and voice control onto your actual home. Like the layout and you move forward. Do not like it and you keep the layout and owe nothing.</p>
   </div>
 </section>
@@ -552,7 +558,7 @@ footer ul a:hover{color:var(--cyan)}
       <p>Book a free virtual consultation. We'll build a custom layout for your home and quote it honestly, no pressure.</p>
       <p style="margin-top:1.1rem">Prefer to talk it through? Call (754) 345-4871 and we'll walk your home with you.</p>
       <div class="cta-actions">
-        <a href="#book" class="btn btn-primary btn-lg">Get My Free Smart Home Layout</a>
+        <a href="#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
         <a href="tel:+17543454871" data-loc="final_cta" class="btn btn-light btn-lg">Call (754) 345-4871</a>
       </div>
     </div>
@@ -587,7 +593,7 @@ footer ul a:hover{color:var(--cyan)}
       <div>
         <h4>Get started</h4>
         <ul>
-          <li><a href="#book">Get My Free Smart Home Layout</a></li>
+          <li><a href="#book">Get My Free Floor Plan</a></li>
         </ul>
       </div>
     </div>
@@ -597,6 +603,7 @@ footer ul a:hover{color:var(--cyan)}
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0"><a href="/coral-springs" style="color:#cfe0ff">Coral Springs</a> · <a href="/boca-raton" style="color:#cfe0ff">Boca Raton</a> · <a href="/parkland" style="color:#cfe0ff">Parkland</a> · <a href="/pompano-beach" style="color:#cfe0ff">Pompano Beach</a> · <a href="/coconut-creek" style="color:#cfe0ff">Coconut Creek</a> · <a href="/deerfield-beach" style="color:#cfe0ff">Deerfield Beach</a> · <a href="/delray-beach" style="color:#cfe0ff">Delray Beach</a> · <a href="/boynton-beach" style="color:#cfe0ff">Boynton Beach</a> · <a href="/fort-lauderdale" style="color:#cfe0ff">Fort Lauderdale</a> · <a href="/weston" style="color:#cfe0ff">Weston</a> · <a href="/plantation" style="color:#cfe0ff">Plantation</a> · <a href="/lighthouse-point" style="color:#cfe0ff">Lighthouse Point</a> · <a href="/margate" style="color:#cfe0ff">Margate</a> · <a href="/tamarac" style="color:#cfe0ff">Tamarac</a> · <a href="/sunrise" style="color:#cfe0ff">Sunrise</a> · <a href="/davie" style="color:#cfe0ff">Davie</a> · <a href="/pembroke-pines" style="color:#cfe0ff">Pembroke Pines</a> · <a href="/cooper-city" style="color:#cfe0ff">Cooper City</a> · <a href="/oakland-park" style="color:#cfe0ff">Oakland Park</a> · <a href="/wilton-manors" style="color:#cfe0ff">Wilton Manors</a></p>
     </div>
     <div class="foot-bot">
+      <!-- PROOF SLOT: legitimacy line (electrician license number + "Simple Safe Technologies LLC DBA Infinity Smart Living") goes here once the license number is confirmed. -->
       <span>© 2026 Simple Safe Technologies LLC DBA Infinity Smart Living. All rights reserved.</span>
       <span><a href="privacy.html" style="color:inherit">Privacy</a> · <a href="terms.html" style="color:inherit">Terms</a></span>
     </div>
@@ -685,7 +692,7 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
 <!-- MOBILE STICKY CALL BAR (mobile viewports only) -->
 <div class="mobile-cta-bar" aria-label="Quick contact">
   <a href="tel:+17543454871" data-loc="sticky_bar" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
-  <a href="#book" class="mcb-book">Free layout</a>
+  <a href="#book" class="mcb-book">Free floor plan</a>
 </div>
 <script>
 (function(){

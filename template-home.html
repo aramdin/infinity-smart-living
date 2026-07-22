@@ -108,6 +108,7 @@ header.scrolled{border-color:var(--line);box-shadow:0 6px 20px -16px rgba(5,25,6
 .hero-bg .hero-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,25,65,.86) 0%,rgba(5,25,65,.72) 34%,rgba(5,25,65,.42) 62%,rgba(5,25,65,.12) 100%)}
 .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
 .hero .eyebrow{color:#fff}
+.eyebrow-hero{text-transform:none;letter-spacing:.01em;font-size:.84rem;font-weight:600}
 .hero-copy h1{font-size:clamp(2.4rem,5vw,3.65rem);font-weight:800;color:#fff}
 .hero-copy h1 .accent{color:var(--cyan)}
 .hero-copy p.lead{font-size:1.18rem;color:rgba(255,255,255,.92);margin:1.4rem 0 2rem;max-width:34ch}
@@ -347,6 +348,7 @@ footer ul a:hover{color:var(--cyan)}
 @media(max-width:680px){
   .nav-call .nav-call-num{display:none}
   .nav-call .nav-call-lbl{display:inline}
+  .nav-cta .btn-primary{display:none}
   .mobile-cta-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;box-shadow:0 -6px 20px -10px rgba(5,25,65,.45)}
   .mobile-cta-bar a{flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;padding:15px 8px;font-family:var(--font-display);font-weight:700;font-size:1rem}
   .mobile-cta-bar svg{width:18px;height:18px;stroke:currentColor;flex-shrink:0}
@@ -369,7 +371,7 @@ footer ul a:hover{color:var(--cyan)}
     </nav>
     <div class="nav-cta">
       <a href="tel:{{PHONE_HREF}}" data-loc="nav" class="nav-call" aria-label="Call {{PHONE}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">{{PHONE}}</span><span class="nav-call-lbl">Call</span></a>
-      <a href="#book" class="btn btn-primary">Get My Free Smart Home Layout</a>
+      <a href="#book" class="btn btn-primary">Get My Free Floor Plan</a>
       <button class="menu-btn" aria-label="Open menu">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
@@ -379,12 +381,13 @@ footer ul a:hover{color:var(--cyan)}
 
 <!-- HERO + FORM -->
 <section class="hero" id="book">
+  <!-- PROOF SLOT: replace stock hero photo with a real finished-install shot when showcase-home assets exist. -->
   <div class="hero-bg"><img src="/images/home-hero.jpg" alt="Bright, warm-lit modern living room" width="1600" height="1068"><span class="hero-shade"></span></div>
   <div class="wrap hero-grid">
     <div class="hero-copy reveal">
-      <span class="eyebrow">Free virtual consultation + free smart home layout</span>
-      <h1>A smarter home, <span class="accent">designed and set up for you.</span></h1>
-      <p class="lead">We design your smart home around the way you live, handle the equipment and scheduling, and set up your lighting, climate and voice routines. See your smart home layout and full project price before you decide. It's free.</p>
+      <span class="eyebrow eyebrow-hero">Free plan for your home. No cost, no pressure.</span>
+      <h1>Your free Alexa smart home plan, <span class="accent">mapped room by room.</span></h1>
+      <p class="lead">Tell us about your home and we map exactly what goes where, what it does, and what it costs, before you spend a dollar. Free virtual consult, no pressure.</p>
       <div class="hero-trust" style="margin-top:1.8rem">
         <span>Free layout and price before you decide</span>
         <span>•</span>
@@ -421,7 +424,8 @@ footer ul a:hover{color:var(--cyan)}
             <input type="checkbox" id="consent" name="consent" required>
             <span>I agree that Infinity Smart Living and the licensed local electrician under contract for my project may call and text me at the number I provide about my inquiry, plan, and services, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help. I agree to the <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms</a>.</span>
           </label>
-          <button type="submit" class="btn btn-primary btn-lg">Get My Free Smart Home Layout</button>
+          <button type="submit" class="btn btn-primary btn-lg">Get My Free Floor Plan</button>
+          <!-- PROOF SLOT: one line trust stat under the form button (star rating + homes-done count). Reserve for showcase-home assets. -->
           <a href="tel:{{PHONE_HREF}}" data-loc="hero" class="btn btn-ghost btn-lg">Call {{PHONE}}</a>
         </form>
         <p class="privacy">We'll use your details to schedule your consultation and follow up about your layout. No spam, ever.</p>
@@ -474,7 +478,7 @@ footer ul a:hover{color:var(--cyan)}
       </div>
     </div>
     <div style="text-align:center;margin-top:48px">
-      <a href="#book" class="btn btn-primary btn-lg">Get My Free Smart Home Layout</a>
+      <a href="#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
     </div>
   </div>
 </section>
@@ -505,8 +509,8 @@ footer ul a:hover{color:var(--cyan)}
       <div class="sol reveal">
         <div class="sol-img"><img src="/images/card-speaker.jpg" alt="A smart speaker on a table at home" width="800" height="532" loading="lazy"></div>
         <div class="sol-txt">
-          <h3>Voice &amp; Home Automation</h3>
-          <p>Just say it, or let routines run themselves. Everything responds the way you'd expect.</p>
+          <h3>Voice and routines</h3>
+          <p>Say good night once and the lights, the fans, and the front door all follow. Or let your morning run on its own.</p>
         </div>
       </div>
       <div class="sol reveal">
@@ -521,6 +525,7 @@ footer ul a:hover{color:var(--cyan)}
 </section>
 
 <!-- SOCIAL PROOF -->
+<!-- PROOF SLOT: testimonial block (2-3 named local quotes with city) goes here, between What's possible and Why homeowners start here. Reserve for real reviews. -->
 <section class="section alt">
   <div class="wrap">
     <div class="section-head center reveal">
@@ -554,7 +559,7 @@ footer ul a:hover{color:var(--cyan)}
       <p>Book a free virtual consultation. We'll build a custom layout for your home and quote it honestly, no pressure.</p>
       <p style="margin-top:1.1rem">Prefer to talk it through? Call {{PHONE}} and we'll walk your home with you.</p>
       <div class="cta-actions">
-        <a href="#book" class="btn btn-primary btn-lg">Get My Free Smart Home Layout</a>
+        <a href="#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
         <a href="tel:{{PHONE_HREF}}" data-loc="final_cta" class="btn btn-light btn-lg">Call {{PHONE}}</a>
       </div>
     </div>
@@ -589,7 +594,7 @@ footer ul a:hover{color:var(--cyan)}
       <div>
         <h4>Get started</h4>
         <ul>
-          <li><a href="#book">Get My Free Smart Home Layout</a></li>
+          <li><a href="#book">Get My Free Floor Plan</a></li>
         </ul>
       </div>
     </div>
@@ -599,6 +604,7 @@ footer ul a:hover{color:var(--cyan)}
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">{{CITY_LINKS}}</p>
     </div>
     <div class="foot-bot">
+      <!-- PROOF SLOT: legitimacy line (electrician license number + "Simple Safe Technologies LLC DBA Infinity Smart Living") goes here once the license number is confirmed. -->
       <span>© 2026 Simple Safe Technologies LLC DBA Infinity Smart Living. All rights reserved.</span>
       <span><a href="privacy.html" style="color:inherit">Privacy</a> · <a href="terms.html" style="color:inherit">Terms</a></span>
     </div>
@@ -687,7 +693,7 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
 <!-- MOBILE STICKY CALL BAR (mobile viewports only) -->
 <div class="mobile-cta-bar" aria-label="Quick contact">
   <a href="tel:{{PHONE_HREF}}" data-loc="sticky_bar" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
-  <a href="#book" class="mcb-book">Free layout</a>
+  <a href="#book" class="mcb-book">Free floor plan</a>
 </div>
 {{TRACKING}}
 </body>

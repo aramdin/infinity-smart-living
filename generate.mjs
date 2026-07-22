@@ -77,10 +77,11 @@ const pages = ['', 'privacy.html', 'terms.html', 'free-guide.html', 'free-floor-
 
 for (const c of cfg.cities) {
   const slug = slugify(c.city);
-  const intro =
-    c.intro && c.intro.trim()
-      ? c.intro.trim()
-      : `We install and set up smart homes across ${c.city} and nearby, including ${c.areas}. Whether you want to start with one room or do the whole house, we make it simple.`;
+  // Unique per-city intro paragraph rendered above the local booking copy.
+  // Empty for cities without an intro set, so their page is unchanged.
+  const intro = c.intro && c.intro.trim()
+    ? `<p style="color:var(--slate);font-size:1.06rem;margin-bottom:1rem">${c.intro.trim()}</p>\n    `
+    : '';
   const html = stamp(cityTpl, { ...base, CITY: c.city, AREAS: c.areas, CITY_SLUG: slug, LOCAL_INTRO: intro });
   writeFileSync(`${slug}.html`, html);
   pages.push(`${slug}.html`);
@@ -182,7 +183,7 @@ const blogHeader = `<header id="top">
     </nav>
     <div class="nav-cta">
       <a href="tel:${site.phoneHref}" class="nav-call" aria-label="Call ${site.phone}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">${site.phone}</span><span class="nav-call-lbl">Call</span></a>
-      <a href="/#book" class="btn btn-primary">Get My Free Smart Home Layout</a>
+      <a href="/#book" class="btn btn-primary">Get My Free Floor Plan</a>
     </div>
   </div>
 </header>`;
@@ -213,7 +214,7 @@ const blogFooter = `<footer>
       <div>
         <h4>Get started</h4>
         <ul>
-          <li><a href="/#book">Get My Free Smart Home Layout</a></li>
+          <li><a href="/#book">Get My Free Floor Plan</a></li>
         </ul>
       </div>
     </div>
@@ -223,6 +224,7 @@ const blogFooter = `<footer>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">${base.CITY_LINKS}</p>
     </div>
     <div class="foot-bot">
+      <!-- PROOF SLOT: legitimacy line (electrician license number + "Simple Safe Technologies LLC DBA Infinity Smart Living") goes here once the license number is confirmed. -->
       <span>© 2026 Simple Safe Technologies LLC DBA Infinity Smart Living. All rights reserved.</span>
       <span><a href="/privacy" style="color:inherit">Privacy</a> · <a href="/terms" style="color:inherit">Terms</a></span>
     </div>
@@ -266,7 +268,7 @@ ${blogFooter}
 <!-- MOBILE STICKY CALL BAR (mobile viewports only) -->
 <div class="mobile-cta-bar" aria-label="Quick contact">
   <a href="tel:${site.phoneHref}" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
-  <a href="/#book" class="mcb-book">Free layout</a>
+  <a href="/#book" class="mcb-book">Free floor plan</a>
 </div>
 ${trackingEvents}
 </body>
@@ -277,6 +279,32 @@ const posts = [...(JSON.parse(readFileSync('./blog.json', 'utf8')).posts || [])]
   .sort((a, b) => (a.date < b.date ? 1 : -1));
 
 mkdirSync('blog', { recursive: true });
+
+// National-intent posts pull most of their traffic from outside our service area,
+// so their CTA leads with the free guide (works anywhere) and offers the local
+// build as a second line. Local-intent posts keep the floor plan CTA primary.
+const NATIONAL_POSTS = new Set([
+  'best-smart-home-hubs',
+  'what-is-matter-smart-home',
+  'smart-home-ecosystem',
+  'smart-home-technology-trends-2026',
+  'what-is-a-smart-home',
+  'best-smart-home-devices-to-start-with',
+]);
+const ctaBox = (slug) => NATIONAL_POSTS.has(slug)
+  ? `<div class="cta-box">
+  <h3>Set up your Echo like a pro</h3>
+  <p>Room groups, simple device names, and starter routines you can copy word for word. Free download, works with any Echo.</p>
+  <a href="/free-guide" class="btn btn-primary btn-lg">Get the free Alexa Room and Routine Starter Guide</a>
+  <p style="margin:1.1rem 0 0;font-size:.97rem"><a href="/free-floor-plan" style="color:#fff;text-decoration:underline;text-underline-offset:2px;font-weight:600">In South Florida? We also build the whole thing for you, room by room.</a></p>
+</div>`
+  : `<div class="cta-box">
+  <h3>Book your free smart home consultation</h3>
+  <p>See a custom floor plan and an honest price for your home before you spend a dollar. Serving homeowners across Broward County, Boca Raton, Delray Beach, and Boynton Beach.</p>
+  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
+  <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
+  <p style="margin:1.1rem 0 0;font-size:.97rem"><a href="/free-guide" style="color:#fff;text-decoration:underline;text-underline-offset:2px;font-weight:600">Prefer to start on your own? Get the free Alexa Room and Routine Starter Guide.</a></p>
+</div>`;
 
 posts.forEach((post, i) => {
   const inner = readFileSync(`./${post.file}`, 'utf8').trim();
@@ -312,13 +340,7 @@ posts.forEach((post, i) => {
 </section>
 <article class="post-body">
 ${inner}
-<div class="cta-box">
-  <h3>Book your free smart home consultation</h3>
-  <p>See a custom layout and an honest quote for your home before you spend a dollar. Serving homeowners across Broward County, Boca Raton, Delray Beach, and Boynton Beach.</p>
-  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Smart Home Layout</a>
-  <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
-  <p style="margin:1.1rem 0 0;font-size:.97rem"><a href="/free-guide" style="color:#fff;text-decoration:underline;text-underline-offset:2px;font-weight:600">Get the free Alexa starter guide</a></p>
-</div>
+${ctaBox(post.slug)}
 <p class="back"><a href="/blog">← All articles</a></p>
 </article>
 </main>`;
@@ -379,10 +401,11 @@ const guaranteeBody = `<main>
 <article class="post-body">
 <p>Book a free consultation and we design your smart home layout, room by room, for your exact home. You see the full layout and your project price before you decide. Like it and you move forward. Don't like it and you keep the layout and owe nothing.</p>
 <p>After your installation, live with your system for 30 days. If anything is not right, tell us and we will make it right with adjustments, device swaps, and rework at no charge. If we cannot make it right, we will refund you as set out in your <a href="/terms">project agreement</a>.</p>
+<!-- PROOF SLOT: named customer quote about the guarantee being honored (name + city) goes here. Reserve for real reviews. -->
 <div class="cta-box">
   <h3>Book your free smart home consultation</h3>
   <p>See your free Amazon Alexa smart home layout and your exact price before you spend a dollar. Serving homeowners across Broward County, Boca Raton, Delray Beach, and Boynton Beach.</p>
-  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Smart Home Layout</a>
+  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
   <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
 </div>
 </article>
@@ -421,6 +444,7 @@ const LANDING_CSS = `<style>
 .land-cross{margin:30px 0 6px;padding:1.5rem;border-radius:16px;background:var(--surface);border:1px solid var(--line);text-align:center;color:var(--slate);font-size:.98rem;line-height:1.6}
 .land-cross a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
 .land-bonus{margin:14px 0 0;text-align:center;color:var(--slate);font-size:.95rem}
+.land-note{margin:12px 0 0;color:var(--slate);font-size:.9rem;line-height:1.5}
 @media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}}
 </style>`;
 
@@ -537,6 +561,7 @@ const guideBody = `<main>
       <form id="leadForm" method="POST">
           ${landingFields}
           <button type="submit" class="btn btn-primary btn-lg" style="width:100%">Send Me the Free Guide</button>
+          <!-- PROOF SLOT: one line trust stat under the form button (star rating + homes-done count). Reserve for showcase-home assets. -->
       </form>
     </div>
     <div class="success" id="formSuccess">
@@ -570,7 +595,7 @@ const floorPlanBody = `<main>
   <div class="pwrap">
     <span class="post-cat">Free virtual consultation + free floor plan</span>
     <h1>A smart home floor plan for your exact home, free</h1>
-    <p class="sub">A free 20 minute virtual consult, then a custom plan for your home, room by room, with your full project price shown before you spend a dollar.</p>
+    <p class="sub">A custom plan for your exact home, room by room, with your full price shown before you spend a dollar. It takes one quick 20 minute video call, and the plan is yours to keep.</p>
   </div>
 </section>
 <div class="land-main">
@@ -582,6 +607,9 @@ const floorPlanBody = `<main>
           ${landingFields}
           <button type="submit" class="btn btn-primary btn-lg" style="width:100%">Get My Free Floor Plan</button>
       </form>
+      <!-- PROOF SLOT: one line trust stat under the form button (star rating + homes-done count). Reserve for showcase-home assets. -->
+      <p class="land-note"><b>Bonus:</b> sign up today and the free Alexa Room and Routine Starter Guide comes with it.</p>
+      <p class="land-note">Free plan and price before you decide · No obligation · <a href="/guarantee" style="color:var(--cyan-deep);font-weight:600">30-Day Satisfaction Guarantee</a></p>
     </div>
     <div class="success" id="formSuccess">
       <div class="check">✓</div>
@@ -590,11 +618,9 @@ const floorPlanBody = `<main>
       <a href="${site.bookUrl}" class="btn btn-primary btn-lg" style="width:100%;margin-top:12px">Pick Your Consult Time Now</a>
     </div>
   </div>
-  <p class="land-bonus"><b>Bonus:</b> sign up today and the free Alexa Room and Routine Starter Guide comes with it.</p>
   <ul class="land-points">
-    <li>${CHECK_SVG}Free layout and price before you decide</li>
+    <li>${CHECK_SVG}Free plan and price before you decide</li>
     <li>${CHECK_SVG}Licensed electrical work is performed by the licensed electrician under contract on your project.</li>
-    <li>${CHECK_SVG}Free consultation and smart home layout · No obligation · <a href="/guarantee" style="color:var(--cyan-deep);font-weight:600">30-Day Satisfaction Guarantee</a></li>
   </ul>
 </div>
 </main>`;
@@ -650,7 +676,7 @@ body.links-page{background:var(--surface);min-height:100vh}
   <img class="links-logo" src="${logo}" alt="Infinity Smart Living">
   <p class="links-tag">Your complete Amazon Alexa smart home. Serving Broward County and South Palm Beach.</p>
   <div class="links-stack">
-    <a class="link-btn primary" href="/${LINK_UTM}#book">Get My Free Smart Home Layout</a>
+    <a class="link-btn primary" href="/${LINK_UTM}#book">Get My Free Floor Plan</a>
     <a class="link-btn guarantee" href="/guarantee${LINK_UTM}">Free Layout, No Obligation</a>
     <a class="link-btn" href="/${LINK_UTM}">Visit Our Website</a>
     <a class="link-btn" href="tel:+17543454871">Call Us: (754) 345-4871</a>

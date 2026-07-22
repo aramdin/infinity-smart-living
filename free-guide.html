@@ -99,6 +99,7 @@ header.scrolled{border-color:var(--line);box-shadow:0 6px 20px -16px rgba(5,25,6
 .hero-bg .hero-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,25,65,.86) 0%,rgba(5,25,65,.72) 34%,rgba(5,25,65,.42) 62%,rgba(5,25,65,.12) 100%)}
 .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
 .hero .eyebrow{color:#fff}
+.eyebrow-hero{text-transform:none;letter-spacing:.01em;font-size:.84rem;font-weight:600}
 .hero-copy h1{font-size:clamp(2.4rem,5vw,3.65rem);font-weight:800;color:#fff}
 .hero-copy h1 .accent{color:var(--cyan)}
 .hero-copy p.lead{font-size:1.18rem;color:rgba(255,255,255,.92);margin:1.4rem 0 2rem;max-width:34ch}
@@ -338,6 +339,7 @@ footer ul a:hover{color:var(--cyan)}
 @media(max-width:680px){
   .nav-call .nav-call-num{display:none}
   .nav-call .nav-call-lbl{display:inline}
+  .nav-cta .btn-primary{display:none}
   .mobile-cta-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;box-shadow:0 -6px 20px -10px rgba(5,25,65,.45)}
   .mobile-cta-bar a{flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;padding:15px 8px;font-family:var(--font-display);font-weight:700;font-size:1rem}
   .mobile-cta-bar svg{width:18px;height:18px;stroke:currentColor;flex-shrink:0}
@@ -409,6 +411,7 @@ footer ul a:hover{color:var(--cyan)}
 .land-cross{margin:30px 0 6px;padding:1.5rem;border-radius:16px;background:var(--surface);border:1px solid var(--line);text-align:center;color:var(--slate);font-size:.98rem;line-height:1.6}
 .land-cross a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
 .land-bonus{margin:14px 0 0;text-align:center;color:var(--slate);font-size:.95rem}
+.land-note{margin:12px 0 0;color:var(--slate);font-size:.9rem;line-height:1.5}
 @media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}}
 </style>
 </head>
@@ -465,6 +468,7 @@ footer ul a:hover{color:var(--cyan)}
   <span>I agree that Infinity Smart Living and the licensed local electrician under contract for my project may call, text, and email me at the contact details I provide about my inquiry, plan, and services, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help. I agree to the <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms</a>.</span>
 </label>
           <button type="submit" class="btn btn-primary btn-lg" style="width:100%">Send Me the Free Guide</button>
+          <!-- PROOF SLOT: one line trust stat under the form button (star rating + homes-done count). Reserve for showcase-home assets. -->
       </form>
     </div>
     <div class="success" id="formSuccess">
@@ -513,6 +517,7 @@ footer ul a:hover{color:var(--cyan)}
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0"><a href="/coral-springs" style="color:#cfe0ff">Coral Springs</a> · <a href="/boca-raton" style="color:#cfe0ff">Boca Raton</a> · <a href="/parkland" style="color:#cfe0ff">Parkland</a> · <a href="/pompano-beach" style="color:#cfe0ff">Pompano Beach</a> · <a href="/coconut-creek" style="color:#cfe0ff">Coconut Creek</a> · <a href="/deerfield-beach" style="color:#cfe0ff">Deerfield Beach</a> · <a href="/delray-beach" style="color:#cfe0ff">Delray Beach</a> · <a href="/boynton-beach" style="color:#cfe0ff">Boynton Beach</a> · <a href="/fort-lauderdale" style="color:#cfe0ff">Fort Lauderdale</a> · <a href="/weston" style="color:#cfe0ff">Weston</a> · <a href="/plantation" style="color:#cfe0ff">Plantation</a> · <a href="/lighthouse-point" style="color:#cfe0ff">Lighthouse Point</a> · <a href="/margate" style="color:#cfe0ff">Margate</a> · <a href="/tamarac" style="color:#cfe0ff">Tamarac</a> · <a href="/sunrise" style="color:#cfe0ff">Sunrise</a> · <a href="/davie" style="color:#cfe0ff">Davie</a> · <a href="/pembroke-pines" style="color:#cfe0ff">Pembroke Pines</a> · <a href="/cooper-city" style="color:#cfe0ff">Cooper City</a> · <a href="/oakland-park" style="color:#cfe0ff">Oakland Park</a> · <a href="/wilton-manors" style="color:#cfe0ff">Wilton Manors</a></p>
     </div>
     <div class="foot-bot">
+      <!-- PROOF SLOT: legitimacy line (electrician license number + "Simple Safe Technologies LLC DBA Infinity Smart Living") goes here once the license number is confirmed. -->
       <span>© 2026 Simple Safe Technologies LLC DBA Infinity Smart Living. All rights reserved.</span>
       <span><a href="/privacy" style="color:inherit">Privacy</a> · <a href="/terms" style="color:inherit">Terms</a></span>
     </div>
