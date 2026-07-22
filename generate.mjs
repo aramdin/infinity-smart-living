@@ -70,7 +70,10 @@ console.log('✓ packages.html');
 
 // --- city pages ---
 const cityTpl = readFileSync('./template-city.html', 'utf8');
-const pages = ['', 'packages.html', 'privacy.html', 'terms.html'];
+// packages.html is deliberately excluded: the page is orphaned + noindexed and
+// pricing stays hidden site-wide. free-guide / free-floor-plan are static
+// lead-capture pages kept out of the nav but included in the sitemap.
+const pages = ['', 'privacy.html', 'terms.html', 'free-guide.html', 'free-floor-plan.html'];
 
 for (const c of cfg.cities) {
   const slug = slugify(c.city);
@@ -87,7 +90,10 @@ for (const c of cfg.cities) {
 // ========================= BLOG =========================
 // Reuse the real site CSS + logo from the home template so the blog matches.
 const styleBlock = (homeTpl.match(/<style[\s\S]*?<\/style>/i) || [''])[0];
-const logo = (homeTpl.match(/class="logo" src="(data:[^"]+)"/) || [null, ''])[1];
+const logo = (homeTpl.match(/class="logo" src="([^"]+)"/) || [null, ''])[1];
+// Same Google Fonts tags the templates use, so blog/guarantee pages render
+// Sora + Plus Jakarta Sans instead of falling back to system fonts.
+const fontLinks = (homeTpl.match(/<link rel="preconnect"[\s\S]*?display=swap" rel="stylesheet">/i) || [''])[0];
 
 const MONTHS = ['January','February','March','April','May','June',
   'July','August','September','October','November','December'];
@@ -185,7 +191,7 @@ const blogFooter = `<footer>
   <div class="wrap">
     <div class="foot-grid">
       <div>
-        <img class="flogo" src="${logo}" alt="infinity smart living">
+        <img class="flogo" src="/images/logo-light.png" alt="infinity smart living">
         <p>Professional smart home installation and support for real homes across South Florida.</p>
       </div>
       <div>
@@ -249,7 +255,8 @@ const blogShell = ({ title, ogTitle, description, canonical, ogType = 'article',
 <meta property="og:description" content="${description}">
 <meta property="og:type" content="${ogType}">
 <meta property="og:url" content="${origin}/${canonical}">
-${image ? `<meta property="og:image" content="${image}">\n` : ''}${jsonLd ? `<script type="application/ld+json">${jsonLd}</script>\n` : ''}${styleBlock}
+${image ? `<meta property="og:image" content="${image}">\n` : ''}${jsonLd ? `<script type="application/ld+json">${jsonLd}</script>\n` : ''}${fontLinks}
+${styleBlock}
 ${BLOG_CSS}
 </head>
 <body>
@@ -310,6 +317,7 @@ ${inner}
   <p>See a custom layout and an honest quote for your home before you spend a dollar. Serving homeowners across Broward County, Boca Raton, Delray Beach, and Boynton Beach.</p>
   <a href="/#book" class="btn btn-primary btn-lg">Get My Free Smart Home Layout</a>
   <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
+  <p style="margin:1.1rem 0 0;font-size:.97rem"><a href="/free-guide" style="color:#fff;text-decoration:underline;text-underline-offset:2px;font-weight:600">Get the free Alexa starter guide</a></p>
 </div>
 <p class="back"><a href="/blog">← All articles</a></p>
 </article>
@@ -387,6 +395,217 @@ writeFileSync('guarantee.html', blogShell({
 }));
 pages.push('guarantee.html');
 console.log('✓ guarantee.html');
+
+// --- lead capture landing pages: /free-guide + /free-floor-plan ---
+// Out of the nav on purpose (traffic arrives from social DMs/comments), in the
+// sitemap. Mobile first: compact hero, form within one scroll, single CTA each.
+// Forms POST to the same GHL inbound webhook as the homepage form and fire the
+// same generate_lead event on a 2xx. The guide PDF path is deliberately
+// non-guessable and /guides/ is disallowed in robots.txt.
+const GUIDE_PDF_PATH = '/guides/alexa-starter-guide-k7m2.pdf';
+const LANDING_CITIES = ['Coral Springs', 'Boca Raton', 'Parkland', 'Pompano Beach', 'Coconut Creek', 'Deerfield Beach', 'Other nearby'];
+
+const LANDING_CSS = `<style>
+.land-hero{position:relative;overflow:hidden;padding:52px 0 40px;color:#fff;text-align:center;background:linear-gradient(135deg,#06203f 0%,#0a4f8c 55%,#00B2FC 100%)}
+.land-hero .pwrap{max-width:680px;margin:0 auto;padding:0 22px}
+.land-hero h1{font-size:clamp(1.75rem,5.4vw,2.6rem);font-weight:800;line-height:1.12;margin:.55rem 0 .7rem;color:#fff}
+.land-hero .post-cat{display:inline-block;font-family:var(--font-display);font-weight:600;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;background:rgba(255,255,255,.18);padding:.36rem .8rem;border-radius:999px}
+.land-hero .sub{color:rgba(255,255,255,.9);font-size:1.05rem;line-height:1.6;margin:0;max-width:46ch;margin-inline:auto}
+.land-main{max-width:560px;margin:0 auto;padding:34px 20px 30px}
+.land-main .lead-card{margin-top:-4px}
+.field select{width:100%;padding:.9rem 1rem;border:1.5px solid var(--line);border-radius:12px;font:inherit;font-size:1rem;color:var(--ink);background:var(--surface);transition:border-color .15s,background .15s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23536178' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center}
+.field select:focus{outline:none;border-color:var(--cyan);background-color:#fff}
+.land-points{list-style:none;margin:26px 0 0;display:flex;flex-direction:column;gap:.85rem;color:var(--slate);font-size:1rem;line-height:1.55}
+.land-points li{display:flex;gap:.6rem;align-items:flex-start}
+.land-points svg{flex:none;margin-top:3px}
+.land-cross{margin:30px 0 6px;padding:1.5rem;border-radius:16px;background:var(--surface);border:1px solid var(--line);text-align:center;color:var(--slate);font-size:.98rem;line-height:1.6}
+.land-cross a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.land-bonus{margin:14px 0 0;text-align:center;color:var(--slate);font-size:.95rem}
+@media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}}
+</style>`;
+
+const landingHeader = `<header id="top">
+  <div class="wrap nav">
+    <a href="/" aria-label="infinity smart living home"><img class="logo" src="${logo}" alt="infinity smart living"></a>
+    <div class="nav-cta">
+      <a href="tel:${site.phoneHref}" class="nav-call" aria-label="Call ${site.phone}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">${site.phone}</span><span class="nav-call-lbl">Call</span></a>
+    </div>
+  </div>
+</header>`;
+
+const CHECK_SVG = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>`;
+
+const CONSENT_HTML = `<label class="consent">
+  <input type="checkbox" id="consent" name="consent" required>
+  <span>I agree that Infinity Smart Living and the licensed local electrician under contract for my project may call, text, and email me at the contact details I provide about my inquiry, plan, and services, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help. I agree to the <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms</a>.</span>
+</label>`;
+
+const cityOptions = ['<option value="" disabled selected>Choose your city</option>']
+  .concat(LANDING_CITIES.map((c) => `<option value="${c}">${c}</option>`)).join('\n            ');
+
+const landingFields = `<div class="field">
+            <label for="name">First name</label>
+            <input id="name" name="name" type="text" placeholder="Jane" required>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="you@email.com" required>
+          </div>
+          <div class="field">
+            <label for="phone">Mobile number</label>
+            <input id="phone" name="phone" type="tel" placeholder="Best number to reach you" required>
+          </div>
+          <div class="field">
+            <label for="city">City</label>
+            <select id="city" name="city" required>
+            ${cityOptions}
+            </select>
+          </div>
+          ${CONSENT_HTML}`;
+
+// Same attribution + submit pattern as the homepage form: capture UTM/click ids
+// on landing, POST JSON to GHL, fire generate_lead only on a genuine 2xx, and
+// ALWAYS advance the user to the success step even if the POST fails.
+const landingFormScript = (leadSource) => `<script>
+var ISL_ATTR_KEYS = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid','msclkid'];
+(function(){
+  try {
+    var qs = new URLSearchParams(location.search);
+    var stored = JSON.parse(sessionStorage.getItem('isl_attr') || '{}');
+    ISL_ATTR_KEYS.forEach(function(k){ var v = qs.get(k); if (v) stored[k] = v; });
+    sessionStorage.setItem('isl_attr', JSON.stringify(stored));
+  } catch (e) {}
+})();
+document.getElementById('leadForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var stored = {};
+  try { stored = JSON.parse(sessionStorage.getItem('isl_attr') || '{}'); } catch (err) {}
+  // page_url keeps the UTMs even if the visitor navigated after landing
+  var pageUrl = new URL(location.href);
+  ISL_ATTR_KEYS.forEach(function(k){ if (stored[k] && !pageUrl.searchParams.get(k)) pageUrl.searchParams.set(k, stored[k]); });
+  var payload = {
+    name: document.getElementById('name').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    city: document.getElementById('city').value,
+    lead_source: '${leadSource}',
+    consent: document.getElementById('consent').checked,
+    consent_timestamp: new Date().toISOString(),
+    page_url: pageUrl.href
+  };
+  var leadOk = false;
+  try {
+    var res = await fetch('${site.formEndpoint}', {
+      method: 'POST',
+      keepalive: true,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    leadOk = !!(res && res.ok);
+  } catch (err) { /* never block the next step */ }
+  if (leadOk) {
+    try { if (typeof gtag === 'function') gtag('event', 'generate_lead', { page_path: location.pathname, form_city: payload.city || 'none' }); } catch (e) {}
+  }
+  document.getElementById('formFields').style.display = 'none';
+  document.getElementById('formSuccess').classList.add('show');
+});
+</script>`;
+
+const landingShell = ({ title, description, canonical, body }) => blogShell({
+  title, description, canonical, ogType: 'website', body,
+}).replace(blogHeader, landingHeader)
+  .replace('<!-- MOBILE STICKY CALL BAR (mobile viewports only) -->', '<!-- sticky call bar omitted: single CTA per landing page -->')
+  .replace(/<div class="mobile-cta-bar"[\s\S]*?<\/div>\n/, '')
+  // single CTA per page: the footer's "Get started" column would add a second one
+  .replace(/<div>\s*<h4>Get started<\/h4>[\s\S]*?<\/div>\n/, '')
+  .replace(`${BLOG_CSS}`, `${BLOG_CSS}\n${LANDING_CSS}`);
+
+// --- /free-guide ---
+const guideBody = `<main>
+<section class="land-hero">
+  <div class="pwrap">
+    <span class="post-cat">Free download</span>
+    <h1>The Alexa Room and Routine Starter Guide</h1>
+    <p class="sub">Set up your Echo the way the pros do: room groups, plain names your family will remember, and starter routines you can copy word for word.</p>
+  </div>
+</section>
+<div class="land-main">
+  <div class="lead-card">
+    <div id="formFields">
+      <h3>Get the guide free</h3>
+      <p class="sub">Tell us where to send it and the download opens right here.</p>
+      <form id="leadForm" method="POST">
+          ${landingFields}
+          <button type="submit" class="btn btn-primary btn-lg" style="width:100%">Send Me the Free Guide</button>
+      </form>
+    </div>
+    <div class="success" id="formSuccess">
+      <div class="check">✓</div>
+      <h3>Your guide is ready</h3>
+      <p>A copy is also on its way to your inbox.</p>
+      <a href="${GUIDE_PDF_PATH}" class="btn btn-primary btn-lg" style="width:100%;margin-top:12px" download>Download the Guide</a>
+      <p style="margin-top:16px;font-size:.95rem">Want it planned for your exact home? <a href="/free-floor-plan" style="color:var(--cyan-deep);font-weight:600">Get a free custom floor plan</a>.</p>
+    </div>
+  </div>
+  <ul class="land-points">
+    <li>${CHECK_SVG}Room groups that teach Alexa which devices live where, so "turn on the lights" just works</li>
+    <li>${CHECK_SVG}Simple naming tips the whole household will actually remember</li>
+    <li>${CHECK_SVG}Starter routines for good morning, good night, and leaving home, ready to copy</li>
+  </ul>
+  <div class="land-cross">Prefer it done for you? Get a free 20 minute virtual consult and a <a href="/free-floor-plan">free custom floor plan</a> for your exact home.</div>
+</div>
+</main>`;
+
+writeFileSync('free-guide.html', landingShell({
+  title: 'Free Alexa Starter Guide (Rooms + Routines) | Infinity Smart Living',
+  description: 'Get the free Alexa Room and Routine Starter Guide: set up room groups, name devices simply, and copy starter routines for morning, night, and leaving home.',
+  canonical: 'free-guide',
+  body: guideBody,
+}) .replace('</body>', `${landingFormScript('guide download page')}\n</body>`));
+console.log('✓ free-guide.html');
+
+// --- /free-floor-plan ---
+const floorPlanBody = `<main>
+<section class="land-hero">
+  <div class="pwrap">
+    <span class="post-cat">Free virtual consultation + free floor plan</span>
+    <h1>A smart home floor plan for your exact home, free</h1>
+    <p class="sub">A free 20 minute virtual consult, then a custom plan for your home, room by room, with your full project price shown before you spend a dollar.</p>
+  </div>
+</section>
+<div class="land-main">
+  <div class="lead-card">
+    <div id="formFields">
+      <h3>Get my free floor plan</h3>
+      <p class="sub">A few quick details and we will map your home room by room.</p>
+      <form id="leadForm" method="POST">
+          ${landingFields}
+          <button type="submit" class="btn btn-primary btn-lg" style="width:100%">Get My Free Floor Plan</button>
+      </form>
+    </div>
+    <div class="success" id="formSuccess">
+      <div class="check">✓</div>
+      <h3>You are all set</h3>
+      <p>We will reach out shortly to schedule your free 20 minute virtual consult. Your free Alexa starter guide is on its way to your inbox too.</p>
+      <a href="${site.bookUrl}" class="btn btn-primary btn-lg" style="width:100%;margin-top:12px">Pick Your Consult Time Now</a>
+    </div>
+  </div>
+  <p class="land-bonus"><b>Bonus:</b> sign up today and the free Alexa Room and Routine Starter Guide comes with it.</p>
+  <ul class="land-points">
+    <li>${CHECK_SVG}Free layout and price before you decide</li>
+    <li>${CHECK_SVG}Licensed electrical work is performed by the licensed electrician under contract on your project.</li>
+    <li>${CHECK_SVG}Free consultation and smart home layout · No obligation · <a href="/guarantee" style="color:var(--cyan-deep);font-weight:600">30-Day Satisfaction Guarantee</a></li>
+  </ul>
+</div>
+</main>`;
+
+writeFileSync('free-floor-plan.html', landingShell({
+  title: 'Free Smart Home Floor Plan + 20 Minute Consult | Infinity Smart Living',
+  description: 'Book a free 20 minute virtual consult and get a custom smart home floor plan for your exact home, room by room, with your full price shown before you spend a dollar.',
+  canonical: 'free-floor-plan',
+  body: floorPlanBody,
+}) .replace('</body>', `${landingFormScript('floor plan squeeze page')}\n</body>`));
+console.log('✓ free-floor-plan.html');
 
 // --- links page (linktree-style: bare logo + buttons, noindex, NOT in sitemap/nav/footer) ---
 const LINK_UTM = '?utm_source=linktree&utm_medium=bio&utm_campaign=links';
