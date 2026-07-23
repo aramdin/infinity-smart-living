@@ -733,6 +733,91 @@ writeFileSync('consult-booked.html', landingShell({
 </body>`));
 console.log('✓ consult-booked.html (noindex, fires appointment_booked)');
 
+// --- /routines (video hub) ---
+// Built only when routines.json has entries, so an empty page never ships.
+// YouTube embeds are lazy facades: a thumbnail + play button, and the real
+// youtube-nocookie iframe loads only on click. Keeps page weight flat.
+// Write ups live in routines-src/<slug>.html (same pattern as posts/).
+const routinesCfg = JSON.parse(readFileSync('./routines.json', 'utf8'));
+const routineEntries = routinesCfg.routines || [];
+if (routineEntries.length) {
+  const ROUTINES_CSS = `<style>
+.routine{max-width:720px;margin:0 auto 56px;padding:0 24px}
+.routine h2{font-size:clamp(1.5rem,2.8vw,2rem);font-weight:800;color:var(--ink);margin:0 0 .35rem}
+.routine .r-meta{color:var(--slate);font-size:.92rem;margin:0 0 1rem}
+.routine p{color:var(--slate);font-size:1.07rem;line-height:1.75;margin:0 0 1.15rem}
+.routine ul{margin:0 0 1.35rem 1.15rem;color:var(--slate);font-size:1.07rem;line-height:1.7}
+.yt{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#06203f;margin:0 0 1.3rem;cursor:pointer}
+.yt img{width:100%;height:100%;object-fit:cover;display:block}
+.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.yt-play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(5,25,65,.25);border:0;cursor:pointer;transition:background .2s}
+.yt-play:hover{background:rgba(5,25,65,.45)}
+.yt-play span{width:74px;height:74px;border-radius:50%;background:var(--cyan);display:grid;place-items:center;box-shadow:0 12px 30px -8px rgba(0,178,252,.7)}
+.yt-play svg{width:30px;height:30px;fill:var(--ink);margin-left:4px}
+</style>`;
+  const routineSections = routineEntries.map((r) => {
+    const writeup = readFileSync(`routines-src/${r.slug}.html`, 'utf8').trim();
+    return `<section class="routine" id="${r.slug}">
+  <h2>${r.title}</h2>
+  <p class="r-meta">${fmtDate(r.date)} · ${r.summary}</p>
+  <div class="yt" data-yt="${r.youtubeId}">
+    <img src="https://i.ytimg.com/vi/${r.youtubeId}/hqdefault.jpg" alt="Video preview: ${r.title}" width="800" height="450" loading="lazy" decoding="async">
+    <button class="yt-play" aria-label="Play video: ${r.title}"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></button>
+  </div>
+${writeup}
+</section>`;
+  }).join('\n');
+
+  const routinesBody = `<main>
+<section class="post-hero" style="background:linear-gradient(135deg,#06203f 0%,#0a4f8c 55%,#00B2FC 100%)">
+  <div class="pwrap">
+    <span class="post-cat">Routines</span>
+    <h1>Real Alexa routines, shown working</h1>
+    <p class="post-meta">Short videos of routines we set up, filmed in real spaces, each with a write up of how it works.</p>
+  </div>
+</section>
+<div style="padding:54px 0 30px">
+${routineSections}
+</div>
+<article class="post-body" style="padding-top:0">
+<div class="cta-box">
+  <h3>Want routines like these in your home?</h3>
+  <p>Book a free virtual consultation and your free smart home floor plan maps the routines that fit how you live.</p>
+  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
+  <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
+</div>
+</article>
+</main>`;
+
+  writeFileSync('routines.html', blogShell({
+    title: 'Real Alexa Routines in Action | Infinity Smart Living',
+    description: 'Watch real Alexa routines working in real spaces: short videos with plain write ups of what each routine does and what it needs.',
+    canonical: 'routines',
+    body: routinesBody,
+  })
+    .replace('</head>', `${ROUTINES_CSS}\n</head>`)
+    .replace('</body>', `<script>
+document.querySelectorAll('.yt').forEach(function(el){
+  el.addEventListener('click', function(){
+    if (el.querySelector('iframe')) return;
+    var id = el.getAttribute('data-yt');
+    var f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1';
+    f.title = 'Routine video';
+    f.allow = 'autoplay; encrypted-media; picture-in-picture';
+    f.setAttribute('allowfullscreen', '');
+    el.innerHTML = '';
+    el.appendChild(f);
+  });
+});
+</script>
+</body>`));
+  pages.push('routines.html');
+  console.log(`✓ routines.html (${routineEntries.length} routines)`);
+} else {
+  console.log('· routines.html skipped (no entries in routines.json yet)');
+}
+
 // --- links page (linktree-style: bare logo + buttons, noindex, NOT in sitemap/nav/footer) ---
 const LINK_UTM = '?utm_source=linktree&utm_medium=bio&utm_campaign=links';
 const linksHtml = `<!doctype html>

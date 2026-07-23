@@ -1,0 +1,4 @@
+{
+  "_howto": "Each entry: slug (kebab case, becomes #anchor), title, youtubeId (the 11 char id from the YouTube URL), date (YYYY-MM-DD), summary (one line under the title). Write up lives in routines-src/<slug>.html as plain HTML paragraphs. The /routines page only builds when this array has at least one entry. Videos go up on YouTube first (unlisted is fine), then the id lands here. Brand rules apply to write ups: Alexa only, no banned terms, no em dashes, no pricing.",
+  "routines": []
+}
