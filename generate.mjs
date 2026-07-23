@@ -696,6 +696,43 @@ writeFileSync('free-floor-plan.html', landingShell({
 }) .replace('</body>', `${landingFormScript('floor plan squeeze page')}\n</body>`));
 console.log('✓ free-floor-plan.html');
 
+// --- /consult-booked ---
+// Booking confirmation target: the GHL calendar redirects here after a consult is
+// booked, and the page fires appointment_booked for GA4 (and later Google Ads).
+// noindex, excluded from the sitemap (never pushed to pages[]), no nav, no CTAs.
+const consultBookedBody = `<main>
+<section class="land-hero">
+  <div class="pwrap">
+    <span class="post-cat">Consultation confirmed</span>
+    <h1>You are booked!</h1>
+    <p class="sub">Your free virtual consult is on the calendar. Here is what happens next.</p>
+  </div>
+</section>
+<div class="land-main">
+  <ul class="land-points">
+    <li>${CHECK_SVG}We confirm your time by text shortly.</li>
+    <li>${CHECK_SVG}We prep your floor plan questions before the call.</li>
+    <li>${CHECK_SVG}The call itself takes about 20 minutes.</li>
+  </ul>
+  <p class="land-note" style="text-align:center;margin-top:22px">Need to change your time? Call or text ${site.phone} and we will move it, no problem.</p>
+</div>
+</main>`;
+
+writeFileSync('consult-booked.html', landingShell({
+  title: 'You Are Booked | Infinity Smart Living',
+  description: 'Your free smart home consultation is booked. We confirm by text and the call takes about 20 minutes.',
+  canonical: 'consult-booked',
+  body: consultBookedBody,
+})
+  .replace('<link rel="canonical"', '<meta name="robots" content="noindex, follow">\n<link rel="canonical"')
+  .replace('</body>', `<script>
+(function(){
+  try { if (typeof window.gtag === 'function') { window.gtag('event', 'appointment_booked', { page_path: location.pathname }); } } catch (e) {}
+})();
+</script>
+</body>`));
+console.log('✓ consult-booked.html (noindex, fires appointment_booked)');
+
 // --- links page (linktree-style: bare logo + buttons, noindex, NOT in sitemap/nav/footer) ---
 const LINK_UTM = '?utm_source=linktree&utm_medium=bio&utm_campaign=links';
 const linksHtml = `<!doctype html>
