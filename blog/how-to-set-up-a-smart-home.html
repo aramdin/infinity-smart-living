@@ -172,6 +172,14 @@ header.scrolled{border-color:var(--line);box-shadow:0 6px 20px -16px rgba(5,25,6
 .sol h3{font-size:1.18rem;margin-bottom:.5rem}
 .sol p{color:var(--slate);font-size:.96rem}
 
+/* our work: photos of our own office and showroom build out */
+.work-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.work-fig{margin:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.work-fig img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:3/2}
+.work-fig.lead{grid-column:1 / -1}
+/* lead keeps its true ratio so the ceiling LED run is not cropped out */
+.work-fig.lead img{height:auto;aspect-ratio:1600/1091}
+
 /* how it works */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;position:relative}
 .thread{position:absolute;top:34px;left:14%;right:14%;height:2px;z-index:0}
@@ -260,7 +268,7 @@ footer ul a:hover{color:var(--cyan)}
 /* responsive */
 @media(max-width:960px){
   .hero-grid,.why-grid{grid-template-columns:1fr;gap:44px}
-  .sol-grid,.tgrid{grid-template-columns:1fr 1fr}
+  .sol-grid,.tgrid,.work-grid{grid-template-columns:1fr 1fr}
   .steps{grid-template-columns:1fr;gap:36px}
   .thread{display:none}
   .pkgs{grid-template-columns:1fr;max-width:460px;margin:0 auto}
@@ -274,7 +282,8 @@ footer ul a:hover{color:var(--cyan)}
   .menu-btn{display:block}
   header.nav-open .nav-links{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:flex-start;background:#fff;border-bottom:1px solid var(--line);padding:16px 24px 20px;gap:1.05rem;box-shadow:0 20px 30px -18px rgba(5,25,65,.45)}
   header.nav-open .nav-links a{font-size:1.06rem;color:var(--ink);font-weight:600}
-  .sol-grid,.tgrid{grid-template-columns:1fr}
+  .sol-grid,.tgrid,.work-grid{grid-template-columns:1fr}
+  .work-fig img{aspect-ratio:3/2}
   .section{padding:72px 0}
   .hero{padding:54px 0 70px}
   .cta{padding:44px 22px;border-radius:22px}
@@ -366,6 +375,10 @@ footer ul a:hover{color:var(--cyan)}
 .post-body ul,.post-body ol{margin:0 0 1.35rem 1.15rem;color:var(--slate);font-size:1.07rem;line-height:1.7}
 .post-body li{margin:.42rem 0}
 .post-body a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+/* inline photo of our own work; width/height on the img keep it from shifting layout */
+.post-fig{margin:1.9rem 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
+.post-fig img{display:block;width:100%;height:auto}
+.post-fig figcaption{padding:.7rem 1rem;color:var(--slate);font-size:.88rem;line-height:1.5;text-align:center}
 .cta-box{margin:2.8rem 0 1rem;padding:2.1rem;border-radius:18px;background:linear-gradient(135deg,#06203f,#00B2FC);color:#fff;text-align:center}
 .cta-box h3{color:#fff;font-size:1.5rem;margin:0 0 .6rem}
 .cta-box p{color:rgba(255,255,255,.92);margin:0 0 1.4rem}
@@ -455,6 +468,10 @@ footer ul a:hover{color:var(--cyan)}
 <h2>How to build a smart home on a budget</h2>
 <p>You can get a real smart home working for less than the cost of a nice dinner out, if you spend in the right order. Smart plugs are the cheapest entry point and make anything with a switch controllable. Smart bulbs come next, a few dollars more but with dimming and scenes. A smart speaker ties them together with voice. That trio, bought during one of the frequent sales, regularly lands under a hundred dollars.</p>
 <p>Save the bigger tickets, a smart thermostat and installed smart switches, for when you know you will stay in the ecosystem. They deliver the deepest daily value, the thermostat often pays for itself in cooling savings here in South Florida, but they are the items worth buying once and buying right.</p>
+<figure class="post-fig">
+<img src="/images/smart-dimmer-switches-led.webp" alt="Smart dimmer switches with LED indicators installed by Infinity Smart Living" width="800" height="533" loading="lazy" decoding="async">
+<figcaption>Smart dimmers with LED indicators, installed and configured by our team.</figcaption>
+</figure>
 
 <h2>How to make your home a smart home without the headaches</h2>
 <p>Everything above is safely in do-it-yourself territory. The moment the plan involves wall switches, wiring, or whole-home coverage across a dozen rooms, bringing in a professional stops being a luxury and starts being the cheaper path, because rework and troubleshooting are where budgets actually die.</p>

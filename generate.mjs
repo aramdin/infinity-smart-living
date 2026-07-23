@@ -142,6 +142,10 @@ const BLOG_CSS = `<style>
 .post-body ul,.post-body ol{margin:0 0 1.35rem 1.15rem;color:var(--slate);font-size:1.07rem;line-height:1.7}
 .post-body li{margin:.42rem 0}
 .post-body a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+/* inline photo of our own work; width/height on the img keep it from shifting layout */
+.post-fig{margin:1.9rem 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
+.post-fig img{display:block;width:100%;height:auto}
+.post-fig figcaption{padding:.7rem 1rem;color:var(--slate);font-size:.88rem;line-height:1.5;text-align:center}
 .cta-box{margin:2.8rem 0 1rem;padding:2.1rem;border-radius:18px;background:linear-gradient(135deg,#06203f,#00B2FC);color:#fff;text-align:center}
 .cta-box h3{color:#fff;font-size:1.5rem;margin:0 0 .6rem}
 .cta-box p{color:rgba(255,255,255,.92);margin:0 0 1.4rem}
@@ -445,6 +449,9 @@ const LANDING_CSS = `<style>
 .land-cross a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
 .land-bonus{margin:14px 0 0;text-align:center;color:var(--slate);font-size:.95rem}
 .land-note{margin:12px 0 0;color:var(--slate);font-size:.9rem;line-height:1.5}
+.land-fig{margin:26px 0 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
+.land-fig img{display:block;width:100%;height:auto}
+.land-fig figcaption{padding:.65rem .9rem;color:var(--slate);font-size:.86rem;line-height:1.5;text-align:center}
 @media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}}
 </style>`;
 
@@ -577,6 +584,10 @@ const guideBody = `<main>
     <li>${CHECK_SVG}Simple naming tips the whole household will actually remember</li>
     <li>${CHECK_SVG}Starter routines for good morning, good night, and leaving home, ready to copy</li>
   </ul>
+  <figure class="land-fig">
+    <img src="/images/smart-dimmer-switches-led.webp" alt="Smart dimmer switches with LED indicators installed by Infinity Smart Living" width="800" height="533" loading="lazy" decoding="async">
+    <figcaption>Smart dimmers with LED indicators, installed and configured by our team.</figcaption>
+  </figure>
   <div class="land-cross">Prefer it done for you? Get a free 20 minute virtual consult and a <a href="/free-floor-plan">free custom floor plan</a> for your exact home.</div>
 </div>
 </main>`;
@@ -622,6 +633,10 @@ const floorPlanBody = `<main>
     <li>${CHECK_SVG}Free plan and price before you decide</li>
     <li>${CHECK_SVG}Licensed electrical work is performed by the licensed electrician under contract on your project.</li>
   </ul>
+  <figure class="land-fig">
+    <img src="/images/smart-light-switch-install.webp" alt="Smart light switch installed by Infinity Smart Living" width="800" height="533" loading="lazy" decoding="async">
+    <figcaption>A smart switch installed and configured by our team.</figcaption>
+  </figure>
 </div>
 </main>`;
 

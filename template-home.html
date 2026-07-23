@@ -179,6 +179,14 @@ header.scrolled{border-color:var(--line);box-shadow:0 6px 20px -16px rgba(5,25,6
 .sol h3{font-size:1.18rem;margin-bottom:.5rem}
 .sol p{color:var(--slate);font-size:.96rem}
 
+/* our work: photos of our own office and showroom build out */
+.work-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.work-fig{margin:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.work-fig img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:3/2}
+.work-fig.lead{grid-column:1 / -1}
+/* lead keeps its true ratio so the ceiling LED run is not cropped out */
+.work-fig.lead img{height:auto;aspect-ratio:1600/1091}
+
 /* how it works */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;position:relative}
 .thread{position:absolute;top:34px;left:14%;right:14%;height:2px;z-index:0}
@@ -267,7 +275,7 @@ footer ul a:hover{color:var(--cyan)}
 /* responsive */
 @media(max-width:960px){
   .hero-grid,.why-grid{grid-template-columns:1fr;gap:44px}
-  .sol-grid,.tgrid{grid-template-columns:1fr 1fr}
+  .sol-grid,.tgrid,.work-grid{grid-template-columns:1fr 1fr}
   .steps{grid-template-columns:1fr;gap:36px}
   .thread{display:none}
   .pkgs{grid-template-columns:1fr;max-width:460px;margin:0 auto}
@@ -281,7 +289,8 @@ footer ul a:hover{color:var(--cyan)}
   .menu-btn{display:block}
   header.nav-open .nav-links{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:flex-start;background:#fff;border-bottom:1px solid var(--line);padding:16px 24px 20px;gap:1.05rem;box-shadow:0 20px 30px -18px rgba(5,25,65,.45)}
   header.nav-open .nav-links a{font-size:1.06rem;color:var(--ink);font-weight:600}
-  .sol-grid,.tgrid{grid-template-columns:1fr}
+  .sol-grid,.tgrid,.work-grid{grid-template-columns:1fr}
+  .work-fig img{aspect-ratio:3/2}
   .section{padding:72px 0}
   .hero{padding:54px 0 70px}
   .cta{padding:44px 22px;border-radius:22px}
@@ -451,6 +460,37 @@ footer ul a:hover{color:var(--cyan)}
     <span class="brand">Alexa Routines</span>
   </div>
 </div>
+
+<!-- OUR WORK
+     Photos here are from our own office and showroom build out. Copy and alt text
+     must say that plainly, and must never imply a residence or a named customer.
+     Photos of a real home need written permission and a confirmed city first. -->
+<section class="section" id="our-work">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow" style="justify-content:center">Our work</span>
+      <h2>We installed every switch, shade, and light in our own office</h2>
+      <p>Before we plan your home, see the work our team does every day. These photos are from our own office and showroom build out, installed and configured by our team with a licensed electrician under contract.</p>
+    </div>
+    <div class="work-grid">
+      <figure class="work-fig lead reveal">
+        <img src="/images/game-room-smart-led-lighting.webp" alt="Game room with smart LED ceiling lighting installed by the Infinity Smart Living team" width="1600" height="1091" loading="lazy" decoding="async">
+      </figure>
+      <figure class="work-fig reveal">
+        <img src="/images/infinity-smart-living-install-tv-shades.webp" alt="Motorized zebra shades and wall mounted display in the Infinity Smart Living office" width="1600" height="1067" loading="lazy" decoding="async">
+      </figure>
+      <figure class="work-fig reveal">
+        <img src="/images/smart-dimmer-switches-led.webp" alt="Smart dimmer switches with LED indicators installed by Infinity Smart Living" width="800" height="533" loading="lazy" decoding="async">
+      </figure>
+      <figure class="work-fig reveal">
+        <img src="/images/motorized-smart-shade-install.webp" alt="Motorized smart window shade installed by our team" width="1600" height="1203" loading="lazy" decoding="async">
+      </figure>
+    </div>
+    <div style="text-align:center;margin-top:48px">
+      <a href="#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
+    </div>
+  </div>
+</section>
 
 <!-- HOW THE CONSULT WORKS -->
 <section class="section alt" id="how">
