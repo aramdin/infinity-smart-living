@@ -127,6 +127,42 @@ const IMG_DIMS = {
 const heroH = (slug) => (IMG_DIMS[slug] || [900])[0];
 const thumbH = (slug) => (IMG_DIMS[slug] || [0, 533])[1];
 
+// Explicit featured-image overrides. Posts listed here use these files (and alt text)
+// instead of the blog-<slug>.jpg convention; real install photos stay WebP, thumbs are
+// 800px JPGs derived with sips. Posts not listed fall through to the convention above.
+const POST_IMAGES = {
+  'what-is-matter-smart-home': {
+    hero: 'smart-dimmer-switches-led.webp', heroW: 800, heroH: 533,
+    thumb: 'smart-dimmer-switches-led.webp', thumbW: 800, thumbH: 533,
+    alt: 'Smart dimmer switches with LED indicators installed by our team',
+  },
+  'smart-home-ecosystem': {
+    hero: 'smart-home-lounge-led-lighting.webp', heroW: 1600, heroH: 1213,
+    thumb: 'smart-home-lounge-led-lighting-thumb.jpg', thumbW: 800, thumbH: 606,
+    alt: 'Lounge with smart LED lighting installed by the Infinity Smart Living team',
+  },
+  'alexa-for-seniors': {
+    hero: 'card-speaker.jpg', heroW: 800, heroH: 532,
+    thumb: 'card-speaker.jpg', thumbW: 800, thumbH: 532,
+    alt: 'A smart speaker on a table at home',
+  },
+  'smart-lighting-installation-room-by-room': {
+    hero: 'led-accent-lighting-install.webp', heroW: 1600, heroH: 1067,
+    thumb: 'led-accent-lighting-install-thumb.jpg', thumbW: 800, thumbH: 533,
+    alt: 'LED accent lighting installed along a ceiling by our team',
+  },
+  'how-to-set-up-a-smart-home': {
+    hero: 'smart-tv-entertainment-setup.webp', heroW: 1600, heroH: 1067,
+    thumb: 'smart-tv-entertainment-setup-thumb.jpg', thumbW: 800, thumbH: 533,
+    alt: 'Smart TV setup installed by the Infinity Smart Living team',
+  },
+  'home-automation-what-to-automate-first': {
+    hero: 'smart-light-switch-install.webp', heroW: 800, heroH: 533,
+    thumb: 'smart-light-switch-install.webp', thumbW: 800, thumbH: 533,
+    alt: 'Smart light switch installed by our team',
+  },
+};
+
 const BLOG_CSS = `<style>
 .post-hero{position:relative;overflow:hidden;padding:100px 0 60px;color:#fff;text-align:center}
 .post-hero .pwrap{max-width:780px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
@@ -314,10 +350,14 @@ posts.forEach((post, i) => {
   const inner = readFileSync(`./${post.file}`, 'utf8').trim();
   // Only render the hero photo when the image file actually exists; otherwise the
   // brand gradient behind it stands in on its own (no broken image, no layout shift).
-  const heroImg = existsSync(`images/blog-${post.slug}.jpg`)
+  const pi = POST_IMAGES[post.slug];
+  const heroImg = pi
+    ? `\n  <img class="hero-photo" src="/images/${pi.hero}" alt="${pi.alt}" width="${pi.heroW}" height="${pi.heroH}">`
+    : existsSync(`images/blog-${post.slug}.jpg`)
     ? `\n  <img class="hero-photo" src="/images/blog-${post.slug}.jpg" alt="${post.title}" width="1600" height="${heroH(post.slug)}">`
     : '';
-  const ogImage = existsSync(`images/blog-${post.slug}.jpg`) ? `${origin}/images/blog-${post.slug}.jpg` : '';
+  const ogImage = pi ? `${origin}/images/${pi.hero}`
+    : existsSync(`images/blog-${post.slug}.jpg`) ? `${origin}/images/blog-${post.slug}.jpg` : '';
   const metaTitle = post.metaTitle || post.title;
   const canonical = `blog/${post.slug}`;
   const jsonLd = JSON.stringify({
@@ -362,14 +402,22 @@ ${ctaBox(post.slug)}
 });
 
 // --- blog index ---
-const cards = posts.map((post, i) => `      <a class="post-card" href="/blog/${post.slug}">
-        <div class="card-hero" style="background:${grad(i)}">${existsSync(`images/blog-${post.slug}-thumb.jpg`) ? `<img class="card-photo" src="/images/blog-${post.slug}-thumb.jpg" alt="${post.title}" width="800" height="${thumbH(post.slug)}" loading="lazy">` : ''}<span class="post-cat">${post.category}</span></div>
+const cards = posts.map((post, i) => {
+  const pi = POST_IMAGES[post.slug];
+  const cardImg = pi
+    ? `<img class="card-photo" src="/images/${pi.thumb}" alt="${pi.alt}" width="${pi.thumbW}" height="${pi.thumbH}" loading="lazy">`
+    : existsSync(`images/blog-${post.slug}-thumb.jpg`)
+    ? `<img class="card-photo" src="/images/blog-${post.slug}-thumb.jpg" alt="${post.title}" width="800" height="${thumbH(post.slug)}" loading="lazy">`
+    : '';
+  return `      <a class="post-card" href="/blog/${post.slug}">
+        <div class="card-hero" style="background:${grad(i)}">${cardImg}<span class="post-cat">${post.category}</span></div>
         <div class="card-body">
           <h2>${post.title}</h2>
           <p>${post.description}</p>
           <span class="card-meta">${fmtDate(post.date)} · ${post.read} min read</span>
         </div>
-      </a>`).join('\n');
+      </a>`;
+}).join('\n');
 
 const blogIndexBody = `<main>
   <section class="wrap blog-index">
