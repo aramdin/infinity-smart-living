@@ -644,7 +644,9 @@ const guideBody = `<main>
 </section>
 <div class="land-main">
   <figure class="land-fig land-fig-lead">
-    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home, installed by our team" width="1600" height="1090" loading="lazy" decoding="async">
+    <!-- LCP element: sits inside the first screen at 390px, so it loads eagerly at
+         high priority. Do not add loading="lazy" here, it defers the largest paint. -->
+    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home, installed by our team" width="1600" height="1090" fetchpriority="high" decoding="async">
     <figcaption>One Echo Show 15 on the wall, running the whole home. Installed and set up by our team.</figcaption>
   </figure>
   <div class="lead-card">
