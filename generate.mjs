@@ -292,7 +292,7 @@ const socialImageTags = ({ image, imageW, imageH, twitterCard, imageAlt }) => {
   return `${tags.join('\n')}\n`;
 };
 
-const blogShell = ({ title, ogTitle, description, canonical, ogType = 'article', image = '', imageW = '', imageH = '', twitterCard = '', imageAlt = '', jsonLd = '', body }) => `<!doctype html>
+const blogShell = ({ title, ogTitle, description, canonical, ogType = 'article', image = '', imageW = '', imageH = '', twitterCard = '', imageAlt = '', jsonLd = '', headExtra = '', body }) => `<!doctype html>
 <html lang="en">
 <head>
 <!-- Google tag (gtag.js) -->
@@ -316,7 +316,7 @@ const blogShell = ({ title, ogTitle, description, canonical, ogType = 'article',
 <meta property="og:description" content="${description}">
 <meta property="og:type" content="${ogType}">
 <meta property="og:url" content="${origin}/${canonical}">
-${socialImageTags({ image, imageW, imageH, twitterCard, imageAlt })}${jsonLd ? `<script type="application/ld+json">${jsonLd}</script>\n` : ''}${fontLinks}
+${socialImageTags({ image, imageW, imageH, twitterCard, imageAlt })}${jsonLd ? `<script type="application/ld+json">${jsonLd}</script>\n` : ''}${headExtra ? `${headExtra}\n` : ''}${fontLinks}
 ${styleBlock}
 ${BLOG_CSS}
 </head>
@@ -525,13 +525,11 @@ const LANDING_CSS = `<style>
 .land-fig-lead{margin:0 0 22px}
 .land-fig-lead + .lead-card{margin-top:0}
 /* .land-fig-panel is the Echo Show panel photo treatment, shared by both landing
-   pages. Display-only crop: in the source frame the panel sits right of centre with
-   a wide band of wall down the left (screen spans 419-1455 of 1600). A 5/4 box
-   overflows 237px horizontally, so right-aligning it trims that band off the left
-   and lands the panel centred. The .webp on disk is untouched. The dark background
+   pages. No display crop: the 1600x1067 file is itself centred with thin equal
+   margins, so the img renders whole at its natural ratio. The dark background
    stands in for the photo before it decodes, instead of an empty pale card, and
    figcaption re-asserts --surface so the caption bar stays readable. */
-.land-fig-panel img{aspect-ratio:5/4;object-fit:cover;object-position:100% center;background:#06203f}
+.land-fig-panel img{background:#06203f}
 .land-fig-panel figcaption{background:var(--surface)}
 @media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}.land-fig-lead{margin-bottom:18px}}
 </style>`;
@@ -634,8 +632,8 @@ const LANDING_OG = {
   imageAlt: 'A wall mounted Echo Show 15 running a whole home, installed by our team',
 };
 
-const landingShell = ({ title, description, canonical, body }) => blogShell({
-  title, description, canonical, ogType: 'website', body, ...LANDING_OG,
+const landingShell = ({ title, description, canonical, headExtra = '', body }) => blogShell({
+  title, description, canonical, ogType: 'website', headExtra, body, ...LANDING_OG,
 }).replace(blogHeader, landingHeader)
   .replace('<!-- MOBILE STICKY CALL BAR (mobile viewports only) -->', '<!-- sticky call bar omitted: single CTA per landing page -->')
   .replace(/<div class="mobile-cta-bar"[\s\S]*?<\/div>\n/, '')
@@ -656,7 +654,7 @@ const guideBody = `<main>
   <figure class="land-fig land-fig-lead land-fig-panel">
     <!-- LCP element: sits inside the first screen at 390px, so it loads eagerly at
          high priority. Do not add loading="lazy" here, it defers the largest paint. -->
-    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home, installed by our team" width="1600" height="1090" fetchpriority="high" decoding="async">
+    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home, installed by our team" width="1600" height="1067" fetchpriority="high" decoding="async">
     <figcaption>One Echo Show 15 on the wall, running the whole home. Installed and set up by our team.</figcaption>
   </figure>
   <div class="lead-card">
@@ -690,6 +688,11 @@ writeFileSync('free-guide.html', landingShell({
   title: 'Free Alexa Starter Guide (Rooms + Routines) | Infinity Smart Living',
   description: 'Get the free Alexa Room and Routine Starter Guide: set up room groups, name devices simply, and copy starter routines for morning, night, and leaving home.',
   canonical: 'free-guide',
+  // The panel photo is this page's LCP element. The preload starts the fetch during
+  // head parse, ahead of the render-blocking font stylesheet, rather than waiting
+  // for the body to reach the <img>. Only this page: on /free-floor-plan the same
+  // photo sits well below the fold and stays lazy.
+  headExtra: '<link rel="preload" as="image" href="/images/echo-show-15-wall-panel.webp" type="image/webp" fetchpriority="high">',
   body: guideBody,
 }) .replace('</body>', `${landingFormScript('guide download page')}\n</body>`));
 console.log('✓ free-guide.html');
@@ -730,7 +733,7 @@ const floorPlanBody = `<main>
   <!-- Proof photo, deliberately below the form and the checkmarks on this page.
        Well under the fold, so it stays lazy: unlike /free-guide this is not the LCP. -->
   <figure class="land-fig land-fig-panel">
-    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home, installed by our team" width="1600" height="1090" loading="lazy" decoding="async">
+    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home, installed by our team" width="1600" height="1067" loading="lazy" decoding="async">
     <figcaption>A whole home running from one wall panel, installed by our team. Your free floor plan maps what fits your rooms.</figcaption>
   </figure>
 </div>

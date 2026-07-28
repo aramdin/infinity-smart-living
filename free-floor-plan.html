@@ -440,13 +440,11 @@ footer ul a:hover{color:var(--cyan)}
 .land-fig-lead{margin:0 0 22px}
 .land-fig-lead + .lead-card{margin-top:0}
 /* .land-fig-panel is the Echo Show panel photo treatment, shared by both landing
-   pages. Display-only crop: in the source frame the panel sits right of centre with
-   a wide band of wall down the left (screen spans 419-1455 of 1600). A 5/4 box
-   overflows 237px horizontally, so right-aligning it trims that band off the left
-   and lands the panel centred. The .webp on disk is untouched. The dark background
+   pages. No display crop: the 1600x1067 file is itself centred with thin equal
+   margins, so the img renders whole at its natural ratio. The dark background
    stands in for the photo before it decodes, instead of an empty pale card, and
    figcaption re-asserts --surface so the caption bar stays readable. */
-.land-fig-panel img{aspect-ratio:5/4;object-fit:cover;object-position:100% center;background:#06203f}
+.land-fig-panel img{background:#06203f}
 .land-fig-panel figcaption{background:var(--surface)}
 @media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}.land-fig-lead{margin-bottom:18px}}
 </style>
@@ -523,7 +521,7 @@ footer ul a:hover{color:var(--cyan)}
   <!-- Proof photo, deliberately below the form and the checkmarks on this page.
        Well under the fold, so it stays lazy: unlike /free-guide this is not the LCP. -->
   <figure class="land-fig land-fig-panel">
-    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home, installed by our team" width="1600" height="1090" loading="lazy" decoding="async">
+    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home, installed by our team" width="1600" height="1067" loading="lazy" decoding="async">
     <figcaption>A whole home running from one wall panel, installed by our team. Your free floor plan maps what fits your rooms.</figcaption>
   </figure>
 </div>
