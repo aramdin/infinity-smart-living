@@ -522,6 +522,13 @@ const LANDING_CSS = `<style>
 /* lead figure sits between the headline and the form, so the phone scroll reads
    headline, photo, form. No top margin, and it cancels the lead-card pull-up. */
 .land-fig-lead{margin:0 0 22px}
+/* Display-only crop. In the source frame the panel sits right of centre with a wide
+   band of wall down the left (screen spans 419-1455 of 1600). A 5/4 box overflows
+   237px horizontally, so right-aligning it trims that band off the left and lands
+   the panel centred. The .webp on disk is untouched. The dark background stands in
+   for the photo before it decodes, instead of an empty pale card. */
+.land-fig-lead img{aspect-ratio:5/4;object-fit:cover;object-position:100% center;background:#06203f}
+.land-fig-lead figcaption{background:var(--surface)}
 .land-fig-lead + .lead-card{margin-top:0}
 @media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}.land-fig-lead{margin-bottom:18px}}
 </style>`;
