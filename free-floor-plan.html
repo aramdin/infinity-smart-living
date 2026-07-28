@@ -22,6 +22,12 @@
 <meta property="og:description" content="Book a free 20 minute virtual consult and get a custom smart home floor plan for your exact home, room by room, with your full price shown before you spend a dollar.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://infinitysmartliving.com/free-floor-plan">
+<meta property="og:image" content="https://infinitysmartliving.com/images/echo-show-15-wall-panel-og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A wall mounted Echo Show 15 running a whole home, installed by our team">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://infinitysmartliving.com/images/echo-show-15-wall-panel-og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -428,7 +434,11 @@ footer ul a:hover{color:var(--cyan)}
 .land-fig{margin:26px 0 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
 .land-fig img{display:block;width:100%;height:auto}
 .land-fig figcaption{padding:.65rem .9rem;color:var(--slate);font-size:.86rem;line-height:1.5;text-align:center}
-@media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}}
+/* lead figure sits between the headline and the form, so the phone scroll reads
+   headline, photo, form. No top margin, and it cancels the lead-card pull-up. */
+.land-fig-lead{margin:0 0 22px}
+.land-fig-lead + .lead-card{margin-top:0}
+@media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}.land-fig-lead{margin-bottom:18px}}
 </style>
 </head>
 <body>

@@ -273,7 +273,26 @@ const blogFooter = `<footer>
 
 const origin = (site.origin || 'https://YOUR-DOMAIN.com').replace(/\/$/, '');
 
-const blogShell = ({ title, ogTitle, description, canonical, ogType = 'article', image = '', jsonLd = '', body }) => `<!doctype html>
+// image/imageW/imageH/twitterCard drive the social preview card. Width+height and
+// twitterCard are opt-in so pages that only pass `image` keep their existing markup.
+// Facebook needs og:image:width/height to render a large card on the FIRST scrape,
+// before it has fetched and measured the file itself.
+const socialImageTags = ({ image, imageW, imageH, twitterCard, imageAlt }) => {
+  if (!image) return '';
+  const tags = [`<meta property="og:image" content="${image}">`];
+  if (imageW && imageH) {
+    tags.push(`<meta property="og:image:width" content="${imageW}">`);
+    tags.push(`<meta property="og:image:height" content="${imageH}">`);
+  }
+  if (imageAlt) tags.push(`<meta property="og:image:alt" content="${imageAlt}">`);
+  if (twitterCard) {
+    tags.push(`<meta name="twitter:card" content="${twitterCard}">`);
+    tags.push(`<meta name="twitter:image" content="${image}">`);
+  }
+  return `${tags.join('\n')}\n`;
+};
+
+const blogShell = ({ title, ogTitle, description, canonical, ogType = 'article', image = '', imageW = '', imageH = '', twitterCard = '', imageAlt = '', jsonLd = '', body }) => `<!doctype html>
 <html lang="en">
 <head>
 <!-- Google tag (gtag.js) -->
@@ -297,7 +316,7 @@ const blogShell = ({ title, ogTitle, description, canonical, ogType = 'article',
 <meta property="og:description" content="${description}">
 <meta property="og:type" content="${ogType}">
 <meta property="og:url" content="${origin}/${canonical}">
-${image ? `<meta property="og:image" content="${image}">\n` : ''}${jsonLd ? `<script type="application/ld+json">${jsonLd}</script>\n` : ''}${fontLinks}
+${socialImageTags({ image, imageW, imageH, twitterCard, imageAlt })}${jsonLd ? `<script type="application/ld+json">${jsonLd}</script>\n` : ''}${fontLinks}
 ${styleBlock}
 ${BLOG_CSS}
 </head>
@@ -500,7 +519,11 @@ const LANDING_CSS = `<style>
 .land-fig{margin:26px 0 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
 .land-fig img{display:block;width:100%;height:auto}
 .land-fig figcaption{padding:.65rem .9rem;color:var(--slate);font-size:.86rem;line-height:1.5;text-align:center}
-@media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}}
+/* lead figure sits between the headline and the form, so the phone scroll reads
+   headline, photo, form. No top margin, and it cancels the lead-card pull-up. */
+.land-fig-lead{margin:0 0 22px}
+.land-fig-lead + .lead-card{margin-top:0}
+@media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}.land-fig-lead{margin-bottom:18px}}
 </style>`;
 
 const landingHeader = `<header id="top">
@@ -590,8 +613,19 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
 });
 </script>`;
 
+// Both landing pages are distributed by link drops in Facebook DMs and group
+// comments, so the share card is the first thing most visitors see. Same photo on
+// both: one real install shot beats a logo card.
+const LANDING_OG = {
+  image: `${origin}/images/echo-show-15-wall-panel-og.jpg`,
+  imageW: '1200',
+  imageH: '630',
+  twitterCard: 'summary_large_image',
+  imageAlt: 'A wall mounted Echo Show 15 running a whole home, installed by our team',
+};
+
 const landingShell = ({ title, description, canonical, body }) => blogShell({
-  title, description, canonical, ogType: 'website', body,
+  title, description, canonical, ogType: 'website', body, ...LANDING_OG,
 }).replace(blogHeader, landingHeader)
   .replace('<!-- MOBILE STICKY CALL BAR (mobile viewports only) -->', '<!-- sticky call bar omitted: single CTA per landing page -->')
   .replace(/<div class="mobile-cta-bar"[\s\S]*?<\/div>\n/, '')
@@ -609,6 +643,10 @@ const guideBody = `<main>
   </div>
 </section>
 <div class="land-main">
+  <figure class="land-fig land-fig-lead">
+    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home, installed by our team" width="1600" height="1090" loading="lazy" decoding="async">
+    <figcaption>One Echo Show 15 on the wall, running the whole home. Installed and set up by our team.</figcaption>
+  </figure>
   <div class="lead-card">
     <div id="formFields">
       <h3>Get the guide free</h3>
@@ -632,10 +670,6 @@ const guideBody = `<main>
     <li>${CHECK_SVG}Simple naming tips the whole household will actually remember</li>
     <li>${CHECK_SVG}Starter routines for good morning, good night, and leaving home, ready to copy</li>
   </ul>
-  <figure class="land-fig">
-    <img src="/images/smart-dimmer-switches-led.webp" alt="Smart dimmer switches with LED indicators installed by Infinity Smart Living" width="800" height="533" loading="lazy" decoding="async">
-    <figcaption>Smart dimmers with LED indicators, installed and configured by our team.</figcaption>
-  </figure>
   <div class="land-cross">Prefer it done for you? Get a free 20 minute virtual consult and a <a href="/free-floor-plan">free custom floor plan</a> for your exact home.</div>
 </div>
 </main>`;

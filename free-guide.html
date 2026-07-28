@@ -22,6 +22,12 @@
 <meta property="og:description" content="Get the free Alexa Room and Routine Starter Guide: set up room groups, name devices simply, and copy starter routines for morning, night, and leaving home.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://infinitysmartliving.com/free-guide">
+<meta property="og:image" content="https://infinitysmartliving.com/images/echo-show-15-wall-panel-og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A wall mounted Echo Show 15 running a whole home, installed by our team">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://infinitysmartliving.com/images/echo-show-15-wall-panel-og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -428,7 +434,11 @@ footer ul a:hover{color:var(--cyan)}
 .land-fig{margin:26px 0 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
 .land-fig img{display:block;width:100%;height:auto}
 .land-fig figcaption{padding:.65rem .9rem;color:var(--slate);font-size:.86rem;line-height:1.5;text-align:center}
-@media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}}
+/* lead figure sits between the headline and the form, so the phone scroll reads
+   headline, photo, form. No top margin, and it cancels the lead-card pull-up. */
+.land-fig-lead{margin:0 0 22px}
+.land-fig-lead + .lead-card{margin-top:0}
+@media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}.land-fig-lead{margin-bottom:18px}}
 </style>
 </head>
 <body>
@@ -449,6 +459,10 @@ footer ul a:hover{color:var(--cyan)}
   </div>
 </section>
 <div class="land-main">
+  <figure class="land-fig land-fig-lead">
+    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home, installed by our team" width="1600" height="1090" loading="lazy" decoding="async">
+    <figcaption>One Echo Show 15 on the wall, running the whole home. Installed and set up by our team.</figcaption>
+  </figure>
   <div class="lead-card">
     <div id="formFields">
       <h3>Get the guide free</h3>
@@ -500,10 +514,6 @@ footer ul a:hover{color:var(--cyan)}
     <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Simple naming tips the whole household will actually remember</li>
     <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Starter routines for good morning, good night, and leaving home, ready to copy</li>
   </ul>
-  <figure class="land-fig">
-    <img src="/images/smart-dimmer-switches-led.webp" alt="Smart dimmer switches with LED indicators installed by Infinity Smart Living" width="800" height="533" loading="lazy" decoding="async">
-    <figcaption>Smart dimmers with LED indicators, installed and configured by our team.</figcaption>
-  </figure>
   <div class="land-cross">Prefer it done for you? Get a free 20 minute virtual consult and a <a href="/free-floor-plan">free custom floor plan</a> for your exact home.</div>
 </div>
 </main>
