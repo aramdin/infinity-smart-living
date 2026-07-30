@@ -114,14 +114,27 @@ base.SERVICE_LINKS = SERVICE_NAV
 // Google Business Profile link. Empty gbpUrl renders nothing anywhere, so the
 // markup ships ready and one edit in cities.json lights it up site wide. Never
 // point this at a google.com/search URL, it has to be the real profile link.
+// Accepted forms, in order of preference: a g.page short link, a maps.app.goo.gl
+// share link, a Maps place URL, or a Google search URL that carries a kgmid.
+// That last one is allowed only because kgmid pins the link to one business
+// entity: it is what Google's own share button returns for this profile, and it
+// was checked against the business name, the phone number, and the review count
+// before being used. A bare keyword search stays rejected, since it is not tied
+// to the business and can surface competitors.
 const gbpUrl = (site.gbpUrl || '').trim();
-if (gbpUrl && !/^https:\/\/(g\.page|maps\.app\.goo\.gl|www\.google\.com\/maps|maps\.google\.com)/.test(gbpUrl)) {
-  console.log('⚠  site.gbpUrl does not look like a Google Business Profile link, GBP link omitted');
+const GBP_OK = /^https:\/\/(g\.page\/|maps\.app\.goo\.gl\/|www\.google\.com\/maps|maps\.google\.com\/)/;
+const GBP_KGMID = /^https:\/\/www\.google\.com\/search\?[^ ]*\bkgmid=/;
+const gbpOk = !!gbpUrl && (GBP_OK.test(gbpUrl) || GBP_KGMID.test(gbpUrl));
+if (gbpUrl && !gbpOk) {
+  console.log('⚠  site.gbpUrl is not a recognised Google Business Profile link, GBP link omitted');
+  console.log('   want g.page/... , maps.app.goo.gl/... , a /maps place URL, or a search URL with kgmid');
 }
-const gbpOk = gbpUrl && /^https:\/\/(g\.page|maps\.app\.goo\.gl|www\.google\.com\/maps|maps\.google\.com)/.test(gbpUrl);
-base.GBP_LI = gbpOk ? `\n          <li><a href="${gbpUrl}" rel="noopener">Google Business Profile</a></li>` : '';
+// Ampersands are escaped so the href is valid HTML; the kgmid form carries query
+// params, so this matters here in a way it would not for a g.page short link.
+const gbpHref = gbpUrl.replace(/&/g, '&amp;');
+base.GBP_LI = gbpOk ? `\n          <li><a href="${gbpHref}" rel="noopener">Google Business Profile</a></li>` : '';
 base.GBP_LINE = gbpOk
-  ? `<p style="margin-top:1.1rem">Find us on <a href="${gbpUrl}" rel="noopener" style="color:var(--cyan-deep);font-weight:600">our Google Business Profile</a>.</p>`
+  ? `<p style="margin-top:1.1rem">Find us on <a href="${gbpHref}" rel="noopener" style="color:var(--cyan-deep);font-weight:600">our Google Business Profile</a>.</p>`
   : '';
 
 // --- shared client-side GA4 event tracking (single source of truth) ---

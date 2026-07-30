@@ -1,5 +1,5 @@
 {
-  "_howto": "site holds global values used on every page. gbpUrl is the Google Business Profile link: leave it empty and the footer/contact GBP link is omitted everywhere, set it once and it renders site wide. Use the real share link from the GBP dashboard (g.page/... or maps.app.goo.gl/...), never a google.com/search URL. Each city needs city, areas (real neighborhoods, verified), and intro (2 to 3 sentences, unique voice per city, no shared sentence structure). Brand rules apply: Alexa only, no banned terms, no em dashes, no hyphens between words, no pricing.",
+  "_howto": "site holds global values used on every page. gbpUrl is the Google Business Profile link: leave it empty and the footer/contact GBP link is omitted everywhere, set it once and it renders site wide. Preferred forms are a g.page short link or a maps.app.goo.gl share link. A google.com/search URL is accepted ONLY when it carries a kgmid, which pins it to one business entity; a bare keyword search is rejected because it is not tied to the business and can surface competitors. The current value is the kgmid link Google's own share button returns, verified against the business name, phone (754) 345-4871, and the 5.0 rating with 4 reviews. Swap it for a maps.app.goo.gl link when convenient, it is one edit. Each city needs city, areas (real neighborhoods, verified), and intro (2 to 3 sentences, unique voice per city, no shared sentence structure). Brand rules apply: Alexa only, no banned terms, no em dashes, no hyphens between words, no pricing.",
   "site": {
     "origin": "https://infinitysmartliving.com",
     "bookUrl": "https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa",
@@ -7,7 +7,7 @@
     "phone": "(754) 345-4871",
     "phoneHref": "+17543454871",
     "email": "info@infinitysmartliving.com",
-    "gbpUrl": ""
+    "gbpUrl": "https://www.google.com/search?kgmid=/g/11nr5n92kp&q=Infinity+Smart+Living"
   },
   "cities": [
     {
