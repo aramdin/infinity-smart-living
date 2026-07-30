@@ -205,6 +205,24 @@ const recentProjectBlock = (city) => {
     </div>`;
 };
 
+// Meta descriptions are unique per city and set in cities.json (metaDesc).
+// Google truncates the SERP snippet near 160 characters, so anything longer is
+// wasted; anything shorter than 120 is leaving the snippet half empty. The build
+// fails loudly rather than shipping a duplicated or truncated description.
+const seenMetaDesc = new Map();
+const cityMetaDesc = (c) => {
+  const d = (c.metaDesc || '').trim();
+  if (!d) throw new Error(`cities.json: "${c.city}" has no metaDesc. Every city needs a unique one.`);
+  if (d.length > 158 || d.length < 120) {
+    throw new Error(`cities.json: "${c.city}" metaDesc is ${d.length} chars, must be 120 to 158.`);
+  }
+  if (seenMetaDesc.has(d)) {
+    throw new Error(`cities.json: "${c.city}" metaDesc duplicates "${seenMetaDesc.get(d)}". Descriptions must be unique.`);
+  }
+  seenMetaDesc.set(d, c.city);
+  return d;
+};
+
 for (const c of cfg.cities) {
   const slug = slugify(c.city);
   // Unique per-city intro paragraph rendered above the local booking copy.
@@ -214,6 +232,7 @@ for (const c of cfg.cities) {
     : '';
   const html = stamp(cityTpl, {
     ...base, CITY: c.city, AREAS: c.areas, CITY_SLUG: slug,
+    META_DESC: cityMetaDesc(c),
     LOCAL_INTRO: intro, RECENT_PROJECT: recentProjectBlock(c.city),
   });
   writeFileSync(`${slug}.html`, html);
@@ -620,7 +639,7 @@ const guaranteeBody = `<main>
 </main>`;
 writeFileSync('guarantee.html', blogShell({
   title: 'The 30-Day Satisfaction Guarantee | Infinity Smart Living',
-  description: 'A free Amazon Alexa smart home floor plan, mapped room by room, before you spend a dollar, plus a 30-day satisfaction guarantee after your install. Serving South Florida.',
+  description: 'A free Amazon Alexa smart home floor plan, mapped room by room, plus a 30-Day Satisfaction Guarantee after your install. Serving South Florida.',
   canonical: 'guarantee',
   body: guaranteeBody,
 }));
@@ -658,7 +677,7 @@ const SERVICES = [
     cat: 'Smart lighting',
     h1: 'Smart Lighting Installation',
     title: 'Smart Lighting Installation in South Florida | Infinity Smart Living',
-    description: 'Smart lighting installation done properly: switches wired in, rooms grouped the way you actually use them, and Alexa control that works for everyone in the house. Free floor plan first.',
+    description: 'Smart lighting installation in South Florida: switches wired in, rooms grouped the way you use them, Alexa control the whole house gets. Free floor plan first.',
     serviceType: 'smart lighting installation',
     lead: 'Lighting is where nearly every smart home starts, and it is also where most of them go wrong. Here is how we plan it so it still works a year later.',
     body: `<p>Smart lighting sounds simple until you own it. Most people buy a few colour bulbs, discover that the wall switch now has to stay on permanently or nothing responds, and quietly go back to using their hands. That is not a failure of the technology. It is a planning problem, and it is the reason we draw a floor plan before anyone buys hardware.</p>
@@ -701,7 +720,7 @@ ${fig('led-accent-lighting-install.webp', 'LED accent lighting installed along a
     cat: 'Alexa setup',
     h1: 'Alexa Smart Home Setup and Routines',
     title: 'Alexa Smart Home Setup and Routines | Infinity Smart Living',
-    description: 'Alexa smart home setup done properly: rooms grouped, devices named so the family remembers them, and routines built around your actual day. Free floor plan before anything is installed.',
+    description: 'Alexa setup done properly: rooms grouped, devices named so the family remembers them, routines built around your actual day. Free floor plan before anything.',
     serviceType: 'Alexa smart home setup',
     lead: 'Anyone can plug in an Echo. The difference between a smart home that gets used and one that gets ignored is almost entirely in the setup.',
     body: `<p>Most homes we walk into already have Alexa in them somewhere. There is an Echo in the kitchen, a couple of plugs, maybe a thermostat, and a device list forty items long full of names like "Third Plug" that nobody can remember. Everything technically works. Nobody uses it.</p>
@@ -747,7 +766,7 @@ ${fig('echo-show-15-wall-panel.webp', 'A wall mounted Echo Show 15 running a who
     cat: 'Locks and doorbells',
     h1: 'Smart Lock and Video Doorbell Installation',
     title: 'Smart Lock and Video Doorbell Installation | Infinity Smart Living',
-    description: 'Smart lock and video doorbell installation across South Florida. See who is at the door from anywhere, lock up from bed, and hand out codes instead of keys. Free floor plan first.',
+    description: 'Smart lock and video doorbell installation across South Florida. See the door from anywhere, lock up from bed, hand out codes not keys. Free floor plan first.',
     serviceType: 'smart lock and video doorbell installation',
     lead: 'The two devices people reach for most on an ordinary day: the one that lets you stop hunting for keys, and the one that tells you who is standing outside.',
     body: `<p>Locks and doorbells are the most used smart devices in most homes, and it has very little to do with technology. It is that both of them remove a small daily annoyance you have stopped noticing: digging for keys with an armful of shopping, and walking to the door to find out it was a delivery.</p>
@@ -792,7 +811,7 @@ ${fig('blog-best-video-doorbells.jpg', 'A video doorbell mounted beside a front 
     cat: 'Smart thermostats',
     h1: 'Smart Thermostat Installation',
     title: 'Smart Thermostat Installation in South Florida | Infinity Smart Living',
-    description: 'Smart thermostat installation for South Florida homes, where the AC runs most of the year. Set it up around humidity, real schedules, and Alexa control. Free floor plan first.',
+    description: 'Smart thermostat installation for South Florida homes, where the AC runs most of the year. Set up around humidity, real schedules, Alexa. Free floor plan first.',
     serviceType: 'smart thermostat installation',
     lead: 'In most of the country a smart thermostat is about heating. Here it is about an air conditioner that runs most of the year, and that changes how it should be set up.',
     body: `<p>A smart thermostat is the one upgrade in this climate that quietly pays attention while you are not. Your AC is the largest single load in a South Florida house for most of the year, and the thermostat is the only thing standing between it and running harder than it needs to.</p>
@@ -834,7 +853,7 @@ ${fig('blog-smart-thermostats-florida-cut-ac-bill.jpg', 'A smart thermostat moun
     cat: 'Voice control',
     h1: 'Whole Home Voice Control',
     title: 'Whole Home Voice Control with Alexa | Infinity Smart Living',
-    description: 'Whole home voice control with Alexa: every room covered, plain names your family remembers, and lights, climate, shades, and TV answering from where you stand. Free floor plan first.',
+    description: 'Whole home voice control with Alexa: every room covered, plain names your family remembers, lights and climate answering where you stand. Free floor plan first.',
     serviceType: 'whole home voice control',
     lead: 'Voice control stops being a novelty at the point where it works in every room, from where you are standing, without anyone thinking about which device is listening.',
     body: `<p>Whole home voice control means you can speak to your house from anywhere in it and have the right thing happen. Not one clever speaker in the kitchen. The whole house, with the rooms knowing which lights are theirs, and no one in the family needing a list of magic words.</p>
@@ -1000,7 +1019,7 @@ const CHECK_SVG = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" s
 
 const CONSENT_HTML = `<label class="consent">
   <input type="checkbox" id="consent" name="consent" required>
-  <span>I agree that Infinity Smart Living and the licensed local electrician under contract for my project may call, text, and email me at the contact details I provide about my inquiry, plan, and services, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help. I agree to the <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms</a>.</span>
+  <span>I agree that Infinity Smart Living and the licensed local electrician under contract for my project may call, text, and email me at the contact details I provide about my inquiry, plan, and services, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help. I agree to the <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms</a>.</span>
 </label>`;
 
 const cityOptions = ['<option value="" disabled selected>Choose your city</option>']
@@ -1194,7 +1213,7 @@ const floorPlanBody = `<main>
 
 writeFileSync('free-floor-plan.html', landingShell({
   title: 'Free Smart Home Floor Plan + 20 Minute Consult | Infinity Smart Living',
-  description: 'Book a free 20 minute virtual consult and get a custom smart home floor plan for your exact home, room by room, with your full price shown before you spend a dollar.',
+  description: 'Book a free 20 minute virtual consult and get a custom Alexa floor plan for your exact home, room by room, with your full price shown up front.',
   canonical: 'free-floor-plan',
   body: floorPlanBody,
 }) .replace('</body>', `${landingFormScript('floor plan squeeze page')}\n</body>`));

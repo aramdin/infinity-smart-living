@@ -1,10 +1,23 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/template-(.*)",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/guides/(.*)",
       "headers": [
         { "key": "X-Robots-Tag", "value": "noindex" }
+      ]
+    },
+    {
+      "source": "/template-(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
       ]
     }
   ]

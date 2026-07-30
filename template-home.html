@@ -22,15 +22,15 @@
 <link rel="icon" href="/favicon-navy-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>Smart Home Installation & Home Automation in South Florida | Infinity Smart Living</title>
-<meta name="description" content="Smart home installation and home automation services in South Florida. Book a free smart home consultation and we design a custom floor plan for your home, then a licensed local installer handles the install. Smart lighting, climate, and voice.">
+<meta name="description" content="Smart home installation across South Florida. We map a free Alexa floor plan for your exact home, room by room, then a licensed local installer does the work.">
 <link rel="canonical" href="https://infinitysmartliving.com/">
 <meta property="og:title" content="Smart Home Installation &amp; Home Automation in South Florida | Infinity Smart Living">
-<meta property="og:description" content="Full-service smart home automation in South Florida. Book a free consultation and get a free Amazon Alexa smart home floor plan; licensed local installers do the work.">
+<meta property="og:description" content="Full service smart home automation in South Florida. Book a free consultation and get a free Amazon Alexa smart home floor plan; licensed local installers do the work.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://infinitysmartliving.com/">
 <meta property="og:image" content="https://infinitysmartliving.com/images/home-hero.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://infinitysmartliving.com/#business","name":"Infinity Smart Living","legalName":"Simple Safe Technologies LLC","url":"https://infinitysmartliving.com/","image":"https://infinitysmartliving.com/favicon-navy-192.png","telephone":"{{PHONE_HREF}}","email":"{{EMAIL}}","description":"Full-service smart home automation company in South Florida. Infinity consults, designs, prices, and sells the project, and a licensed local electrician under contract performs the regulated electrical work.","areaServed":{"@type":"State","name":"Florida"},"knowsAbout":["smart home automation","smart home installation","smart lighting","smart thermostats","voice control"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://infinitysmartliving.com/#business","name":"Infinity Smart Living","legalName":"Simple Safe Technologies LLC","url":"https://infinitysmartliving.com/","image":"https://infinitysmartliving.com/favicon-navy-192.png","telephone":"{{PHONE_HREF}}","email":"{{EMAIL}}","description":"Full service smart home automation company in South Florida. Infinity consults, designs, prices, and sells the project, and a licensed local electrician under contract performs the regulated electrical work.","areaServed":{"@type":"State","name":"Florida"},"knowsAbout":["smart home automation","smart home installation","smart lighting","smart thermostats","voice control"]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -439,7 +439,7 @@ footer ul a:hover{color:var(--cyan)}
           <input type="hidden" id="city" name="city" value="">
           <label class="consent">
             <input type="checkbox" id="consent" name="consent" required>
-            <span>I agree that Infinity Smart Living and the licensed local electrician under contract for my project may call and text me at the number I provide about my inquiry, plan, and services, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help. I agree to the <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms</a>.</span>
+            <span>I agree that Infinity Smart Living and the licensed local electrician under contract for my project may call and text me at the number I provide about my inquiry, plan, and services, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help. I agree to the <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms</a>.</span>
           </label>
           <button type="submit" class="btn btn-primary btn-lg">Get My Free Floor Plan</button>
           <!-- PROOF SLOT: one line trust stat under the form button (star rating + homes-done count). Reserve for showcase-home assets. -->
@@ -535,7 +535,7 @@ footer ul a:hover{color:var(--cyan)}
         <div class="sol-img"><img src="/images/card-lighting.jpg" alt="Warm dimmable lighting in a living room" width="800" height="1421" loading="lazy"></div>
         <div class="sol-txt">
           <h3>Smart Lighting Installation</h3>
-          <p>Dimmers and one-tap scenes for every room, Morning, Movie, Good Night.</p>
+          <p>Dimmers and one tap scenes for every room, Morning, Movie, Good Night.</p>
         </div>
       </div>
       <div class="sol reveal">
@@ -555,8 +555,8 @@ footer ul a:hover{color:var(--cyan)}
       <div class="sol reveal">
         <div class="sol-img"><img src="/images/card-living.jpg" alt="A cozy modern living room" width="800" height="786" loading="lazy"></div>
         <div class="sol-txt">
-          <h3>One-App Control</h3>
-          <p>Your whole Alexa smart home in one app, no five-app juggling.</p>
+          <h3>One App Control</h3>
+          <p>Your whole Alexa smart home in one app, no five app juggling.</p>
         </div>
       </div>
     </div>
@@ -651,7 +651,7 @@ footer ul a:hover{color:var(--cyan)}
     <div class="foot-bot">
       <!-- PROOF SLOT: legitimacy line (electrician license number + "Simple Safe Technologies LLC DBA Infinity Smart Living") goes here once the license number is confirmed. -->
       <span>© 2026 Simple Safe Technologies LLC DBA Infinity Smart Living. All rights reserved.</span>
-      <span><a href="privacy.html" style="color:inherit">Privacy</a> · <a href="terms.html" style="color:inherit">Terms</a></span>
+      <span><a href="/privacy" style="color:inherit">Privacy</a> · <a href="/terms" style="color:inherit">Terms</a></span>
     </div>
   </div>
 </footer>
@@ -731,7 +731,10 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
   try { var _u = new URL(location.href); _u.searchParams.set('lead','sent'); history.replaceState(null, '', _u); } catch (err) {}
   document.getElementById('formFields').style.display = 'none';
   document.getElementById('formSuccess').classList.add('show');
-  // Step 2 revealed: notify GTM/GA4 that the booking calendar is now visible.
+  // Step 2 revealed: the booking calendar is now visible. The site runs gtag.js
+  // with no GTM container, so a bare dataLayer.push never reaches GA4 as an event.
+  // gtag() is the one that counts; the push stays for a future GTM container.
+  try { if (typeof window.gtag === 'function') { window.gtag('event', 'calendar_view', { page_path: location.pathname }); } } catch (e) {}
   try { (window.dataLayer = window.dataLayer || []).push({ event: 'calendar_view' }); } catch (e) {}
 });
 </script>
