@@ -11,7 +11,7 @@
 // blog.json (+ a posts/ file per article), then re-run this script.
 // privacy.html / terms.html are static and left untouched.
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, unlinkSync } from 'node:fs';
 
 const cfg = JSON.parse(readFileSync('./cities.json', 'utf8'));
 const site = cfg.site;
@@ -1267,7 +1267,15 @@ document.querySelectorAll('.yt').forEach(function(el){
   pages.push('routines.html');
   console.log(`✓ routines.html (${routineEntries.length} routines)`);
 } else {
-  console.log('· routines.html skipped (no entries in routines.json yet)');
+  // Remove a stale routines.html rather than just skipping the build. Without
+  // this, a page generated from a since-removed entry stays on disk, gets
+  // committed, and ships as a live orphan with whatever content it had.
+  if (existsSync('routines.html')) {
+    unlinkSync('routines.html');
+    console.log('· routines.html removed (no entries in routines.json)');
+  } else {
+    console.log('· routines.html skipped (no entries in routines.json yet)');
+  }
 }
 
 // --- links page (linktree-style: bare logo + buttons, noindex, NOT in sitemap/nav/footer) ---
