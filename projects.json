@@ -1,0 +1,13 @@
+{
+  "_howto": "Recent project proof blocks for the city pages. Each entry: city (must match a city name in cities.json exactly), blurb (one or two sentences on what we installed, plain and specific), image (filename in images/, optional), alt (required when image is set), width and height (the real pixel size of the image, so the reserved box matches and nothing shifts), date (YYYY-MM-DD, optional, shown as the month). The block renders on that city page only when an entry exists for it, so an empty array ships nothing. Only the six core cities are wired for now: Coral Springs, Boca Raton, Parkland, Pompano Beach, Coconut Creek, Deerfield Beach. If a city has more than one entry the most recent by date wins. Brand rules apply to blurbs: Alexa only, no banned terms, no em dashes, no hyphens between words, no pricing.",
+  "_example": {
+    "city": "Coral Springs",
+    "blurb": "Wall mounted Echo Show 15 running the whole home from the kitchen, with the lighting in four rooms and the thermostat on the same voice control.",
+    "image": "echo-show-15-wall-panel.webp",
+    "alt": "A wall mounted Echo Show 15 running a whole home, installed by our team",
+    "width": 1600,
+    "height": 1067,
+    "date": "2026-07-01"
+  },
+  "projects": []
+}

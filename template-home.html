@@ -589,6 +589,7 @@ footer ul a:hover{color:var(--cyan)}
       <h2>Your free floor plan is one call away.</h2>
       <p>Book a free virtual consultation. We'll build your smart home floor plan and quote it honestly, no pressure.</p>
       <p style="margin-top:1.1rem">Prefer to talk it through? Call {{PHONE}} and we'll walk your home with you.</p>
+      {{GBP_LINE}}
       <div class="cta-actions">
         <a href="#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
         <a href="tel:{{PHONE_HREF}}" data-loc="final_cta" class="btn btn-light btn-lg">Call {{PHONE}}</a>
@@ -618,7 +619,7 @@ footer ul a:hover{color:var(--cyan)}
         <h4>Contact</h4>
         <ul>
           <li><a href="tel:{{PHONE_HREF}}">{{PHONE}}</a></li>
-          <li><a href="mailto:{{EMAIL}}">{{EMAIL}}</a></li>
+          <li><a href="mailto:{{EMAIL}}">{{EMAIL}}</a></li>{{GBP_LI}}
           <li><a href="#">South Florida</a></li>
         </ul>
       </div>
@@ -631,6 +632,10 @@ footer ul a:hover{color:var(--cyan)}
     </div>
     <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom floor plan · No obligation · <a href="/guarantee" style="color:inherit">30-Day Satisfaction Guarantee</a></div>
     <div class="foot-areas" style="padding:22px 0;margin-top:8px;border-top:1px solid rgba(255,255,255,.1)">
+      <h4 style="margin-bottom:12px">Smart home services</h4>
+      <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">{{SERVICE_LINKS}}</p>
+    </div>
+    <div class="foot-areas" style="padding:22px 0;border-top:1px solid rgba(255,255,255,.1)">
       <h4 style="margin-bottom:12px">Smart home service areas</h4>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">{{CITY_LINKS}}</p>
     </div>

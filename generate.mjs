@@ -30,11 +30,62 @@ const base = {
   EMAIL: site.email,
 };
 
+// /routines is a dormant page: it only gets built once routines.json has an
+// entry. Anything that links to it has to know that, otherwise the service pages
+// and blog posts ship links to a page that was never written. Until it is live
+// the anchor is unwrapped and the sentence still reads correctly.
+const routinesCfg = JSON.parse(readFileSync('./routines.json', 'utf8'));
+const routineEntries = routinesCfg.routines || [];
+const routinesLive = routineEntries.length > 0;
+// Whole sentences come out, not just the anchor: "videos are on our routines
+// page" is a false claim while the page is dormant, so unwrapping alone is not
+// enough. Each pattern leaves the surrounding prose reading correctly.
+const ROUTINES_SENTENCES = [
+  /,? and you can (?:watch|see) real routines running on our <a href="\/routines">routines page<\/a>/g,
+  / You can watch real routines running on our <a href="\/routines">routines page<\/a> before deciding anything\./g,
+  /\s?Short videos of real routines running in real spaces, each with a written explanation of what it does and what it needs, are on our <a href="\/routines">routines page<\/a>\.\s?/g,
+  / You can watch real routines running in real rooms on our <a href="\/routines">routines page<\/a>, which is a better guide to whether this suits you than any brochure\./g,
+];
+const resolveRoutinesLinks = (html) => {
+  if (routinesLive) return html;
+  let out = html;
+  for (const re of ROUTINES_SENTENCES) out = out.replace(re, '');
+  // Anything that slipped through loses only its anchor, never its meaning.
+  return out.replace(/<a href="\/routines">([\s\S]*?)<\/a>/g, '$1');
+};
+
 // Footer "Service areas" links to every city page, so no city page is orphaned
 // (internal linking for local SEO). Rendered into templates via {{CITY_LINKS}}.
 base.CITY_LINKS = cfg.cities
   .map((c) => `<a href="/${slugify(c.city)}" style="color:#cfe0ff">${c.city}</a>`)
   .join(' · ');
+
+// Footer "Services" mirrors the service-areas block rather than a nav dropdown:
+// the nav collapses to a stacked list on mobile, where a dropdown reads badly.
+// Single source for the five service pages, rendered via {{SERVICE_LINKS}}.
+const SERVICE_NAV = [
+  ['smart-lighting-installation', 'Smart lighting installation'],
+  ['smart-thermostat-installation', 'Smart thermostat installation'],
+  ['smart-lock-and-doorbell-installation', 'Smart lock and doorbell installation'],
+  ['alexa-setup-and-routines', 'Alexa setup and routines'],
+  ['whole-home-voice-control', 'Whole home voice control'],
+];
+base.SERVICE_LINKS = SERVICE_NAV
+  .map(([slug, label]) => `<a href="/${slug}" style="color:#cfe0ff">${label}</a>`)
+  .join(' · ');
+
+// Google Business Profile link. Empty gbpUrl renders nothing anywhere, so the
+// markup ships ready and one edit in cities.json lights it up site wide. Never
+// point this at a google.com/search URL, it has to be the real profile link.
+const gbpUrl = (site.gbpUrl || '').trim();
+if (gbpUrl && !/^https:\/\/(g\.page|maps\.app\.goo\.gl|www\.google\.com\/maps|maps\.google\.com)/.test(gbpUrl)) {
+  console.log('⚠  site.gbpUrl does not look like a Google Business Profile link, GBP link omitted');
+}
+const gbpOk = gbpUrl && /^https:\/\/(g\.page|maps\.app\.goo\.gl|www\.google\.com\/maps|maps\.google\.com)/.test(gbpUrl);
+base.GBP_LI = gbpOk ? `\n          <li><a href="${gbpUrl}" rel="noopener">Google Business Profile</a></li>` : '';
+base.GBP_LINE = gbpOk
+  ? `<p style="margin-top:1.1rem">Find us on <a href="${gbpUrl}" rel="noopener" style="color:var(--cyan-deep);font-weight:600">our Google Business Profile</a>.</p>`
+  : '';
 
 // --- shared client-side GA4 event tracking (single source of truth) ---
 // Injected into every page: templates via {{TRACKING}}, blog/guarantee via ${trackingEvents}
@@ -75,6 +126,35 @@ const cityTpl = readFileSync('./template-city.html', 'utf8');
 // lead-capture pages kept out of the nav but included in the sitemap.
 const pages = ['', 'privacy.html', 'terms.html', 'free-guide.html', 'free-floor-plan.html'];
 
+// Recent project proof blocks. projects.json is the only source; a city with no
+// entry renders nothing, exactly like the routines hub. Keeps invented proof off
+// the site while the markup ships ready for the first real photo.
+const projectsCfg = JSON.parse(readFileSync('./projects.json', 'utf8'));
+const CORE_CITIES = new Set(['Coral Springs', 'Boca Raton', 'Parkland', 'Pompano Beach', 'Coconut Creek', 'Deerfield Beach']);
+const projectsByCity = new Map();
+for (const p of projectsCfg.projects || []) {
+  if (!p || !p.city) continue;
+  if (!CORE_CITIES.has(p.city)) {
+    console.log(`⚠  projects.json: "${p.city}" is not one of the six core cities, entry skipped`);
+    continue;
+  }
+  const prev = projectsByCity.get(p.city);
+  // Most recent wins when a city has more than one entry.
+  if (!prev || String(p.date || '') > String(prev.date || '')) projectsByCity.set(p.city, p);
+}
+
+const recentProjectBlock = (city) => {
+  const p = projectsByCity.get(city);
+  if (!p) return '';
+  const figure = p.image
+    ? `\n      <img src="/images/${p.image}" alt="${p.alt || ''}"${p.width ? ` width="${p.width}"` : ''}${p.height ? ` height="${p.height}"` : ''} loading="lazy" decoding="async" style="display:block;width:100%;height:auto;border-radius:14px;background:#06203f;margin-bottom:.9rem">`
+    : '';
+  return `<div class="reveal" style="margin-top:1.6rem;padding:1.5rem;border-radius:16px;background:var(--surface);border:1px solid var(--line)">
+      <span class="eyebrow">Recent project in ${city}</span>${figure}
+      <p style="color:var(--slate);font-size:1.04rem;line-height:1.7;margin:.6rem 0 0">${p.blurb}</p>
+    </div>`;
+};
+
 for (const c of cfg.cities) {
   const slug = slugify(c.city);
   // Unique per-city intro paragraph rendered above the local booking copy.
@@ -82,7 +162,10 @@ for (const c of cfg.cities) {
   const intro = c.intro && c.intro.trim()
     ? `<p style="color:var(--slate);font-size:1.06rem;margin-bottom:1rem">${c.intro.trim()}</p>\n    `
     : '';
-  const html = stamp(cityTpl, { ...base, CITY: c.city, AREAS: c.areas, CITY_SLUG: slug, LOCAL_INTRO: intro });
+  const html = stamp(cityTpl, {
+    ...base, CITY: c.city, AREAS: c.areas, CITY_SLUG: slug,
+    LOCAL_INTRO: intro, RECENT_PROJECT: recentProjectBlock(c.city),
+  });
   writeFileSync(`${slug}.html`, html);
   pages.push(`${slug}.html`);
   console.log(`✓ ${slug}.html  (${c.city})`);
@@ -247,7 +330,7 @@ const blogFooter = `<footer>
         <h4>Contact</h4>
         <ul>
           <li><a href="tel:${site.phoneHref}">${site.phone}</a></li>
-          <li><a href="mailto:${site.email}">${site.email}</a></li>
+          <li><a href="mailto:${site.email}">${site.email}</a></li>${base.GBP_LI}
           <li>South Florida</li>
         </ul>
       </div>
@@ -260,6 +343,10 @@ const blogFooter = `<footer>
     </div>
     <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom floor plan · No obligation · <a href="/guarantee" style="color:inherit">30-Day Satisfaction Guarantee</a></div>
     <div class="foot-areas" style="padding:22px 0;margin-top:8px;border-top:1px solid rgba(255,255,255,.1)">
+      <h4 style="margin-bottom:12px">Smart home services</h4>
+      <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">${base.SERVICE_LINKS}</p>
+    </div>
+    <div class="foot-areas" style="padding:22px 0;border-top:1px solid rgba(255,255,255,.1)">
       <h4 style="margin-bottom:12px">Smart home service areas</h4>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">${base.CITY_LINKS}</p>
     </div>
@@ -366,7 +453,7 @@ const ctaBox = (slug) => NATIONAL_POSTS.has(slug)
 </div>`;
 
 posts.forEach((post, i) => {
-  const inner = readFileSync(`./${post.file}`, 'utf8').trim();
+  const inner = resolveRoutinesLinks(readFileSync(`./${post.file}`, 'utf8').trim());
   // Only render the hero photo when the image file actually exists; otherwise the
   // brand gradient behind it stands in on its own (no broken image, no layout shift).
   const pi = POST_IMAGES[post.slug];
@@ -489,6 +576,322 @@ writeFileSync('guarantee.html', blogShell({
 }));
 pages.push('guarantee.html');
 console.log('✓ guarantee.html');
+
+// ========================= SERVICE PAGES =========================
+// One strong page per service, deliberately not one per city: the city pages
+// carry the local intent, these carry the service intent, and they link to each
+// other. Each page ships Service + FAQPage schema in one @graph.
+// Pricing stays off the page by design; the "what it costs" section explains
+// that the number arrives with the free floor plan instead.
+const CORE_CITY_LINKS = ['Coral Springs', 'Boca Raton', 'Parkland', 'Pompano Beach', 'Coconut Creek', 'Deerfield Beach']
+  .map((c) => `<a href="/${slugify(c)}">${c}</a>`);
+const servingLine = (what) => `<p class="serving">We plan and install ${what} across South Florida, including ${CORE_CITY_LINKS.slice(0, -1).join(', ')}, and ${CORE_CITY_LINKS[CORE_CITY_LINKS.length - 1]}.</p>`;
+
+const SERVICE_CSS = `<style>
+.svc-fig{margin:2rem 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
+.svc-fig img{display:block;width:100%;height:auto;background:#06203f}
+.svc-fig figcaption{padding:.65rem .9rem;color:var(--slate);font-size:.86rem;line-height:1.5;text-align:center;background:var(--surface)}
+.faq-q{margin:1.7rem 0 .5rem;font-size:1.12rem;font-weight:700;color:var(--ink)}
+.serving{margin:2.2rem 0 0;padding:1.15rem 1.3rem;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--slate);font-size:1rem;line-height:1.7}
+.serving a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.svc-next{margin:2.4rem 0 0;color:var(--slate);font-size:1.02rem;line-height:1.7}
+</style>`;
+
+const fig = (img, alt, w, h, cap) => `<figure class="svc-fig">
+  <img src="/images/${img}" alt="${alt}" width="${w}" height="${h}" loading="lazy" decoding="async">
+  <figcaption>${cap}</figcaption>
+</figure>`;
+
+const SERVICES = [
+  {
+    slug: 'smart-lighting-installation',
+    cat: 'Smart lighting',
+    h1: 'Smart Lighting Installation',
+    title: 'Smart Lighting Installation in South Florida | Infinity Smart Living',
+    description: 'Smart lighting installation done properly: switches wired in, rooms grouped the way you actually use them, and Alexa control that works for everyone in the house. Free floor plan first.',
+    serviceType: 'smart lighting installation',
+    lead: 'Lighting is where nearly every smart home starts, and it is also where most of them go wrong. Here is how we plan it so it still works a year later.',
+    body: `<p>Smart lighting sounds simple until you own it. Most people buy a few colour bulbs, discover that the wall switch now has to stay on permanently or nothing responds, and quietly go back to using their hands. That is not a failure of the technology. It is a planning problem, and it is the reason we draw a floor plan before anyone buys hardware.</p>
+
+<h2>Switches or bulbs, and why it matters</h2>
+<p>This is the decision that shapes everything else. A smart bulb puts the intelligence in the light itself, which is cheap to start and fine for a lamp in the corner. The catch is the wall switch: cut the power at the wall and the bulb is just a bulb, so every person in the house has to learn not to touch it.</p>
+<p>A smart switch puts the intelligence in the wall instead. The switch still works exactly like a switch for anyone who walks in and reaches for it, and it also answers to Alexa. Guests, kids, and anyone who is not interested in your smart home can use the room normally. For any ceiling fixture that people actually switch on and off, we specify switches almost every time.</p>
+<p>Bulbs still earn their place. Lamps, accent fixtures, anything you want in a colour, and anything on a plug are all good candidates. A real plan usually ends up mixed, and the mix is the point.</p>
+
+${fig('smart-light-switch-install.webp', 'A smart light switch being wired into a wall box during an install', 800, 533, 'Switches go in the wall, so the room still works normally for everyone who lives in it.')}
+
+<h2>Rooms worth doing first</h2>
+<p>If you are starting somewhere rather than everywhere, the rooms that pay off fastest are the ones you pass through with your hands full. Kitchen, main living area, the hallway between the bedrooms, and outside. Those four cover most of the daily friction in a typical home.</p>
+<p>Bedrooms come next, mostly because turning the house off from bed is the feature people end up using every single night. Bathrooms and closets are pleasant but rarely the reason anyone calls us.</p>
+
+<h2>Grouping and dimming</h2>
+<p>A light you have to name individually is a light you will stop using by voice. The work that makes lighting feel effortless is grouping: the four cans over the island, the two lamps and the floor light in the living room, the whole back patio, each answering to one plain name that the family agreed on.</p>
+<p>Dimming is the other half. Warm and low in the evening, bright and cool in the morning, and the same fixture doing both without anyone thinking about it. Not every fixture dims well, and LED retrofits in older Broward homes are particularly fussy about which dimmer they are paired with. We check that in the plan rather than discovering it on install day.</p>
+
+${fig('led-accent-lighting-install.webp', 'LED accent lighting installed along a ceiling detail in a finished room', 1600, 1067, 'Accent runs like this are planned with the room, not added afterwards.')}
+
+<h2>What the install actually involves</h2>
+<p>Switch work is electrical work. On your project the regulated electrical work is performed by the licensed electrician under contract, which is how we keep the wiring side properly accountable. Older homes here sometimes lack a neutral wire in the switch box, which narrows the switch choice, and that is exactly the sort of thing the floor plan flags before you have bought anything.</p>
+<p>Once the hardware is in, the setup work begins: rooms built in the Alexa app, names everyone can remember, dimming levels set, and routines wired to the moments that matter. We do not leave you with an app full of unnamed devices.</p>
+
+<h2>What it costs</h2>
+<p>We do not publish lighting prices, and there is a reason for it. A four room switch job in a newer Parkland house and a whole floor of dimmable accent work in an older Delray home are not the same project, and any number posted on a page would be wrong for one of you.</p>
+<p>Instead you get the number with your free smart home floor plan. We map the rooms, specify the switches and bulbs by fixture, and show you the full price before you commit to anything. Like the plan and you move forward. Do not like it and you keep the plan and owe nothing.</p>`,
+    faq: [
+      { q: 'Do smart lights still work if the internet goes down?', a: 'The switch on the wall keeps working, because it is still a switch. Voice control and app control need the network, so those pause until it comes back. This is a large part of why we specify switches over bulbs for ceiling fixtures.' },
+      { q: 'Can I keep my existing light fixtures?', a: 'Usually yes. Smart switches control the fixture you already have, so the ceiling lights, the pendants, and the outdoor lights all stay where they are. Bulb swaps are only needed where you want colour or where a fixture cannot take a switch.' },
+      { q: 'Will the dimmer work with my LED bulbs?', a: 'Some pairings hum or flicker at low levels, and older homes here throw up that combination more often. We check the fixture and bulb pairing while drawing the floor plan so the dimmer we specify is one that behaves.' },
+      { q: 'Do I have to do the whole house at once?', a: 'No. Plenty of our lighting projects start with one or two rooms and grow later. The floor plan covers the whole home either way, so what you add next year still fits what we installed this year.' },
+    ],
+    next: 'Room by room detail on where lighting pays off first is in our <a href="/blog/smart-lighting-installation-room-by-room">room by room smart lighting guide</a>. Lighting is also the most common first step in <a href="/blog/home-automation-what-to-automate-first">what is actually worth automating first</a>.',
+    serving: 'smart lighting',
+  },
+  {
+    slug: 'alexa-setup-and-routines',
+    cat: 'Alexa setup',
+    h1: 'Alexa Smart Home Setup and Routines',
+    title: 'Alexa Smart Home Setup and Routines | Infinity Smart Living',
+    description: 'Alexa smart home setup done properly: rooms grouped, devices named so the family remembers them, and routines built around your actual day. Free floor plan before anything is installed.',
+    serviceType: 'Alexa smart home setup',
+    lead: 'Anyone can plug in an Echo. The difference between a smart home that gets used and one that gets ignored is almost entirely in the setup.',
+    body: `<p>Most homes we walk into already have Alexa in them somewhere. There is an Echo in the kitchen, a couple of plugs, maybe a thermostat, and a device list forty items long full of names like "Third Plug" that nobody can remember. Everything technically works. Nobody uses it.</p>
+<p>Good Alexa setup is not about owning more. It is about structure, naming, and a small number of routines that match how your household actually moves through the day.</p>
+
+${fig('echo-show-15-wall-panel.webp', 'A wall mounted Echo Show 15 running a whole home, installed by our team', 1600, 1067, 'One Echo Show 15 on the wall, running the whole home. Installed and set up by our team.')}
+
+<h2>Rooms are the foundation</h2>
+<p>Alexa needs to know which devices live where. Once a device is assigned to a room, "turn on the lights" said in that room does the obvious thing, without anyone naming a single device. This one piece of structure removes more daily friction than any gadget you can buy.</p>
+<p>It also has to match the house as people describe it. If the family calls it the den, the room is called the den, not Bedroom 3. We take the names from you, not from the builder plans.</p>
+
+<h2>Naming that survives contact with your family</h2>
+<p>The test for a device name is whether a guest could guess it. Plain, short, and singular beats clever every time. "Kitchen lights" works. "Kitchen Ceiling Zone 2" does not, and it will be the reason someone gives up and uses the switch.</p>
+<p>We also strip out the duplicates and near misses that build up over years of adding devices one at a time, because two things called something similar is how you end up with the patio lights coming on at bedtime.</p>
+
+<h2>Routines that earn their keep</h2>
+<p>A routine is a set of things that happen together off one trigger: a phrase, a time, a door, or the sun going down. The routines that stick are boring and useful.</p>
+<ul>
+  <li>Good morning: a few lights up gently, the thermostat moved off the overnight setting, and the day's weather read out.</li>
+  <li>Good night: the whole house off in one phrase, the porch light left on, bedroom lamps dimmed rather than cut.</li>
+  <li>Leaving home: everything off, climate set back, so nobody has to walk the house checking.</li>
+  <li>Sunset: outdoor and accent lighting on by themselves, changing through the year without anyone editing a schedule.</li>
+</ul>
+<p>Four routines that fire every day beat twenty clever ones nobody remembers the phrase for. We would rather build you the four.</p>
+
+<h2>Seeing it before you buy it</h2>
+<p>Short videos of real routines running in real spaces, each with a written explanation of what it does and what it needs, are on our <a href="/routines">routines page</a>. If you would rather set some of this up yourself, the <a href="/free-guide">free Alexa Room and Routine Starter Guide</a> covers room groups, naming, and starter routines you can copy word for word.</p>
+
+<h2>What it costs</h2>
+<p>Setup work varies with how much is already in the house and how much of it needs undoing. A new build with nothing installed and a ten year old home with three generations of half finished smart devices are very different afternoons.</p>
+<p>So the price arrives with your free smart home floor plan, after we have seen the rooms and the device list. No numbers before then, because they would be guesses. You keep the plan whether or not you go ahead.</p>`,
+    faq: [
+      { q: 'Do I need to replace the Echo devices I already own?', a: 'Usually not. Older Echo speakers and shows work fine as voice points, and we build the room structure around what you already have. We only suggest a change where a device genuinely cannot do the job, like a screen you want on the wall.' },
+      { q: 'How many routines does a normal home end up with?', a: 'Most households settle on four to six that run daily, plus a couple of seasonal ones. More than that and people stop remembering the phrases, which is why we would rather build fewer and make them right.' },
+      { q: 'Can everyone in the house use it, or just me?', a: 'Everyone, and that is the standard we build to. Plain names, room based commands, and wall switches that still behave like switches mean guests and family who have no interest in any of this can walk in and use the room.' },
+      { q: 'Will you set up devices I bought myself?', a: 'Yes. Plenty of our setup work is on hardware the homeowner already has. The floor plan tells us what fits where, and anything missing gets specified alongside it.' },
+    ],
+    next: 'New to all of this? Start with <a href="/blog/voice-control-whole-home-automation-guide">voice control and whole home automation</a>, or see <a href="/blog/alexa-for-seniors">Alexa for seniors</a> if you are setting a home up for a parent.',
+    serving: 'Alexa setup and routines',
+  },
+  {
+    slug: 'smart-lock-and-doorbell-installation',
+    cat: 'Locks and doorbells',
+    h1: 'Smart Lock and Video Doorbell Installation',
+    title: 'Smart Lock and Video Doorbell Installation | Infinity Smart Living',
+    description: 'Smart lock and video doorbell installation across South Florida. See who is at the door from anywhere, lock up from bed, and hand out codes instead of keys. Free floor plan first.',
+    serviceType: 'smart lock and video doorbell installation',
+    lead: 'The two devices people reach for most on an ordinary day: the one that lets you stop hunting for keys, and the one that tells you who is standing outside.',
+    body: `<p>Locks and doorbells are the most used smart devices in most homes, and it has very little to do with technology. It is that both of them remove a small daily annoyance you have stopped noticing: digging for keys with an armful of shopping, and walking to the door to find out it was a delivery.</p>
+
+<h2>What a smart lock changes day to day</h2>
+<p>A smart deadbolt replaces the one already in your door and keeps working with a key exactly as before. What it adds is everything else. You can lock the house from bed without going downstairs. You can let the dog walker in on a Tuesday without cutting a key. You can stop the argument in the car about whether anyone locked the front door, because you can just look.</p>
+<p>Codes are the part people end up loving. A code for the cleaner that works Thursdays, a code for family visiting for a week, a code for the teenager who loses everything. Handing out and taking back a code is a ten second job, and no key ever leaves your hands.</p>
+
+${fig('blog-best-smart-locks.jpg', 'A smart deadbolt installed on a front door', 1600, 1067, 'The deadbolt swaps out and still takes a key. Everything else it does is new.')}
+
+<h2>Doors are not all the same</h2>
+<p>This is the part that catches people out. Deadbolt backset, door thickness, whether the door is metal or solid wood, and how well the door sits in its frame all decide which locks will actually work on your house. A door that needs a shoulder to close is a door where a motorised bolt will jam.</p>
+<p>South Florida adds humidity and swelling to the list, particularly on older wooden doors. We check the door itself while drawing the plan, because the wrong lock on a slightly warped door is a support call every week.</p>
+
+<h2>Video doorbells and what they are actually for</h2>
+<p>A video doorbell answers one question from anywhere: who is at my door. Talk to the delivery driver and tell them where to leave the box. Tell the person selling something that you are not home without opening the door. See that your kid got in from school. Watch the dog walker arrive on time.</p>
+<p>Two way audio means you can hold a conversation with whoever is outside from the kitchen, the office, or a car park in another county. It is convenience, and it happens to be the convenience people use several times a week.</p>
+
+${fig('blog-best-video-doorbells.jpg', 'A video doorbell mounted beside a front door', 1600, 1200, 'Wired doorbells use the existing chime transformer, which is the detail worth checking early.')}
+
+<h2>Wiring, chimes, and the details that matter</h2>
+<p>Wired doorbells run off the transformer already behind your existing chime, and plenty of older homes here have one that is undersized for a video unit. That shows up as a doorbell that reboots itself, and it is entirely avoidable if it is checked first. Battery models sidestep the issue at the cost of charging them.</p>
+<p>Angle matters more than people expect too. A doorbell aimed at your neighbour's driveway or straight at a white wall in afternoon sun is a poor result whatever you paid for it. Where it goes is part of the plan.</p>
+
+<h2>Bringing it into Alexa</h2>
+<p>On its own each device has an app. Together on Alexa they become one system. The doorbell can announce itself on the Echo in the kitchen, and the lock can be part of the phrase that shuts the house down at night, so "Alexa, good night" turns the lights off and locks the front door in one go.</p>
+
+<h2>What it costs</h2>
+<p>Price depends on the door, the number of entries, and whether the doorbell has usable wiring behind it. One front door on a modern build and three entries on a 1950s Oakland Park house are different jobs.</p>
+<p>You get the number on your free smart home floor plan, after we have looked at the doors. Nothing to pay to find out, and the plan is yours to keep either way.</p>`,
+    faq: [
+      { q: 'Can I still use a normal key?', a: 'Yes. The smart deadbolts we install keep a standard key cylinder, so a key works exactly as it does now. The codes, the app, and the voice control are additions rather than replacements.' },
+      { q: 'What happens to a smart lock if the batteries die?', a: 'They give you weeks of warnings first, in the app and on the keypad. If they do run flat, your key still opens the door, and most models also take a jump from a battery pack at the keypad.' },
+      { q: 'Does a video doorbell need existing doorbell wiring?', a: 'A wired one does, and we check the transformer behind your chime is up to the job before specifying it. If there is no usable wiring, a battery model works and we will say so in the plan rather than quoting you for wiring that is not there.' },
+      { q: 'Can Alexa lock the door for me?', a: 'Yes, and it is one of the most used routines we build. Locking by voice or as part of a good night routine is straightforward. Unlocking by voice is deliberately restricted by the lock makers and normally asks for a spoken code.' },
+    ],
+    next: 'Our picks and how to choose between them are in <a href="/blog/best-smart-locks">the best smart locks</a> and <a href="/blog/best-video-doorbells">the best video doorbells</a>.',
+    serving: 'smart locks and video doorbells',
+  },
+  {
+    slug: 'smart-thermostat-installation',
+    cat: 'Smart thermostats',
+    h1: 'Smart Thermostat Installation',
+    title: 'Smart Thermostat Installation in South Florida | Infinity Smart Living',
+    description: 'Smart thermostat installation for South Florida homes, where the AC runs most of the year. Set it up around humidity, real schedules, and Alexa control. Free floor plan first.',
+    serviceType: 'smart thermostat installation',
+    lead: 'In most of the country a smart thermostat is about heating. Here it is about an air conditioner that runs most of the year, and that changes how it should be set up.',
+    body: `<p>A smart thermostat is the one upgrade in this climate that quietly pays attention while you are not. Your AC is the largest single load in a South Florida house for most of the year, and the thermostat is the only thing standing between it and running harder than it needs to.</p>
+
+${fig('blog-smart-thermostats-florida-cut-ac-bill.jpg', 'A smart thermostat mounted on a wall in a Florida home', 1600, 900, 'The AC runs most of the year here, which makes the thermostat the highest leverage device in the house.')}
+
+<h2>Why Florida is its own case</h2>
+<p>Advice written for a house in Ohio does not survive the trip down. There is no long heating season to optimise, the shoulder months barely exist, and humidity does as much to comfort as temperature does. A room at 76 degrees that is damp feels worse than a room at 78 that is dry.</p>
+<p>That means the settings that matter here are the ones that keep run times sensible without letting the house get sticky. Setting the thermostat far back while you are out, which works nicely up north, can leave the AC fighting the humidity for an hour when you get home. We tune around that rather than copying a generic schedule.</p>
+
+<h2>The C wire question</h2>
+<p>This is the first thing worth checking and the most common reason an install stalls. Smart thermostats need constant power, which normally comes from a common wire, and older Broward and Palm Beach homes frequently do not have one run to the thermostat.</p>
+<p>The fixes range from an adapter at the air handler to running a new conductor. All of them are manageable. What is not manageable is finding out on the day, which is why we look behind the existing thermostat while we are drawing the plan.</p>
+
+<h2>Schedules that match your actual week</h2>
+<p>Most thermostats are installed with a schedule nobody has ever edited. If the house is empty from eight to five, that is a large stretch every weekday where the AC could be working less. If somebody works from home three days a week, it is not, and pretending otherwise just makes people uncomfortable.</p>
+<p>We set the schedule around the week you actually have. Away behaviour, an overnight setting that suits how you sleep, and a bedroom that is not an afterthought.</p>
+
+<h2>More than one zone</h2>
+<p>Two storey homes in Parkland and Weston very often run two systems, and the upstairs one does most of the suffering. Two thermostats that know nothing about each other will happily work against one another. Bringing both into one place, with one voice command and one schedule that makes sense as a whole, is usually the single biggest comfort improvement in the house.</p>
+
+<h2>Living with it through Alexa</h2>
+<p>Once the thermostat is on Alexa, adjusting it stops being a trip to the hallway. "Alexa, set the house to 74" from the sofa. The overnight setting folded into your good night routine. Everything set back when you leave, without anyone remembering to do it. Small things, used daily.</p>
+
+<h2>What it costs</h2>
+<p>It depends on whether you have a usable common wire, how many systems the house runs, and where the thermostats sit. A single zone swap with good wiring behind it and a two system house needing a conductor run are different projects.</p>
+<p>The price comes with your free smart home floor plan, once we know which of those you are. We would rather look first than post a number that turns out to be wrong for your house.</p>`,
+    faq: [
+      { q: 'Will a smart thermostat really lower my electric bill here?', a: 'It helps most where the current schedule does not match the household, which is very common. The saving comes from the AC not running hard while nobody is home, and from run times that suit the humidity. We are careful not to promise a figure, because it depends entirely on how the house is used now.' },
+      { q: 'What is a C wire and do I have one?', a: 'It is the common wire that gives the thermostat constant power. Plenty of older homes here do not have one at the thermostat. We check behind your existing unit while drawing the plan, and if it is missing we specify the fix rather than discovering it mid install.' },
+      { q: 'I have two air conditioning systems. Do I need two thermostats?', a: 'Yes, one per system, but they should be planned together. Two units running independent schedules tend to work against each other. Brought into one app and one set of routines, the upstairs and downstairs finally agree.' },
+      { q: 'Can I still just use the buttons on the wall?', a: 'Always. Every thermostat we install works by hand exactly like the one it replaced, so anyone in the house can walk up and change it without an app or a phrase.' },
+    ],
+    next: 'The full South Florida picture, including what actually moves the number, is in <a href="/blog/smart-thermostats-florida-cut-ac-bill">smart thermostats in Florida</a>.',
+    serving: 'smart thermostats',
+  },
+  {
+    slug: 'whole-home-voice-control',
+    cat: 'Voice control',
+    h1: 'Whole Home Voice Control',
+    title: 'Whole Home Voice Control with Alexa | Infinity Smart Living',
+    description: 'Whole home voice control with Alexa: every room covered, plain names your family remembers, and lights, climate, shades, and TV answering from where you stand. Free floor plan first.',
+    serviceType: 'whole home voice control',
+    lead: 'Voice control stops being a novelty at the point where it works in every room, from where you are standing, without anyone thinking about which device is listening.',
+    body: `<p>Whole home voice control means you can speak to your house from anywhere in it and have the right thing happen. Not one clever speaker in the kitchen. The whole house, with the rooms knowing which lights are theirs, and no one in the family needing a list of magic words.</p>
+<p>Getting there is less about buying speakers than about coverage, naming, and grouping. We plan all three at once.</p>
+
+${fig('smart-home-lounge-led-lighting.webp', 'A finished lounge with smart lighting installed, controlled by voice', 1600, 1213, 'When the room knows which lights are its own, "turn on the lights" is all anyone has to remember.')}
+
+<h2>Coverage, room by room</h2>
+<p>The rule is simple. If you would want to say something in a room, that room needs a voice point in it. Shouting through a doorway is how people conclude voice control does not work.</p>
+<p>Kitchens and main living areas earn a screen more often than not, because a screen shows you the doorbell, timers, and the shopping list. Bedrooms usually want a small speaker on the nightstand for the phrase that shuts the house down. Bathrooms, patios, and garages are the ones people forget and then miss, particularly outside, where a phrase to bring up the lighting as you carry things out is genuinely useful.</p>
+<p>Then there is the wall panel option: one Echo Show mounted where the family passes it constantly, running the whole home from a single place. That is the setup in the photo above the fold on most of our recent projects.</p>
+
+<h2>What you can actually control</h2>
+<ul>
+  <li>Lighting, by room and by group, dimmed to a level rather than just on or off.</li>
+  <li>Climate, including setting back the whole house in one phrase.</li>
+  <li>Motorised shades, which are close to the best voice controlled thing in a Florida house given the afternoon sun.</li>
+  <li>Televisions and media, so the room can be set up for a film without four remotes.</li>
+  <li>Locks, as part of a routine at the end of the night.</li>
+</ul>
+
+${fig('motorized-smart-shade-install.webp', 'Motorised smart shades installed on large windows in a South Florida home', 1600, 1203, 'Shades on voice control get used every afternoon here, which is more than can be said for most smart devices.')}
+
+<h2>Naming is the whole game</h2>
+<p>The difference between a house where voice control gets used and one where it does not is almost never the hardware. It is whether the names are guessable. Everyone in the house, including the guest who arrived an hour ago, should be able to work out what to say without being taught.</p>
+<p>So we take the names from the family. If it is the back room, it is the back room. Short, plain, no numbers, no duplicates that sound alike.</p>
+
+<h2>The network underneath it</h2>
+<p>Voice control leans on wifi, and the far corners of a larger Weston or Parkland home are exactly where wifi runs out. A speaker on a weak signal is a speaker that answers late, which reads to everyone in the house as the system being unreliable.</p>
+<p>Coverage is part of the floor plan for that reason. We would rather flag a weak corner while it is still a drawing than have you discover it in the back bedroom afterwards.</p>
+
+<h2>What it costs</h2>
+<p>It comes down to how many rooms you want covered and what is in them already. A three room start and a full house with shades and media on voice are different projects, and both are perfectly reasonable places to begin.</p>
+<p>Your free smart home floor plan carries the price, room by room, before you commit to any of it. Like it and we go ahead. Do not and you still keep the plan.</p>`,
+    faq: [
+      { q: 'How many Echo devices does a whole house need?', a: 'One per room where you would actually speak, which for most homes lands between four and eight. It is worth counting the patio and the garage, since those are the ones people forget and then wish they had.' },
+      { q: 'Do the speakers all hear me at once and answer over each other?', a: 'Alexa picks the device that heard you most clearly, so the nearest one answers. Where devices sit close together we set them up so the overlap does not cause the two room echo that annoys people.' },
+      { q: 'Can voice control work if my wifi is weak at the back of the house?', a: 'Not well, and pretending otherwise is how projects disappoint. Coverage gets checked as part of the floor plan, and if the far bedroom is short of signal we say so upfront and plan around it.' },
+      { q: 'Does everyone have to use voice, or do switches still work?', a: 'Switches always still work. We specify wall switches precisely so the house behaves normally for anyone who does not want to talk to it, with voice sitting on top as an option rather than a requirement.' },
+    ],
+    next: 'A plain introduction to how this all fits together is in <a href="/blog/voice-control-whole-home-automation-guide">voice control and whole home automation</a>, and you can watch real routines running on our <a href="/routines">routines page</a>.',
+    serving: 'whole home voice control',
+  },
+];
+
+for (const s of SERVICES) {
+  const faqHtml = s.faq.map((f) => `<p class="faq-q">${f.q}</p>\n<p>${f.a}</p>`).join('\n');
+  const jsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Service',
+        serviceType: s.serviceType,
+        name: s.h1,
+        description: s.description,
+        provider: { '@id': `${origin}/#business` },
+        areaServed: { '@type': 'State', name: 'Florida' },
+        url: `${origin}/${s.slug}`,
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: s.faq.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      },
+    ],
+  });
+
+  const body = `<main>
+<section class="post-hero" style="background:linear-gradient(135deg,#06203f 0%,#0a4f8c 55%,#00B2FC 100%)">
+  <div class="pwrap">
+    <span class="post-cat">${s.cat}</span>
+    <h1>${s.h1}</h1>
+    <p class="post-meta">${s.lead}</p>
+  </div>
+</section>
+<article class="post-body">
+${s.body}
+
+<h2>Common questions</h2>
+${faqHtml}
+
+${servingLine(s.serving)}
+
+<p class="svc-next">${s.next}</p>
+
+<div class="cta-box">
+  <h3>See it planned for your home first</h3>
+  <p>Book a free virtual consultation and we build your smart home floor plan room by room, with your full price shown before you spend a dollar.</p>
+  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
+</div>
+</article>
+</main>`;
+
+  writeFileSync(`${s.slug}.html`, blogShell({
+    title: s.title,
+    description: s.description,
+    canonical: s.slug,
+    ogType: 'website',
+    jsonLd,
+    body: resolveRoutinesLinks(body),
+  }).replace('</head>', `${SERVICE_CSS}\n</head>`));
+  pages.push(`${s.slug}.html`);
+  console.log(`✓ ${s.slug}.html`);
+}
 
 // --- lead capture landing pages: /free-guide + /free-floor-plan ---
 // Out of the nav on purpose (traffic arrives from social DMs/comments), in the
@@ -789,8 +1192,6 @@ console.log('✓ consult-booked.html (noindex, fires appointment_booked)');
 // YouTube embeds are lazy facades: a thumbnail + play button, and the real
 // youtube-nocookie iframe loads only on click. Keeps page weight flat.
 // Write ups live in routines-src/<slug>.html (same pattern as posts/).
-const routinesCfg = JSON.parse(readFileSync('./routines.json', 'utf8'));
-const routineEntries = routinesCfg.routines || [];
 if (routineEntries.length) {
   const ROUTINES_CSS = `<style>
 .routine{max-width:720px;margin:0 auto 56px;padding:0 24px}

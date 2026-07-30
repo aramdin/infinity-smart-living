@@ -2,6 +2,16 @@
   "_comment": "Blog posts. Body HTML lives in posts/<file>. Add an entry here + a posts/ file, then run: node generate.mjs. Newest first (sorted by date at build).",
   "posts": [
     {
+      "slug": "how-to-choose-home-automation-company-broward",
+      "title": "How to Choose a Home Automation Company in Broward County",
+      "metaTitle": "How to Choose a Home Automation Company in Broward",
+      "description": "How to compare home automation companies in Broward County: who holds the electrical license, association rules, older east Broward wiring versus newer western builds, and why the plan should come before the price.",
+      "category": "Getting Started",
+      "date": "2026-07-30",
+      "read": 8,
+      "file": "posts/how-to-choose-home-automation-company-broward.html"
+    },
+    {
       "slug": "alexa-for-seniors",
       "title": "Alexa for Seniors: A Simple Guide for South Florida Families",
       "metaTitle": "Alexa for Seniors: A Simple Guide for Families",
