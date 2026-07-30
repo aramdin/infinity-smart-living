@@ -30,7 +30,7 @@
 <meta property="og:url" content="https://infinitysmartliving.com/">
 <meta property="og:image" content="https://infinitysmartliving.com/images/home-hero.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://infinitysmartliving.com/#business","name":"Infinity Smart Living","legalName":"Simple Safe Technologies LLC","url":"https://infinitysmartliving.com/","image":"https://infinitysmartliving.com/favicon-navy-192.png","telephone":"{{PHONE_HREF}}","email":"{{EMAIL}}","description":"Full service smart home automation company in South Florida. Infinity consults, designs, prices, and sells the project, and a licensed local electrician under contract performs the regulated electrical work.","areaServed":{"@type":"State","name":"Florida"},"knowsAbout":["smart home automation","smart home installation","smart lighting","smart thermostats","voice control"]}</script>
+<script type="application/ld+json">{{BUSINESS_SCHEMA}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -374,6 +374,11 @@ footer ul a:hover{color:var(--cyan)}
 .rev blockquote p:last-child{margin-bottom:0}
 .rev figcaption{color:var(--slate);font-size:.9rem;font-weight:600}
 .rev figcaption span{font-weight:500;opacity:.8}
+.foot-social{display:flex;gap:14px;margin-top:16px}
+.foot-social a{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);transition:background .18s}
+.foot-social a:hover{background:var(--cyan)}
+.foot-social svg{width:18px;height:18px;fill:#cfe0ff}
+.foot-social a:hover svg{fill:var(--ink)}
 </style>
 </head>
 <body>
@@ -613,6 +618,7 @@ footer ul a:hover{color:var(--cyan)}
       <div>
         <img class="flogo" src="/images/logo-light.png" alt="infinity smart living">
         <p>Professional smart home installation and support for real homes across South Florida.</p>
+        {{SOCIAL_LINKS}}
       </div>
       <div>
         <h4>Company</h4>

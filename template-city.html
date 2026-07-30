@@ -361,6 +361,11 @@ footer ul a:hover{color:var(--cyan)}
 .rev blockquote p:last-child{margin-bottom:0}
 .rev figcaption{color:var(--slate);font-size:.9rem;font-weight:600}
 .rev figcaption span{font-weight:500;opacity:.8}
+.foot-social{display:flex;gap:14px;margin-top:16px}
+.foot-social a{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);transition:background .18s}
+.foot-social a:hover{background:var(--cyan)}
+.foot-social svg{width:18px;height:18px;fill:#cfe0ff}
+.foot-social a:hover svg{fill:var(--ink)}
 </style>
 </head>
 <body>
@@ -584,6 +589,7 @@ footer ul a:hover{color:var(--cyan)}
       <div>
         <img class="flogo" src="/images/logo-light.png" alt="infinity smart living">
         <p>Professional smart home installation and support for real homes across South Florida.</p>
+        {{SOCIAL_LINKS}}
       </div>
       <div>
         <h4>Company</h4>

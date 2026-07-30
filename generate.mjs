@@ -111,6 +111,104 @@ base.SERVICE_LINKS = SERVICE_NAV
   .map(([slug, label]) => `<a href="/${slug}" style="color:#cfe0ff">${label}</a>`)
   .join(' · ');
 
+// Footer social links. Icons plus an accessible label each, no "follow us"
+// filler. Same five URLs as sameAs, kept in one place so the schema and the
+// visible links can never drift apart. rel="me" is the microformats companion
+// to sameAs and reinforces the same association.
+const SOCIAL_ICONS = {
+  facebook: '<path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.45 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/>',
+  instagram: '<path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.8 3.8 0 0 1-1.38-.9 3.8 3.8 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07zm0 6.68a3.16 3.16 0 1 0 0 6.32 3.16 3.16 0 0 0 0-6.32zm0 5.21a2.05 2.05 0 1 1 0-4.1 2.05 2.05 0 0 1 0 4.1zm4.02-5.33a.74.74 0 1 1-1.47 0 .74.74 0 0 1 1.47 0z"/>',
+  youtube: '<path d="M21.58 7.19a2.5 2.5 0 0 0-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42A2.5 2.5 0 0 0 2.42 7.19 26 26 0 0 0 2 12a26 26 0 0 0 .42 4.81 2.5 2.5 0 0 0 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42a2.5 2.5 0 0 0 1.77-1.77A26 26 0 0 0 22 12a26 26 0 0 0-.42-4.81zM10 15V9l5.2 3-5.2 3z"/>',
+  nextdoor: '<path d="M12 2 3 7v10l9 5 9-5V7l-9-5zm3.6 14.2h-2.1v-4.3c0-1-.5-1.6-1.4-1.6-.8 0-1.4.6-1.4 1.6v4.3H8.6V8.9h2.1v.8a2.7 2.7 0 0 1 2.1-1c1.7 0 2.8 1.2 2.8 3.1v4.4z"/>',
+  google: '<path d="M12 2a10 10 0 1 0 9.8 12h-9.8v-3.9h13.6c.1.6.2 1.2.2 1.9 0 5.9-4.1 10-10 10a10 10 0 0 1 0-20z"/>',
+};
+const SOCIAL_LINKS = [
+  ['facebook', 'https://www.facebook.com/profile.php?id=61590996226258', 'Infinity Smart Living on Facebook'],
+  ['instagram', 'https://www.instagram.com/infinitysmartliving/', 'Infinity Smart Living on Instagram'],
+  ['youtube', 'https://www.youtube.com/@InfinitySmartLiving', 'Infinity Smart Living on YouTube'],
+  ['nextdoor', 'https://nextdoor.com/page/infinity-smart-living-margate-fl/', 'Infinity Smart Living on Nextdoor'],
+  ['google', 'https://maps.google.com/?cid=4116529986052291444', 'Infinity Smart Living on Google'],
+];
+base.SOCIAL_LINKS = `<div class="foot-social">
+      ${SOCIAL_LINKS.map(([k, url, label]) => `<a href="${url}" rel="me noopener" target="_blank" aria-label="${label}" title="${label}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${SOCIAL_ICONS[k]}</svg></a>`).join('\n      ')}
+    </div>`;
+
+// --- homepage LocalBusiness schema ---
+// Built here rather than hardcoded in the template so areaServed stays in step
+// with cities.json and the offer catalogue with the service page list. A single
+// source means adding a city cannot silently desync the schema.
+//
+// Deliberately absent, all logged decisions: Review and AggregateRating (Google
+// prohibits review rich results for third party collected reviews), a street
+// address (ISL is a Service Area Business, areaServed carries the geography),
+// and priceRange (brushes the pricing hidden decision, flagged to Alvin).
+// origin is declared later in this file, after the homepage is stamped, so the
+// schema derives its base URL straight from site.origin instead.
+const SCHEMA_ORIGIN = (site.origin || '').replace(/\/$/, '');
+const SAME_AS = [
+  'https://www.facebook.com/profile.php?id=61590996226258',
+  'https://www.instagram.com/infinitysmartliving/',
+  'https://nextdoor.com/page/infinity-smart-living-margate-fl/',
+  'https://www.youtube.com/@InfinitySmartLiving',
+  'https://maps.google.com/?cid=4116529986052291444',
+];
+// Read off the live GBP on 2026-07-30 and matched exactly. Sunday is closed and
+// is represented by omission, which is how schema.org expresses a closed day.
+const OPENING_HOURS = [{
+  '@type': 'OpeningHoursSpecification',
+  dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  opens: '09:00',
+  closes: '18:00',
+}];
+// The six core cities lead, in the locked order, then the other 14.
+const CORE_ORDER = ['Coral Springs', 'Boca Raton', 'Parkland', 'Pompano Beach', 'Coconut Creek', 'Deerfield Beach'];
+const orderedCities = [
+  ...CORE_ORDER,
+  ...cfg.cities.map((c) => c.city).filter((c) => !CORE_ORDER.includes(c)),
+];
+for (const c of CORE_ORDER) {
+  if (!cfg.cities.some((x) => x.city === c)) {
+    throw new Error(`schema: core city "${c}" is missing from cities.json`);
+  }
+}
+if (orderedCities.length !== cfg.cities.length) {
+  throw new Error(`schema: areaServed has ${orderedCities.length} cities, cities.json has ${cfg.cities.length}`);
+}
+base.BUSINESS_SCHEMA = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': `${SCHEMA_ORIGIN}/#business`,
+  name: 'Infinity Smart Living',
+  legalName: 'Simple Safe Technologies LLC',
+  url: `${SCHEMA_ORIGIN}/`,
+  image: `${SCHEMA_ORIGIN}/favicon-navy-192.png`,
+  telephone: site.phoneHref,
+  email: site.email,
+  description: 'Full service smart home automation company in South Florida. Infinity consults, designs, prices, and sells the project, and a licensed local electrician under contract performs the regulated electrical work.',
+  areaServed: orderedCities.map((name) => ({
+    '@type': 'City',
+    name,
+    containedInPlace: { '@type': 'State', name: 'Florida' },
+  })),
+  sameAs: SAME_AS,
+  openingHoursSpecification: OPENING_HOURS,
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Smart home services',
+    itemListElement: SERVICE_NAV.map(([slug, label]) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: label, url: `${SCHEMA_ORIGIN}/${slug}` },
+    })),
+  },
+  knowsAbout: [
+    'smart home automation',
+    'smart home installation',
+    'smart lighting',
+    'smart thermostats',
+    'voice control',
+  ],
+});
+
 // Google Business Profile link. Empty gbpUrl renders nothing anywhere, so the
 // markup ships ready and one edit in cities.json lights it up site wide. Never
 // point this at a google.com/search URL, it has to be the real profile link.
@@ -334,6 +432,11 @@ const BLOG_CSS = `<style>
 .post-fig{margin:1.9rem 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
 .post-fig img{display:block;width:100%;height:auto}
 .post-fig figcaption{padding:.7rem 1rem;color:var(--slate);font-size:.88rem;line-height:1.5;text-align:center}
+.foot-social{display:flex;gap:14px;margin-top:16px}
+.foot-social a{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);transition:background .18s}
+.foot-social a:hover{background:var(--cyan)}
+.foot-social svg{width:18px;height:18px;fill:#cfe0ff}
+.foot-social a:hover svg{fill:var(--ink)}
 .cta-box{margin:2.8rem 0 1rem;padding:2.1rem;border-radius:18px;background:linear-gradient(135deg,#06203f,#00B2FC);color:#fff;text-align:center}
 .cta-box h3{color:#fff;font-size:1.5rem;margin:0 0 .6rem}
 .cta-box p{color:rgba(255,255,255,.92);margin:0 0 1.4rem}
@@ -386,6 +489,7 @@ const blogFooter = `<footer>
       <div>
         <img class="flogo" src="/images/logo-light.png" alt="infinity smart living">
         <p>Professional smart home installation and support for real homes across South Florida.</p>
+        ${base.SOCIAL_LINKS}
       </div>
       <div>
         <h4>Company</h4>
