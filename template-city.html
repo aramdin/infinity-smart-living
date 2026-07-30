@@ -353,6 +353,14 @@ footer ul a:hover{color:var(--cyan)}
   body{padding-bottom:58px}
 }
 @media(max-width:460px){ .nav-call{display:none} }
+.rev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;align-items:start}
+.rev{margin:0;padding:1.6rem;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.rev-stars{color:var(--cyan);letter-spacing:3px;font-size:1.05rem;margin-bottom:.7rem}
+.rev blockquote{margin:0 0 .9rem;color:var(--ink);font-size:1.04rem;line-height:1.7}
+.rev blockquote p{margin:0 0 .8rem}
+.rev blockquote p:last-child{margin-bottom:0}
+.rev figcaption{color:var(--slate);font-size:.9rem;font-weight:600}
+.rev figcaption span{font-weight:500;opacity:.8}
 </style>
 </head>
 <body>
@@ -550,6 +558,8 @@ footer ul a:hover{color:var(--cyan)}
     <p style="color:var(--slate);font-size:1.06rem;margin-top:1.4rem">What we plan most often in {{CITY}}: <a href="/smart-lighting-installation">smart lighting installation</a>, <a href="/smart-thermostat-installation">smart thermostat installation</a>, <a href="/smart-lock-and-doorbell-installation">smart lock and doorbell installation</a>, <a href="/alexa-setup-and-routines">Alexa setup and routines</a>, and <a href="/whole-home-voice-control">whole home voice control</a>.</p>
   </div>
 </section>
+
+{{REVIEWS}}
 
 <!-- FINAL CTA -->
 <section class="section">

@@ -54,6 +54,43 @@ const resolveRoutinesLinks = (html) => {
   return out.replace(/<a href="\/routines">([\s\S]*?)<\/a>/g, '$1');
 };
 
+// Customer reviews. reviews.json is the only source and it ships empty: nothing
+// here writes, paraphrases, or invents a review. Copied verbatim from the GBP by
+// hand or it does not appear. No Review/AggregateRating schema is emitted, see
+// the _schema_note in reviews.json for why.
+const reviewsCfg = JSON.parse(readFileSync('./reviews.json', 'utf8'));
+const allReviews = (reviewsCfg.reviews || []).filter((r) => r && r.text && r.author);
+const STARS = (n) => '★'.repeat(Math.max(0, Math.min(5, Number(n) || 0)));
+// Text runs verbatim, so paragraph breaks the customer typed are preserved and
+// nothing is trimmed or tidied. Only HTML special characters are escaped.
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const reviewCard = (r) => `<figure class="rev">
+      <div class="rev-stars" aria-label="${Number(r.rating) || 5} out of 5">${STARS(r.rating)}</div>
+      <blockquote>${String(r.text).split(/\n\s*\n/).map((p) => `<p>${esc(p.trim())}</p>`).join('')}</blockquote>
+      <figcaption>${esc(r.author)}${r.city ? `, ${esc(r.city)}` : ''} · <span>Google review</span></figcaption>
+    </figure>`;
+// City pages lead with a review from that city, then fill from the general pool.
+const reviewsBlock = (city) => {
+  if (!allReviews.length) return '';
+  const byDate = (a, b) => String(b.date || '').localeCompare(String(a.date || ''));
+  const local = city ? allReviews.filter((r) => r.city === city).sort(byDate) : [];
+  const rest = allReviews.filter((r) => !local.includes(r)).sort(byDate);
+  const picked = [...local, ...rest].slice(0, 3);
+  if (!picked.length) return '';
+  return `<section class="section" id="reviews">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow">What homeowners say</span>
+      <h2>Reviews from our customers</h2>
+    </div>
+    <div class="rev-grid">
+    ${picked.map(reviewCard).join('\n    ')}
+    </div>
+  </div>
+</section>`;
+};
+base.REVIEWS = reviewsBlock(null);
+
 // Footer "Service areas" links to every city page, so no city page is orphaned
 // (internal linking for local SEO). Rendered into templates via {{CITY_LINKS}}.
 base.CITY_LINKS = cfg.cities

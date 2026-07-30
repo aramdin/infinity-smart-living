@@ -366,6 +366,14 @@ footer ul a:hover{color:var(--cyan)}
   body{padding-bottom:58px}
 }
 @media(max-width:460px){ .nav-call{display:none} }
+.rev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;align-items:start}
+.rev{margin:0;padding:1.6rem;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.rev-stars{color:var(--cyan);letter-spacing:3px;font-size:1.05rem;margin-bottom:.7rem}
+.rev blockquote{margin:0 0 .9rem;color:var(--ink);font-size:1.04rem;line-height:1.7}
+.rev blockquote p{margin:0 0 .8rem}
+.rev blockquote p:last-child{margin-bottom:0}
+.rev figcaption{color:var(--slate);font-size:.9rem;font-weight:600}
+.rev figcaption span{font-weight:500;opacity:.8}
 </style>
 </head>
 <body>
@@ -557,6 +565,7 @@ footer ul a:hover{color:var(--cyan)}
 
 <!-- SOCIAL PROOF -->
 <!-- PROOF SLOT: testimonial block (2-3 named local quotes with city) goes here, between What's possible and Why homeowners start here. Reserve for real reviews. -->
+{{REVIEWS}}
 <section class="section alt">
   <div class="wrap">
     <div class="section-head center reveal">
