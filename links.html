@@ -333,6 +333,12 @@ footer ul a:hover{color:var(--cyan)}
 .consent{display:flex;gap:.55rem;align-items:flex-start;font-size:.76rem;color:var(--slate);line-height:1.5;margin:2px 0 4px;text-align:left}
 .consent input{margin-top:.18rem;width:16px;height:16px;flex-shrink:0;accent-color:var(--cyan);cursor:pointer}
 .consent a{color:var(--cyan-deep);font-weight:600}
+/* A2P 10DLC: two separate opt-ins (marketing / non-marketing), both optional and
+   never pre-checked, with the policy links in a footer under them. */
+.consent-group{display:flex;flex-direction:column;gap:.55rem;margin:2px 0 4px}
+.consent-group .consent{margin:0}
+.consent-foot{font-size:.76rem;color:var(--slate);line-height:1.5;margin:.15rem 0 .25rem;text-align:left}
+.consent-foot a{color:var(--cyan-deep);font-weight:600}
 /* --- call CTA + mobile sticky bar (B2) --- */
 .nav-call{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-display);font-weight:700;font-size:.95rem;color:var(--ink);white-space:nowrap}
 .nav-call:hover{color:var(--cyan-deep)}
@@ -377,6 +383,8 @@ body.links-page{background:var(--surface);min-height:100vh}
 .link-btn.primary:hover{background:#1cbcff}
 .link-btn.guarantee{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 12px 28px -10px rgba(5,25,65,.55)}
 .link-btn.guarantee:hover{background:var(--ink-2);border-color:var(--ink-2)}
+.links-legal{margin-top:26px;text-align:center;font-size:.78rem;line-height:1.6;color:var(--slate)}
+.links-legal a{color:var(--cyan-deep);font-weight:600}
 </style>
 </head>
 <body class="links-page">
@@ -390,6 +398,9 @@ body.links-page{background:var(--surface);min-height:100vh}
     <a class="link-btn" href="tel:+17543454871">Call Us: (754) 345-4871</a>
     <a class="link-btn" href="/blog?utm_source=linktree&utm_medium=bio&utm_campaign=links">Smart Home Guides</a>
   </div>
+  <!-- A2P 10DLC: the bio page is a public landing surface, so it carries the DBA line and policy links too. -->
+  <p class="links-legal">Infinity Smart Living is a registered DBA of Simplesafe Technologies LLC.<br>
+    <a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms &amp; Conditions</a></p>
 </main>
 </body>
 </html>

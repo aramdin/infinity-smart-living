@@ -179,7 +179,7 @@ base.BUSINESS_SCHEMA = JSON.stringify({
   '@type': 'LocalBusiness',
   '@id': `${SCHEMA_ORIGIN}/#business`,
   name: 'Infinity Smart Living',
-  legalName: 'Simple Safe Technologies LLC',
+  legalName: 'Simplesafe Technologies LLC',
   url: `${SCHEMA_ORIGIN}/`,
   image: `${SCHEMA_ORIGIN}/favicon-navy-192.png`,
   telephone: site.phoneHref,
@@ -524,8 +524,9 @@ const blogFooter = `<footer>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">${base.CITY_LINKS}</p>
     </div>
     <div class="foot-bot">
-      <!-- PROOF SLOT: legitimacy line (electrician license number + "Simple Safe Technologies LLC DBA Infinity Smart Living") goes here once the license number is confirmed. -->
-      <span>© 2026 Simple Safe Technologies LLC DBA Infinity Smart Living. All rights reserved.</span>
+      <!-- PROOF SLOT: electrician license number goes on the DBA line below once confirmed. -->
+      <!-- A2P 10DLC: the DBA sentence is required on the page as its own plain statement. Do not reword or fold it back into the copyright line. -->
+      <span>Infinity Smart Living is a registered DBA of Simplesafe Technologies LLC.<br>© 2026 Simplesafe Technologies LLC. All rights reserved.</span>
       <span><a href="/privacy" style="color:inherit">Privacy</a> · <a href="/terms" style="color:inherit">Terms</a></span>
     </div>
   </div>
@@ -1121,10 +1122,20 @@ const landingHeader = `<header id="top">
 
 const CHECK_SVG = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>`;
 
-const CONSENT_HTML = `<label class="consent">
-  <input type="checkbox" id="consent" name="consent" required>
-  <span>I agree that Infinity Smart Living and the licensed local electrician under contract for my project may call, text, and email me at the contact details I provide about my inquiry, plan, and services, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help. I agree to the <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms</a>.</span>
-</label>`;
+// A2P 10DLC consent. Both boxes stay OPTIONAL (no `required`) and are never
+// pre-checked, even though phone is required. The wording must keep matching the
+// campaign description on file. Mirrors the block in template-home/template-city.
+const CONSENT_HTML = `<div class="consent-group">
+  <label class="consent">
+    <input type="checkbox" id="consentService" name="consent_service">
+    <span>Yes, Simplesafe Technologies LLC DBA Infinity Smart Living may text me appointment reminders and service updates about my project at the number I provide, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help.</span>
+  </label>
+  <label class="consent">
+    <input type="checkbox" id="consentMarketing" name="consent_marketing">
+    <span>Yes, Simplesafe Technologies LLC DBA Infinity Smart Living may text me marketing and promotional offers at the number I provide, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help.</span>
+  </label>
+  <p class="consent-foot">See our <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms &amp; Conditions</a>.</p>
+</div>`;
 
 const cityOptions = ['<option value="" disabled selected>Choose your city</option>']
   .concat(LANDING_CITIES.map((c) => `<option value="${c}">${c}</option>`)).join('\n            ');
@@ -1175,7 +1186,8 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
     phone: document.getElementById('phone').value.trim(),
     city: document.getElementById('city').value,
     lead_source: '${leadSource}',
-    consent: document.getElementById('consent').checked,
+    consent_service: document.getElementById('consentService').checked,
+    consent_marketing: document.getElementById('consentMarketing').checked,
     consent_timestamp: new Date().toISOString(),
     page_url: pageUrl.href
   };
@@ -1487,6 +1499,8 @@ body.links-page{background:var(--surface);min-height:100vh}
 .link-btn.primary:hover{background:#1cbcff}
 .link-btn.guarantee{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 12px 28px -10px rgba(5,25,65,.55)}
 .link-btn.guarantee:hover{background:var(--ink-2);border-color:var(--ink-2)}
+.links-legal{margin-top:26px;text-align:center;font-size:.78rem;line-height:1.6;color:var(--slate)}
+.links-legal a{color:var(--cyan-deep);font-weight:600}
 </style>
 </head>
 <body class="links-page">
@@ -1500,6 +1514,9 @@ body.links-page{background:var(--surface);min-height:100vh}
     <a class="link-btn" href="tel:+17543454871">Call Us: (754) 345-4871</a>
     <a class="link-btn" href="/blog${LINK_UTM}">Smart Home Guides</a>
   </div>
+  <!-- A2P 10DLC: the bio page is a public landing surface, so it carries the DBA line and policy links too. -->
+  <p class="links-legal">Infinity Smart Living is a registered DBA of Simplesafe Technologies LLC.<br>
+    <a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms &amp; Conditions</a></p>
 </main>
 </body>
 </html>`;
@@ -1525,7 +1542,55 @@ const sitemap =
 writeFileSync('sitemap.xml', sitemap);
 console.log('✓ sitemap.xml');
 
-console.log(`\nDone. Built ${cfg.cities.length} city pages + home, packages, ${posts.length} blog posts, blog index, sitemap.`);
+// --- llms.txt (llmstxt.org spec) ---
+// Curated map of the site for language models: one H1, one blockquote summary,
+// free prose, then H2 sections that contain nothing but link lists. Built from
+// the same constants as the nav and sitemap so it cannot drift on a rebuild.
+// /packages stays out on purpose (deliberately orphaned page).
+const llmsLink = (path, label, desc) =>
+  `- [${label}](${origin}/${path})${desc ? `: ${desc}` : ''}`;
+
+const llmsTxt = `# Infinity Smart Living
+
+> Full service Amazon Alexa smart home company serving Broward County and South Palm Beach, Florida. Infinity consults on, designs, and sells the project, and a licensed local electrician under contract performs the regulated electrical work.
+
+Infinity Smart Living is a registered DBA of Simplesafe Technologies LLC. Every system we design is built on Amazon Alexa, so the guidance across this site assumes an Alexa household rather than a mixed platform one. Smart locks and video doorbells are covered as convenience features, for example seeing who is at the door or letting someone in without getting up.
+
+Every project starts with a free smart home floor plan: we walk the home room by room and map what goes where before any pricing conversation. Package pricing is not published on the site. Contact: (754) 345-4871, info@infinitysmartliving.com.
+
+## Main pages
+
+${llmsLink('', 'Home', 'What Infinity does, how the floor plan process works, and the main enquiry form.')}
+${llmsLink('free-floor-plan', 'Free smart home floor plan', 'Landing page for the free room by room floor plan offer.')}
+${llmsLink('free-guide', 'Free Alexa starter guide', 'Landing page offering a downloadable Alexa starter guide.')}
+${llmsLink('guarantee', 'Satisfaction guarantee', 'The 30 day satisfaction guarantee and what it covers.')}
+${llmsLink('blog', 'Smart home guides', 'Index of every published guide and article.')}
+
+## Services
+
+${SERVICE_NAV.map(([slug, label]) => llmsLink(slug, label)).join('\n')}
+
+## Service areas
+
+${cfg.cities.map((c) => llmsLink(slugify(c.city), c.city, `Smart home installation in ${c.city}, Florida.`)).join('\n')}
+
+## Guides
+
+${posts.map((p) => llmsLink(`blog/${p.slug}`, p.title, p.description)).join('\n')}
+
+## Legal
+
+${llmsLink('privacy', 'Privacy Policy', 'How we collect, use, and share information, including mobile and text messaging data.')}
+${llmsLink('terms', 'Terms and Conditions', 'Service terms, including the text messaging disclosures.')}
+
+## Optional
+
+${llmsLink('sitemap.xml', 'Sitemap', 'Machine readable list of every indexable URL.')}
+`;
+writeFileSync('llms.txt', llmsTxt);
+console.log('✓ llms.txt');
+
+console.log(`\nDone. Built ${cfg.cities.length} city pages + home, packages, ${posts.length} blog posts, blog index, sitemap, llms.txt.`);
 if (site.bookUrl.includes('YOUR_') || site.formEndpoint.includes('YOUR_')) {
   console.log('\n⚠  Heads up: bookUrl / formEndpoint still have placeholders in cities.json.');
 }

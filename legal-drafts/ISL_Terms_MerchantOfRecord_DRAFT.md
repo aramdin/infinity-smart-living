@@ -1,6 +1,6 @@
 # Terms of Service — Infinity Smart Living
 
-**Legal entity:** Simple Safe Technologies LLC, doing business as Infinity Smart Living ("Infinity," "we," "us," "our").
+**Legal entity:** Simplesafe Technologies LLC, doing business as Infinity Smart Living ("Infinity," "we," "us," "our").
 
 ---
 
@@ -89,7 +89,7 @@ To the fullest extent permitted by Florida law, Infinity's total liability arisi
 
 ## 16. Indemnification
 
-You agree to defend, indemnify, and hold harmless Simple Safe Technologies LLC, its DBA Infinity Smart Living, and its members, managers, officers, employees, and agents from and against any claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating to: your use or misuse of the system; your breach of these Terms; your provision of inaccurate information about your home or authority to approve work; your violation of any law or the rights of any third party; or any condition of your property that is not disclosed to us or to the contractor. This obligation survives completion of your order and termination of these Terms.
+You agree to defend, indemnify, and hold harmless Simplesafe Technologies LLC, its DBA Infinity Smart Living, and its members, managers, officers, employees, and agents from and against any claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating to: your use or misuse of the system; your breach of these Terms; your provision of inaccurate information about your home or authority to approve work; your violation of any law or the rights of any third party; or any condition of your property that is not disclosed to us or to the contractor. This obligation survives completion of your order and termination of these Terms.
 
 ## 17. Dispute resolution, arbitration, and governing law
 
@@ -103,7 +103,7 @@ The licensed contractors that perform installations are independent contractors,
 
 ## 19. No personal liability
 
-Your agreement is with Simple Safe Technologies LLC, doing business as Infinity Smart Living, and not with any individual. To the fullest extent permitted by law, no member, manager, officer, employee, or agent of the company has any personal liability under these Terms or in connection with your package.
+Your agreement is with Simplesafe Technologies LLC, doing business as Infinity Smart Living, and not with any individual. To the fullest extent permitted by law, no member, manager, officer, employee, or agent of the company has any personal liability under these Terms or in connection with your package.
 
 ## 20. Force majeure
 
@@ -124,7 +124,7 @@ Infinity may update these Terms. The version in effect when you place your order
 ## 24. Contact
 
 Infinity Smart Living
-Simple Safe Technologies LLC, DBA Infinity Smart Living
+Simplesafe Technologies LLC, DBA Infinity Smart Living
 Phone: 754-345-4871
 Email: info@infinitysmartliving.com
 Web: infinitysmartliving.com

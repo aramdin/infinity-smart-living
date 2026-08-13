@@ -1,0 +1,78 @@
+# Infinity Smart Living
+
+> Full service Amazon Alexa smart home company serving Broward County and South Palm Beach, Florida. Infinity consults on, designs, and sells the project, and a licensed local electrician under contract performs the regulated electrical work.
+
+Infinity Smart Living is a registered DBA of Simplesafe Technologies LLC. Every system we design is built on Amazon Alexa, so the guidance across this site assumes an Alexa household rather than a mixed platform one. Smart locks and video doorbells are covered as convenience features, for example seeing who is at the door or letting someone in without getting up.
+
+Every project starts with a free smart home floor plan: we walk the home room by room and map what goes where before any pricing conversation. Package pricing is not published on the site. Contact: (754) 345-4871, info@infinitysmartliving.com.
+
+## Main pages
+
+- [Home](https://infinitysmartliving.com/): What Infinity does, how the floor plan process works, and the main enquiry form.
+- [Free smart home floor plan](https://infinitysmartliving.com/free-floor-plan): Landing page for the free room by room floor plan offer.
+- [Free Alexa starter guide](https://infinitysmartliving.com/free-guide): Landing page offering a downloadable Alexa starter guide.
+- [Satisfaction guarantee](https://infinitysmartliving.com/guarantee): The 30 day satisfaction guarantee and what it covers.
+- [Smart home guides](https://infinitysmartliving.com/blog): Index of every published guide and article.
+
+## Services
+
+- [Smart lighting installation](https://infinitysmartliving.com/smart-lighting-installation)
+- [Smart thermostat installation](https://infinitysmartliving.com/smart-thermostat-installation)
+- [Smart lock and doorbell installation](https://infinitysmartliving.com/smart-lock-and-doorbell-installation)
+- [Alexa setup and routines](https://infinitysmartliving.com/alexa-setup-and-routines)
+- [Whole home voice control](https://infinitysmartliving.com/whole-home-voice-control)
+
+## Service areas
+
+- [Coral Springs](https://infinitysmartliving.com/coral-springs): Smart home installation in Coral Springs, Florida.
+- [Boca Raton](https://infinitysmartliving.com/boca-raton): Smart home installation in Boca Raton, Florida.
+- [Parkland](https://infinitysmartliving.com/parkland): Smart home installation in Parkland, Florida.
+- [Pompano Beach](https://infinitysmartliving.com/pompano-beach): Smart home installation in Pompano Beach, Florida.
+- [Coconut Creek](https://infinitysmartliving.com/coconut-creek): Smart home installation in Coconut Creek, Florida.
+- [Deerfield Beach](https://infinitysmartliving.com/deerfield-beach): Smart home installation in Deerfield Beach, Florida.
+- [Delray Beach](https://infinitysmartliving.com/delray-beach): Smart home installation in Delray Beach, Florida.
+- [Boynton Beach](https://infinitysmartliving.com/boynton-beach): Smart home installation in Boynton Beach, Florida.
+- [Fort Lauderdale](https://infinitysmartliving.com/fort-lauderdale): Smart home installation in Fort Lauderdale, Florida.
+- [Weston](https://infinitysmartliving.com/weston): Smart home installation in Weston, Florida.
+- [Plantation](https://infinitysmartliving.com/plantation): Smart home installation in Plantation, Florida.
+- [Lighthouse Point](https://infinitysmartliving.com/lighthouse-point): Smart home installation in Lighthouse Point, Florida.
+- [Margate](https://infinitysmartliving.com/margate): Smart home installation in Margate, Florida.
+- [Tamarac](https://infinitysmartliving.com/tamarac): Smart home installation in Tamarac, Florida.
+- [Sunrise](https://infinitysmartliving.com/sunrise): Smart home installation in Sunrise, Florida.
+- [Davie](https://infinitysmartliving.com/davie): Smart home installation in Davie, Florida.
+- [Pembroke Pines](https://infinitysmartliving.com/pembroke-pines): Smart home installation in Pembroke Pines, Florida.
+- [Cooper City](https://infinitysmartliving.com/cooper-city): Smart home installation in Cooper City, Florida.
+- [Oakland Park](https://infinitysmartliving.com/oakland-park): Smart home installation in Oakland Park, Florida.
+- [Wilton Manors](https://infinitysmartliving.com/wilton-manors): Smart home installation in Wilton Manors, Florida.
+
+## Guides
+
+- [How to Choose a Home Automation Company in Broward County](https://infinitysmartliving.com/blog/how-to-choose-home-automation-company-broward): How to compare home automation companies in Broward: who holds the electrical license, association rules, east versus west wiring, and plan before price.
+- [What Is Matter? The Smart Home Standard, Explained Simply](https://infinitysmartliving.com/blog/what-is-matter-smart-home): Matter explained in plain English: what the smart home standard is, how it works with Thread and Alexa, what it covers today, and how it changes buying.
+- [What Is a Smart Home Ecosystem? (And Why It Beats Any Single Gadget)](https://infinitysmartliving.com/blog/smart-home-ecosystem): What a smart home ecosystem is, the five pieces every system shares, and why picking one platform first beats collecting gadgets. Explained without jargon.
+- [Alexa for Seniors: A Simple Guide for South Florida Families](https://infinitysmartliving.com/blog/alexa-for-seniors): How Alexa helps seniors live comfortably at home: reminders, easy calls, routines, and ways family can stay close from anywhere. A plain English guide.
+- [The Best Smart Locks in 2026 (And How to Choose)](https://infinitysmartliving.com/blog/best-smart-locks): The best smart locks of 2026 compared: deadbolt vs retrofit, keypad and fingerprint entry, Matter support, battery life, and rental friendly picks.
+- [The Best Video Doorbells in 2026 (Picks for Every Budget)](https://infinitysmartliving.com/blog/best-video-doorbells): The best video doorbell picks of 2026 for every budget: wired vs battery, subscription vs local storage, and models that survive Florida heat.
+- [The Best Smart Home Hubs in 2026 (And How to Pick One)](https://infinitysmartliving.com/blog/best-smart-home-hubs): Comparing the best smart home hubs of 2026, from Amazon Echo to Home Assistant, plus how Matter and Thread change which hub you should buy.
+- [How to Set Up a Smart Home: A Step by Step Guide for Beginners](https://infinitysmartliving.com/blog/how-to-set-up-a-smart-home): Learn how to set up a smart home step by step: assess your Wi-Fi, pick an ecosystem, add your first devices, build routines, and expand room by room.
+- [Smart Home Technology in 2026: The Trends That Actually Matter](https://infinitysmartliving.com/blog/smart-home-technology-trends-2026): The smart home technology trends that matter in 2026: Matter and Thread, smarter voice assistants, energy management, and automation that runs itself.
+- [The Best Smart Home Devices to Start With in 2026](https://infinitysmartliving.com/blog/best-smart-home-devices-to-start-with): A beginner friendly list of the smart home devices worth starting with, all built around Amazon Alexa and easy to use.
+- [What Is Smart Home Automation and How Does It Work?](https://infinitysmartliving.com/blog/smart-home-automation-explained): Smart home automation made simple. Learn how routines, voice control, and Alexa work together to run your home hands free.
+- [What Is a Smart Home? A Plain English Guide for Florida Homeowners](https://infinitysmartliving.com/blog/what-is-a-smart-home): A clear, jargon free guide to what a smart home is, how it works with Amazon Alexa, and where to start. Written for everyday homeowners.
+- [Is Smart Home Automation Worth It? How It Changes Daily Life](https://infinitysmartliving.com/blog/why-smart-home-automation-worth-it): How smart home automation changes mornings, leaving home, evenings, and energy use, and how to decide if it is worth it for your South Florida home.
+- [What Does Smart Home Installation Cost in South Florida? (2026 Guide)](https://infinitysmartliving.com/blog/smart-home-installation-cost-south-florida): A 2026 guide to what drives smart home installation cost in South Florida, typical starting ranges, and how to budget room by room.
+- [Smart Home Installation Near Me: How to Choose a Local Installer](https://infinitysmartliving.com/blog/smart-home-installation-near-me-choosing-installer): How to choose a local smart home installer in South Florida: licensing, insurance, references, the questions to ask, and the red flags to avoid.
+- [Smart Lighting Installation: A Room by Room Guide](https://infinitysmartliving.com/blog/smart-lighting-installation-room-by-room): A room by room smart lighting installation guide: scenes, dimming, smart bulbs vs installed switches, and why pro installation wins for whole home use.
+- [Smart Thermostats in Florida: Cut Your AC Bill Without the Guesswork](https://infinitysmartliving.com/blog/smart-thermostats-florida-cut-ac-bill): How smart thermostat installation helps Florida homes manage cooling and humidity, plus scheduling, geofencing, multi zone homes, and HVAC compatibility.
+- [Home Automation Services: What's Actually Worth Automating First](https://infinitysmartliving.com/blog/home-automation-what-to-automate-first): New to home automation services? Here is what is actually worth automating first, the best payoff for the least cost, and how to avoid the five app mess.
+- [Voice Control and Whole Home Automation: A Beginner's Guide](https://infinitysmartliving.com/blog/voice-control-whole-home-automation-guide): A beginner's guide to voice control and home automation: what voice does well, routines that run on their own, and one system instead of many apps.
+- [Free Smart Home Consultation: What to Expect (and How to Prep)](https://infinitysmartliving.com/blog/free-smart-home-consultation-what-to-expect): What to expect from a free smart home consultation: how it works, how long it takes, what to prepare, and how the custom floor plan and honest quote work.
+
+## Legal
+
+- [Privacy Policy](https://infinitysmartliving.com/privacy): How we collect, use, and share information, including mobile and text messaging data.
+- [Terms and Conditions](https://infinitysmartliving.com/terms): Service terms, including the text messaging disclosures.
+
+## Optional
+
+- [Sitemap](https://infinitysmartliving.com/sitemap.xml): Machine readable list of every indexable URL.
