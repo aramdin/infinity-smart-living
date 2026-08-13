@@ -343,6 +343,9 @@ footer ul a:hover{color:var(--cyan)}
 .consent-group .consent{margin:0}
 .consent-foot{font-size:.76rem;color:var(--slate);line-height:1.5;margin:.15rem 0 .25rem;text-align:left}
 .consent-foot a{color:var(--cyan-deep);font-weight:600}
+.form-error{margin:.2rem 0 .1rem;padding:.7rem .85rem;border-radius:10px;background:#fdecec;border:1px solid #f3c2c2;color:#8a1f1f;font-size:.86rem;line-height:1.5;text-align:left}
+.form-error a{color:#8a1f1f;font-weight:700;text-decoration:underline}
+.form-error[hidden]{display:none}
 /* --- call CTA + mobile sticky bar (B2) --- */
 .nav-call{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-display);font-weight:700;font-size:.95rem;color:var(--ink);white-space:nowrap}
 .nav-call:hover{color:var(--cyan-deep)}
@@ -450,6 +453,10 @@ footer ul a:hover{color:var(--cyan)}
             </label>
             <p class="consent-foot">See our <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms &amp; Conditions</a>.</p>
           </div>
+          <!-- Shown only when the webhook did not return 2xx. Previously the form
+               advanced to the confirmation regardless, so a dropped lead looked
+               identical to a delivered one and the enquiry was lost silently. -->
+          <p class="form-error" id="formError" role="alert" aria-live="assertive" hidden></p>
           <button type="submit" class="btn btn-primary btn-lg">Get My Free Floor Plan</button>
           <!-- PROOF SLOT: one line trust stat under the form button (star rating + homes-done count). Reserve for showcase-home assets. -->
           <a href="tel:+17543454871" data-loc="hero" class="btn btn-ghost btn-lg">Call (754) 345-4871</a>
@@ -656,7 +663,7 @@ footer ul a:hover{color:var(--cyan)}
           <li><a href="tel:+17543454871">(754) 345-4871</a></li>
           <li><a href="mailto:info@infinitysmartliving.com">info@infinitysmartliving.com</a></li>
           <li><a href="https://www.google.com/search?kgmid=/g/11nr5n92kp&amp;q=Infinity+Smart+Living" rel="noopener">Google Business Profile</a></li>
-          <li><a href="#">Deerfield Beach, FL</a></li>
+          <li>Deerfield Beach, FL</li>
         </ul>
       </div>
       <div>
@@ -711,6 +718,14 @@ var ISL_ATTR_KEYS = ['utm_source','utm_medium','utm_campaign','utm_term','utm_co
 
 document.getElementById('leadForm').addEventListener('submit', async function(e){
   e.preventDefault();
+  // In-flight guard: a fast double click would otherwise POST the lead twice and
+  // double-count generate_lead. Also clears any error left over from a prior try.
+  if (this.dataset.submitting === '1') return;
+  this.dataset.submitting = '1';
+  var submitBtn = this.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.disabled = true;
+  var priorErr = document.getElementById('formError');
+  if (priorErr) priorErr.hidden = true;
 
   // prefer attribution captured on the landing page, fall back to the live URL params at submit
   var params = new URLSearchParams(location.search);
@@ -751,12 +766,26 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
       });
       leadOk = !!(res && res.ok);
     }
-  } catch (err) { /* never block the booking step */ }
+  } catch (err) { /* handled below via leadOk */ }
+
+  // Only confirm what actually happened. On a failed or blocked POST we keep the
+  // filled-in fields on screen so the visitor can retry, and offer the phone as a
+  // fallback, instead of showing a confirmation for a lead we never received.
+  if (!leadOk) {
+    var errEl = document.getElementById('formError');
+    if (errEl) {
+      errEl.innerHTML = 'We could not send your details just now. Please try again, or call <a href="tel:+17543454871" data-loc="form-error">(754) 345-4871</a> and we will take them over the phone.';
+      errEl.hidden = false;
+      try { errEl.scrollIntoView({ block: 'nearest' }); } catch (e) {}
+    }
+    try { if (typeof window.gtag === 'function') { window.gtag('event', 'form_error', { page_path: location.pathname }); } } catch (e) {}
+    this.dataset.submitting = '0';
+    if (submitBtn) submitBtn.disabled = false;
+    return;
+  }
 
   // GA4 lead conversion: fire only after a genuine 2xx from GHL, before the confirmation UI.
-  if (leadOk) {
-    try { if (typeof gtag === 'function') gtag('event', 'generate_lead', { page_path: location.pathname, form_city: payload.city || 'none' }); } catch (e) {}
-  }
+  try { if (typeof gtag === 'function') gtag('event', 'generate_lead', { page_path: location.pathname, form_city: payload.city || 'none' }); } catch (e) {}
 
   try { var _u = new URL(location.href); _u.searchParams.set('lead','sent'); history.replaceState(null, '', _u); } catch (err) {}
   document.getElementById('formFields').style.display = 'none';

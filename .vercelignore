@@ -1,0 +1,43 @@
+# Deployment boundary. This is a static root deploy with no build step on Vercel,
+# so anything not excluded here is uploaded and publicly fetchable.
+#
+# Before this file existed, generate.mjs, cities.json, blog.json and the contents
+# of legal-drafts/ were all served with HTTP 200 on the live domain, including a
+# terms draft whose own first line reads "DO NOT PUBLISH AS-IS".
+#
+# Rule of thumb: if it is an input to `node generate.mjs` rather than an output of
+# it, it belongs here. The generated .html, sitemap.xml, llms.txt, robots.txt,
+# images/ and guides/ are what the public site actually needs.
+
+# Generator and its data inputs
+generate.mjs
+cities.json
+blog.json
+reviews.json
+projects.json
+routines.json
+
+# Source fragments that get inlined into generated pages
+posts/
+routines-src/
+
+# Templates. vercel.json already redirects /template-* and marks them noindex,
+# but excluding them means they are never uploaded in the first place.
+template-home.html
+template-city.html
+template-packages.html
+
+# Drafts and internal working files. legal-drafts/ is the critical one: it holds
+# attorney-review drafts that must never be public.
+legal-drafts/
+blog-drafts/
+_to_delete/
+
+# Repo tooling and docs, not part of the site
+README.md
+.claude/
+.git/
+.gitignore
+
+# Build manifest: local build state, not part of the public site
+.build-manifest.json

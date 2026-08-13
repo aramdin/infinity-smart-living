@@ -261,10 +261,20 @@ base.TRACKING = trackingEvents;
 
 const homeTpl = readFileSync('./template-home.html', 'utf8');
 
+// Every generated page is recorded here, and the manifest written at the end of
+// the build lets the NEXT build delete anything it no longer produces. Before
+// this existed, dropping a city from cities.json or a post from blog.json left
+// the old HTML live and orphaned, and the sitemap's blog/ directory scan put
+// deleted posts straight back into the sitemap. Only files emitted through this
+// helper are ever eligible for deletion, so hand-maintained pages such as
+// privacy.html and terms.html can never be touched.
+const generated = [];
+const emit = (path, content) => { writeFileSync(path, content); generated.push(path); };
+
 // --- homepage + packages page ---
-writeFileSync('index.html', stamp(homeTpl, base));
+emit('index.html', stamp(homeTpl, base));
 console.log('✓ index.html (home / consult)');
-writeFileSync('packages.html', stamp(readFileSync('./template-packages.html', 'utf8'), base));
+emit('packages.html', stamp(readFileSync('./template-packages.html', 'utf8'), base));
 console.log('✓ packages.html');
 
 // --- city pages ---
@@ -333,7 +343,7 @@ for (const c of cfg.cities) {
     META_DESC: cityMetaDesc(c),
     LOCAL_INTRO: intro, RECENT_PROJECT: recentProjectBlock(c.city),
   });
-  writeFileSync(`${slug}.html`, html);
+  emit(`${slug}.html`, html);
   pages.push(`${slug}.html`);
   console.log(`✓ ${slug}.html  (${c.city})`);
 }
@@ -600,28 +610,19 @@ const posts = [...(JSON.parse(readFileSync('./blog.json', 'utf8')).posts || [])]
 
 mkdirSync('blog', { recursive: true });
 
-// National-intent posts pull most of their traffic from outside our service area,
-// so their CTA leads with the free guide (works anywhere) and offers the local
-// build as a second line. Local-intent posts keep the floor plan CTA primary.
-const NATIONAL_POSTS = new Set([
-  'best-smart-home-hubs',
-  'what-is-matter-smart-home',
-  'smart-home-ecosystem',
-  'smart-home-technology-trends-2026',
-  'what-is-a-smart-home',
-  'best-smart-home-devices-to-start-with',
-]);
-const ctaBox = (slug) => NATIONAL_POSTS.has(slug)
-  ? `<div class="cta-box">
-  <h3>Set up your Echo like a pro</h3>
-  <p>Room groups, simple device names, and starter routines you can copy word for word. Free download, works with any Echo.</p>
-  <a href="/free-guide" class="btn btn-primary btn-lg">Get the free Alexa Room and Routine Starter Guide</a>
-  <p style="margin:1.1rem 0 0;font-size:.97rem"><a href="/free-floor-plan" style="color:#fff;text-decoration:underline;text-underline-offset:2px;font-weight:600">In South Florida? We also build the whole thing for you, room by room.</a></p>
-</div>`
-  : `<div class="cta-box">
-  <h3>Book your free smart home consultation</h3>
-  <p>See a custom floor plan and an honest price for your home before you spend a dollar. Serving homeowners across Broward County, Boca Raton, Delray Beach, and Boynton Beach.</p>
-  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
+// End of post CTA (SEO audit, Aug 2026). Every post now ends with the same free
+// floor plan block pointing straight at the booking calendar, so the two posts
+// carrying the organic traffic finally have somewhere to send it. This replaced
+// an earlier split that gave national-intent posts a guide-first CTA; the guide
+// survives as the secondary line for everyone. Restore the split by branching
+// here on slug if the unified CTA underperforms on the national posts.
+// The leadconnectorhq.com href is what the delegated listener in trackingEvents
+// keys on to fire booking_click, so this CTA is measured without extra markup.
+const BOOKING_URL = 'https://api.leadconnectorhq.com/widget/bookings/infinitysmartliving';
+const ctaBox = () => `<div class="cta-box">
+  <h3>Get a free smart home floor plan</h3>
+  <p>On a free virtual consultation we map your Amazon Alexa smart home room by room, so you see the whole plan and an honest price before you commit to anything.</p>
+  <a href="${BOOKING_URL}" class="btn btn-primary btn-lg">Book my free virtual consultation</a>
   <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
   <p style="margin:1.1rem 0 0;font-size:.97rem"><a href="/free-guide" style="color:#fff;text-decoration:underline;text-underline-offset:2px;font-weight:600">Prefer to start on your own? Get the free Alexa Room and Routine Starter Guide.</a></p>
 </div>`;
@@ -664,11 +665,11 @@ posts.forEach((post, i) => {
 </section>
 <article class="post-body">
 ${inner}
-${ctaBox(post.slug)}
+${ctaBox()}
 <p class="back"><a href="/blog">← All articles</a></p>
 </article>
 </main>`;
-  writeFileSync(`blog/${post.slug}.html`, blogShell({
+  emit(`blog/${post.slug}.html`, blogShell({
     title: `${metaTitle} | Infinity Smart Living`,
     ogTitle: post.title,
     description: post.description,
@@ -712,7 +713,7 @@ ${cards}
   </section>
 </main>`;
 
-writeFileSync('blog.html', blogShell({
+emit('blog.html', blogShell({
   title: 'Smart Home Blog & Guides | Infinity Smart Living',
   description: 'Free smart home guides for South Florida: home automation, smart lighting, smart thermostats, voice control, costs, and how to choose a local installer.',
   canonical: 'blog',
@@ -742,7 +743,7 @@ const guaranteeBody = `<main>
 </div>
 </article>
 </main>`;
-writeFileSync('guarantee.html', blogShell({
+emit('guarantee.html', blogShell({
   title: 'The 30-Day Satisfaction Guarantee | Infinity Smart Living',
   description: 'A free Amazon Alexa smart home floor plan, mapped room by room, plus a 30-Day Satisfaction Guarantee after your install. Serving South Florida.',
   canonical: 'guarantee',
@@ -1055,7 +1056,7 @@ ${servingLine(s.serving)}
 </article>
 </main>`;
 
-  writeFileSync(`${s.slug}.html`, blogShell({
+  emit(`${s.slug}.html`, blogShell({
     title: s.title,
     description: s.description,
     canonical: s.slug,
@@ -1158,7 +1159,10 @@ const landingFields = `<div class="field">
             ${cityOptions}
             </select>
           </div>
-          ${CONSENT_HTML}`;
+          ${CONSENT_HTML}
+          <!-- Shown only when the webhook did not return 2xx. Sits before the submit
+               button in both landing forms, which share this fields block. -->
+          <p class="form-error" id="formError" role="alert" aria-live="assertive" hidden></p>`;
 
 // Same attribution + submit pattern as the homepage form: capture UTM/click ids
 // on landing, POST JSON to GHL, fire generate_lead only on a genuine 2xx, and
@@ -1175,6 +1179,14 @@ var ISL_ATTR_KEYS = ['utm_source','utm_medium','utm_campaign','utm_term','utm_co
 })();
 document.getElementById('leadForm').addEventListener('submit', async function(e){
   e.preventDefault();
+  // In-flight guard: a fast double click would otherwise POST the lead twice and
+  // double-count generate_lead. Also clears any error left over from a prior try.
+  if (this.dataset.submitting === '1') return;
+  this.dataset.submitting = '1';
+  var submitBtn = this.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.disabled = true;
+  var priorErr = document.getElementById('formError');
+  if (priorErr) priorErr.hidden = true;
   var stored = {};
   try { stored = JSON.parse(sessionStorage.getItem('isl_attr') || '{}'); } catch (err) {}
   // page_url keeps the UTMs even if the visitor navigated after landing
@@ -1200,10 +1212,22 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
       body: JSON.stringify(payload)
     });
     leadOk = !!(res && res.ok);
-  } catch (err) { /* never block the next step */ }
-  if (leadOk) {
-    try { if (typeof gtag === 'function') gtag('event', 'generate_lead', { page_path: location.pathname, form_city: payload.city || 'none' }); } catch (e) {}
+  } catch (err) { /* handled below via leadOk */ }
+  // Only confirm what actually happened. A failed POST used to render the same
+  // success step as a delivered one, so the lead was lost with nobody aware.
+  if (!leadOk) {
+    var errEl = document.getElementById('formError');
+    if (errEl) {
+      errEl.innerHTML = 'We could not send your details just now. Please try again, or call <a href="tel:${site.phoneHref}" data-loc="form-error">${site.phone}</a> and we will take them over the phone.';
+      errEl.hidden = false;
+      try { errEl.scrollIntoView({ block: 'nearest' }); } catch (e) {}
+    }
+    try { if (typeof window.gtag === 'function') { window.gtag('event', 'form_error', { page_path: location.pathname }); } } catch (e) {}
+    this.dataset.submitting = '0';
+    if (submitBtn) submitBtn.disabled = false;
+    return;
   }
+  try { if (typeof gtag === 'function') gtag('event', 'generate_lead', { page_path: location.pathname, form_city: payload.city || 'none' }); } catch (e) {}
   document.getElementById('formFields').style.display = 'none';
   document.getElementById('formSuccess').classList.add('show');
 });
@@ -1272,7 +1296,7 @@ const guideBody = `<main>
 </div>
 </main>`;
 
-writeFileSync('free-guide.html', landingShell({
+emit('free-guide.html', landingShell({
   title: 'Free Alexa Starter Guide (Rooms + Routines) | Infinity Smart Living',
   description: 'Get the free Alexa Room and Routine Starter Guide: set up room groups, name devices simply, and copy starter routines for morning, night, and leaving home.',
   canonical: 'free-guide',
@@ -1327,7 +1351,7 @@ const floorPlanBody = `<main>
 </div>
 </main>`;
 
-writeFileSync('free-floor-plan.html', landingShell({
+emit('free-floor-plan.html', landingShell({
   title: 'Free Smart Home Floor Plan + 20 Minute Consult | Infinity Smart Living',
   description: 'Book a free 20 minute virtual consult and get a custom Alexa floor plan for your exact home, room by room, with your full price shown up front.',
   canonical: 'free-floor-plan',
@@ -1357,7 +1381,7 @@ const consultBookedBody = `<main>
 </div>
 </main>`;
 
-writeFileSync('consult-booked.html', landingShell({
+emit('consult-booked.html', landingShell({
   title: 'You Are Booked | Infinity Smart Living',
   description: 'Your free smart home consultation is booked. We confirm by text and the call takes about 20 minutes.',
   canonical: 'consult-booked',
@@ -1426,7 +1450,7 @@ ${routineSections}
 </article>
 </main>`;
 
-  writeFileSync('routines.html', blogShell({
+  emit('routines.html', blogShell({
     title: 'Real Alexa Routines in Action | Infinity Smart Living',
     description: 'Watch real Alexa routines working in real spaces: short videos with plain write ups of what each routine does and what it needs.',
     canonical: 'routines',
@@ -1520,19 +1544,70 @@ body.links-page{background:var(--surface);min-height:100vh}
 </main>
 </body>
 </html>`;
-writeFileSync('links.html', linksHtml);
+emit('links.html', linksHtml);
 console.log('✓ links.html (bare bio page, noindex, excluded from sitemap/nav/footer)');
 
 
 
-// --- sitemap.xml (clean URLs, matching vercel.json cleanUrls) ---
-// Glob every generated page under blog/ so no blog URL can be dropped from the
-// sitemap on a rebuild, even one added outside this script. Union + dedupe with
-// the pages already collected above (blog/<slug>.html get pushed as posts render).
-for (const f of readdirSync('blog').filter((f) => f.endsWith('.html'))) {
-  const rel = `blog/${f}`;
-  if (!pages.includes(rel)) pages.push(rel);
+// --- stale output cleanup ---
+// Delete pages a previous build produced that this one did not. This is what makes
+// removing a city from cities.json or a post from blog.json actually take the page
+// down, instead of leaving it live, orphaned, and still indexable.
+const MANIFEST = '.build-manifest.json';
+// Hand-maintained pages. They are never emitted, so they should never appear in a
+// manifest, but they are named explicitly so that a stale or hand-edited manifest
+// still cannot delete them.
+const NEVER_DELETE = new Set(['privacy.html', 'terms.html']);
+// The manifest is untrusted input to a destructive operation, so a path is only
+// eligible for deletion if it looks exactly like something this generator writes:
+// a repo-relative .html file at the root or under blog/, with no absolute path and
+// no traversal. Anything else (images, JSON, ../outside, odd nesting) is ignored.
+const deletable = (f) =>
+  typeof f === 'string' &&
+  !NEVER_DELETE.has(f) &&
+  /^(blog\/)?[a-z0-9][a-z0-9-]*\.html$/.test(f);
+
+let previouslyGenerated = [];
+try {
+  const parsed = JSON.parse(readFileSync(MANIFEST, 'utf8')).generated;
+  if (Array.isArray(parsed)) previouslyGenerated = parsed;
+} catch (e) { /* first run, or manifest removed/corrupt: nothing to clean up */ }
+for (const f of previouslyGenerated.filter((f) => !generated.includes(f))) {
+  if (!deletable(f)) {
+    console.log(`! manifest entry ${f} is not a deletable generated page, skipping`);
+    continue;
+  }
+  if (existsSync(f)) {
+    unlinkSync(f);
+    console.log(`✗ removed ${f} (no longer generated)`);
+  }
 }
+writeFileSync(MANIFEST, `${JSON.stringify({ generated: [...generated].sort() }, null, 2)}\n`);
+
+// Deleting a page cannot delete the links pointing at it, because those live in
+// hand-written post and template copy. Warn (never fail) so a removed city or post
+// does not quietly leave 404s behind in body copy.
+const linkTargets = new Set([...generated, 'privacy.html', 'terms.html']);
+const dangling = new Map();
+for (const f of generated.filter((f) => f.endsWith('.html'))) {
+  const html = readFileSync(f, 'utf8');
+  for (const [, href] of html.matchAll(/href="(\/[^"#?]*)["#?]/g)) {
+    const path = href.replace(/^\//, '').replace(/\/$/, '');
+    if (path === '' || path.startsWith('guides/') || path.startsWith('images/')) continue;
+    const target = path.endsWith('.html') ? path : `${path}.html`;
+    if (linkTargets.has(target) || existsSync(target) || existsSync(path)) continue;
+    if (!dangling.has(target)) dangling.set(target, new Set());
+    dangling.get(target).add(f);
+  }
+}
+for (const [target, sources] of dangling) {
+  console.log(`! link to /${target.replace(/\.html$/, '')} has no page (from ${[...sources].join(', ')})`);
+}
+
+// --- sitemap.xml (clean URLs, matching vercel.json cleanUrls) ---
+// Built strictly from `pages`, which each pipeline pushes to as it renders. It
+// deliberately does NOT scan blog/ from disk: that scan used to re-add posts that
+// had just been deleted from blog.json, resubmitting dead URLs to search engines.
 const cleanPath = (u) => (u === '' ? '' : u.replace(/\.html$/, ''));
 const sitemap =
   `<?xml version="1.0" encoding="UTF-8"?>\n` +
