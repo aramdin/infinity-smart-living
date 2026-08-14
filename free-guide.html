@@ -642,6 +642,20 @@ var ISL_ATTR_KEYS = ['utm_source','utm_medium','utm_campaign','utm_term','utm_co
     sessionStorage.setItem('isl_attr', JSON.stringify(stored));
   } catch (e) {}
 })();
+// A2P 10DLC consent evidence, shared by both landing forms and mirrored in
+// template-home.html / template-city.html. submission_id keys one submit event;
+// the consent_*_text fields store the disclosure the visitor actually read, which
+// stays true even after the wording is changed and the version bumped.
+function islSubmissionId(){
+  try { if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID(); } catch (e) {}
+  return 'sub-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+}
+function islConsentText(id){
+  var box = document.getElementById(id);
+  var label = box && box.closest ? box.closest('label') : null;
+  var el = label ? (label.querySelector('span') || label) : null;
+  return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : '';
+}
 document.getElementById('leadForm').addEventListener('submit', async function(e){
   e.preventDefault();
   // In-flight guard: a fast double click would otherwise POST the lead twice and
@@ -666,6 +680,11 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
     consent_service: document.getElementById('consentService').checked,
     consent_marketing: document.getElementById('consentMarketing').checked,
     consent_timestamp: new Date().toISOString(),
+    consent_service_text: islConsentText('consentService'),
+    consent_marketing_text: islConsentText('consentMarketing'),
+    disclosure_version: '2026-08-14',
+    submission_id: islSubmissionId(),
+    user_agent: navigator.userAgent,
     page_url: pageUrl.href
   };
   var leadOk = false;

@@ -714,6 +714,21 @@ var ISL_ATTR_KEYS = ['utm_source','utm_medium','utm_campaign','utm_term','utm_co
   } catch (e) {}
 })();
 
+// A2P 10DLC consent evidence. submission_id keys one submit event; the
+// consent_*_text fields store the disclosure the visitor actually read, which
+// stays true even after the wording is changed and DISCLOSURE_VERSION bumped.
+// Mirrors the helpers in generate.mjs used by the two landing page forms.
+function islSubmissionId(){
+  try { if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID(); } catch (e) {}
+  return 'sub-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+}
+function islConsentText(id){
+  var box = document.getElementById(id);
+  var label = box && box.closest ? box.closest('label') : null;
+  var el = label ? (label.querySelector('span') || label) : null;
+  return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : '';
+}
+
 document.getElementById('leadForm').addEventListener('submit', async function(e){
   e.preventDefault();
   // In-flight guard: a fast double click would otherwise POST the lead twice and
@@ -739,6 +754,11 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
     consent_service: document.getElementById('consentService').checked,
     consent_marketing: document.getElementById('consentMarketing').checked,
     consent_timestamp: new Date().toISOString(),
+    consent_service_text: islConsentText('consentService'),
+    consent_marketing_text: islConsentText('consentMarketing'),
+    disclosure_version: '{{DISCLOSURE_VERSION}}',
+    submission_id: islSubmissionId(),
+    user_agent: navigator.userAgent,
     source_url: location.href,
     page: document.title,
     utm_source: attr('utm_source'),

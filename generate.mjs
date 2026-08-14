@@ -22,12 +22,19 @@ const slugify = (s) =>
 const stamp = (tpl, vars) =>
   Object.entries(vars).reduce((out, [k, v]) => out.split(`{{${k}}}`).join(v), tpl);
 
+// A2P 10DLC consent evidence. Every form POSTs this alongside the checkbox
+// states so a carrier audit can tie a consent record to the exact disclosure the
+// visitor agreed to. BUMP THIS DATE whenever ANY consent checkbox wording
+// changes, in template-home.html, template-city.html, or CONSENT_HTML below.
+const DISCLOSURE_VERSION = '2026-08-14';
+
 const base = {
   BOOK_URL: site.bookUrl,
   FORM_ENDPOINT: site.formEndpoint,
   PHONE: site.phone,
   PHONE_HREF: site.phoneHref,
   EMAIL: site.email,
+  DISCLOSURE_VERSION,
 };
 
 // /routines is a dormant page: it only gets built once routines.json has an
@@ -139,9 +146,14 @@ base.SOCIAL_LINKS = `<div class="foot-social">
 // source means adding a city cannot silently desync the schema.
 //
 // Deliberately absent, all logged decisions: Review and AggregateRating (Google
-// prohibits review rich results for third party collected reviews), a street
-// address (ISL is a Service Area Business, areaServed carries the geography),
-// and priceRange (brushes the pricing hidden decision, flagged to Alvin).
+// prohibits review rich results for third party collected reviews) and
+// priceRange (brushes the pricing hidden decision, flagged to Alvin).
+//
+// address was added 2026-08-14. Google lists it as required for LocalBusiness,
+// so leaving it out threw a Rich Results warning, and the A2P 10DLC review wants
+// one NAP across the site, the GBP, and the brand registration. It publishes
+// nothing new: the same address is already on /privacy and /terms. areaServed
+// still carries the service geography.
 // origin is declared later in this file, after the homepage is stamped, so the
 // schema derives its base URL straight from site.origin instead.
 const SCHEMA_ORIGIN = (site.origin || '').replace(/\/$/, '');
@@ -184,6 +196,14 @@ base.BUSINESS_SCHEMA = JSON.stringify({
   image: `${SCHEMA_ORIGIN}/favicon-navy-192.png`,
   telephone: site.phoneHref,
   email: site.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '1509 N State Rd 7, Suite G',
+    addressLocality: 'Margate',
+    addressRegion: 'FL',
+    postalCode: '33063',
+    addressCountry: 'US',
+  },
   description: 'Full service smart home automation company in South Florida. Infinity consults, designs, prices, and sells the project, and a licensed local electrician under contract performs the regulated electrical work.',
   areaServed: orderedCities.map((name) => ({
     '@type': 'City',
@@ -1177,6 +1197,20 @@ var ISL_ATTR_KEYS = ['utm_source','utm_medium','utm_campaign','utm_term','utm_co
     sessionStorage.setItem('isl_attr', JSON.stringify(stored));
   } catch (e) {}
 })();
+// A2P 10DLC consent evidence, shared by both landing forms and mirrored in
+// template-home.html / template-city.html. submission_id keys one submit event;
+// the consent_*_text fields store the disclosure the visitor actually read, which
+// stays true even after the wording is changed and the version bumped.
+function islSubmissionId(){
+  try { if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID(); } catch (e) {}
+  return 'sub-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+}
+function islConsentText(id){
+  var box = document.getElementById(id);
+  var label = box && box.closest ? box.closest('label') : null;
+  var el = label ? (label.querySelector('span') || label) : null;
+  return el ? (el.textContent || '').replace(/\\s+/g, ' ').trim() : '';
+}
 document.getElementById('leadForm').addEventListener('submit', async function(e){
   e.preventDefault();
   // In-flight guard: a fast double click would otherwise POST the lead twice and
@@ -1201,6 +1235,11 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
     consent_service: document.getElementById('consentService').checked,
     consent_marketing: document.getElementById('consentMarketing').checked,
     consent_timestamp: new Date().toISOString(),
+    consent_service_text: islConsentText('consentService'),
+    consent_marketing_text: islConsentText('consentMarketing'),
+    disclosure_version: '${DISCLOSURE_VERSION}',
+    submission_id: islSubmissionId(),
+    user_agent: navigator.userAgent,
     page_url: pageUrl.href
   };
   var leadOk = false;
