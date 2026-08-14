@@ -26,7 +26,7 @@ const stamp = (tpl, vars) =>
 // states so a carrier audit can tie a consent record to the exact disclosure the
 // visitor agreed to. BUMP THIS DATE whenever ANY consent checkbox wording
 // changes, in template-home.html, template-city.html, or CONSENT_HTML below.
-const DISCLOSURE_VERSION = '2026-08-14';
+const DISCLOSURE_VERSION = '2026-08-14.2';
 
 const base = {
   BOOK_URL: site.bookUrl,
@@ -1149,11 +1149,11 @@ const CHECK_SVG = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" s
 const CONSENT_HTML = `<div class="consent-group">
   <label class="consent">
     <input type="checkbox" id="consentService" name="consent_service">
-    <span>Yes, Simplesafe Technologies LLC DBA Infinity Smart Living may text me appointment reminders and service updates about my project at the number I provide, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help.</span>
+    <span>Yes, Infinity Smart Living, a registered DBA of Simplesafe Technologies LLC, may text me appointment reminders and service updates about my project at the number I provide, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help.</span>
   </label>
   <label class="consent">
     <input type="checkbox" id="consentMarketing" name="consent_marketing">
-    <span>Yes, Simplesafe Technologies LLC DBA Infinity Smart Living may text me marketing and promotional offers at the number I provide, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help.</span>
+    <span>Yes, Infinity Smart Living, a registered DBA of Simplesafe Technologies LLC, may text me marketing and promotional offers at the number I provide, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help.</span>
   </label>
   <p class="consent-foot">See our <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms &amp; Conditions</a>.</p>
 </div>`;
