@@ -683,6 +683,10 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
     disclosure_version: '2026-08-14.2',
     submission_id: islSubmissionId(),
     user_agent: navigator.userAgent,
+    // source_url carries the same meaning as the homepage/city forms so one GHL
+    // field mapping captures every consent record. page_url stays for attribution:
+    // it is the UTM-enriched variant, which is not the literal consent-page URL.
+    source_url: location.href,
     page_url: pageUrl.href
   };
   var leadOk = false;
