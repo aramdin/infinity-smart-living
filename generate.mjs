@@ -26,7 +26,7 @@ const stamp = (tpl, vars) =>
 // states so a carrier audit can tie a consent record to the exact disclosure the
 // visitor agreed to. BUMP THIS DATE whenever ANY consent checkbox wording
 // changes, in template-home.html, template-city.html, or CONSENT_HTML below.
-const DISCLOSURE_VERSION = '2026-08-14.2';
+const DISCLOSURE_VERSION = '2026-08-17';
 
 const base = {
   BOOK_URL: site.bookUrl,
@@ -191,7 +191,7 @@ base.BUSINESS_SCHEMA = JSON.stringify({
   '@type': 'LocalBusiness',
   '@id': `${SCHEMA_ORIGIN}/#business`,
   name: 'Infinity Smart Living',
-  legalName: 'Simplesafe Technologies LLC',
+  legalName: 'SimpleSafe Technologies LLC',
   url: `${SCHEMA_ORIGIN}/`,
   image: `${SCHEMA_ORIGIN}/favicon-navy-192.png`,
   telephone: site.phoneHref,
@@ -556,7 +556,7 @@ const blogFooter = `<footer>
     <div class="foot-bot">
       <!-- PROOF SLOT: electrician license number goes on the DBA line below once confirmed. -->
       <!-- A2P 10DLC: the DBA sentence is required on the page as its own plain statement. Do not reword or fold it back into the copyright line. -->
-      <span>Infinity Smart Living is a registered DBA of Simplesafe Technologies LLC.<br>© 2026 Simplesafe Technologies LLC. All rights reserved.</span>
+      <span>Infinity Smart Living is a registered DBA of SimpleSafe Technologies LLC.<br>© 2026 SimpleSafe Technologies LLC. All rights reserved.</span>
       <span><a href="/privacy" style="color:inherit">Privacy</a> · <a href="/terms" style="color:inherit">Terms</a></span>
     </div>
   </div>
@@ -1149,11 +1149,11 @@ const CHECK_SVG = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" s
 const CONSENT_HTML = `<div class="consent-group">
   <label class="consent">
     <input type="checkbox" id="consentService" name="consent_service">
-    <span>Yes, Infinity Smart Living, a registered DBA of Simplesafe Technologies LLC, may text me appointment reminders and service updates about my project at the number I provide, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help.</span>
+    <span>I consent to receive non-marketing text messages from SimpleSafe Technologies LLC DBA Infinity Smart Living about consultation and quote requests, scheduling, confirmations, appointment reminders, and customer support, including by automated technology. Consent is not a condition of purchase. Message frequency may vary, message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
   </label>
   <label class="consent">
     <input type="checkbox" id="consentMarketing" name="consent_marketing">
-    <span>Yes, Infinity Smart Living, a registered DBA of Simplesafe Technologies LLC, may text me marketing and promotional offers at the number I provide, including by automated technology. Consent is not a condition of purchase. Message frequency varies and message and data rates may apply. Reply STOP to opt out, HELP for help.</span>
+    <span>I consent to receive marketing text messages about special offers, discounts, and service updates from SimpleSafe Technologies LLC DBA Infinity Smart Living at the phone number provided, including by automated technology. Consent is not a condition of purchase. Message frequency may vary. Message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
   </label>
   <p class="consent-foot">See our <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms &amp; Conditions</a>.</p>
 </div>`;
@@ -1582,7 +1582,7 @@ body.links-page{background:var(--surface);min-height:100vh}
     <a class="link-btn" href="/blog${LINK_UTM}">Smart Home Guides</a>
   </div>
   <!-- A2P 10DLC: the bio page is a public landing surface, so it carries the DBA line and policy links too. -->
-  <p class="links-legal">Infinity Smart Living is a registered DBA of Simplesafe Technologies LLC.<br>
+  <p class="links-legal">Infinity Smart Living is a registered DBA of SimpleSafe Technologies LLC.<br>
     <a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms &amp; Conditions</a></p>
 </main>
 </body>
@@ -1672,7 +1672,7 @@ const llmsTxt = `# Infinity Smart Living
 
 > Full service Amazon Alexa smart home company serving Broward County and South Palm Beach, Florida. Infinity consults on, designs, and sells the project, and a licensed local electrician under contract performs the regulated electrical work.
 
-Infinity Smart Living is a registered DBA of Simplesafe Technologies LLC. Every system we design is built on Amazon Alexa, so the guidance across this site assumes an Alexa household rather than a mixed platform one. Smart locks and video doorbells are covered as convenience features, for example seeing who is at the door or letting someone in without getting up.
+Infinity Smart Living is a registered DBA of SimpleSafe Technologies LLC. Every system we design is built on Amazon Alexa, so the guidance across this site assumes an Alexa household rather than a mixed platform one. Smart locks and video doorbells are covered as convenience features, for example seeing who is at the door or letting someone in without getting up.
 
 Every project starts with a free smart home floor plan: we walk the home room by room and map what goes where before any pricing conversation. Package pricing is not published on the site. Contact: (754) 345-4871, info@infinitysmartliving.com.
 

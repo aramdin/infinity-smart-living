@@ -1,6 +1,6 @@
 # Privacy Policy — Infinity Smart Living
 
-**Legal entity:** Simplesafe Technologies LLC, doing business as Infinity Smart Living ("Infinity," "we," "us," "our").
+**Legal entity:** SimpleSafe Technologies LLC, doing business as Infinity Smart Living ("Infinity," "we," "us," "our").
 
 ---
 
@@ -69,7 +69,7 @@ We may update this Policy. The version posted on the Site is the version in effe
 
 ## 13. Contact
 
-Simplesafe Technologies LLC, DBA Infinity Smart Living
+SimpleSafe Technologies LLC, DBA Infinity Smart Living
 Phone: 754-345-4871
 Email: info@infinitysmartliving.com
 Web: infinitysmartliving.com
