@@ -497,6 +497,18 @@ const formModule = (key) => {
     iframe.title = 'Choose your consultation time';
     iframe.scrolling = 'no';
     iframe.style.cssText = 'width:100%;border:none;overflow:hidden;min-height:720px';
+    // calendar_view means the visitor actually got a calendar, so it waits for the
+    // iframe to load rather than firing the moment the element is inserted. If
+    // LeadConnector is blocked or down, the booking step did not happen and the
+    // event should not claim it did. The site runs gtag.js with no GTM container,
+    // so a bare dataLayer push never reaches GA4: gtag() is the one that counts,
+    // and the push stays for a future GTM container.
+    iframe.addEventListener('load', function(){
+      if (container.dataset.viewed === '1') return;
+      container.dataset.viewed = '1';
+      try { if (typeof window.gtag === 'function') window.gtag('event', 'calendar_view', { page_path: location.pathname }); } catch (e) {}
+      try { (window.dataLayer = window.dataLayer || []).push({ event: 'calendar_view' }); } catch (e) {}
+    });
     container.appendChild(iframe);
     if (!document.querySelector('script[data-ghl-calendar-script]')) {
       var s = document.createElement('script');
@@ -504,10 +516,6 @@ const formModule = (key) => {
       s.dataset.ghlCalendarScript = '1';
       document.body.appendChild(s);
     }
-    // The site runs gtag.js with no GTM container, so a bare dataLayer push never
-    // reaches GA4. gtag() is the one that counts; the push stays for a future GTM.
-    try { if (typeof window.gtag === 'function') window.gtag('event', 'calendar_view', { page_path: location.pathname }); } catch (e) {}
-    try { (window.dataLayer = window.dataLayer || []).push({ event: 'calendar_view' }); } catch (e) {}
     // Booking intent, read later by /consult-booked so a booking conversion only
     // fires for someone who actually reached the calendar from a real submit.
     try { localStorage.setItem('isl_booking_intent', JSON.stringify({ submission_id: submissionId, created_at: Date.now() })); } catch (e) {}
