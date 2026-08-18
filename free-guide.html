@@ -474,6 +474,32 @@ footer ul a:hover{color:var(--cyan)}
    figcaption re-asserts --surface so the caption bar stays readable. */
 .land-fig-panel img{background:#06203f}
 .land-fig-panel figcaption{background:var(--surface)}
+/* CRO sections below the form on the paid lander. Everything above stays as is:
+   the form is still the first thing on the page and inside one scroll. */
+.land-sec{margin:38px 0 0;padding-top:30px;border-top:1px solid var(--line)}
+.land-sec h2{font-size:clamp(1.25rem,3.6vw,1.6rem);font-weight:800;color:var(--ink);line-height:1.25;margin:0 0 .85rem}
+.land-sec p{color:var(--slate);font-size:1rem;line-height:1.7;margin:0 0 1rem}
+.land-sec ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.75rem}
+.land-sec ul li{display:flex;gap:.6rem;align-items:flex-start;color:var(--slate);font-size:1rem;line-height:1.55}
+.land-sec ul li svg{flex:none;margin-top:3px}
+.land-steps{list-style:none;margin:0;padding:0;counter-reset:s}
+.land-steps li{counter-increment:s;position:relative;padding:0 0 1.05rem 2.5rem;color:var(--slate);font-size:1rem;line-height:1.6}
+.land-steps li::before{content:counter(s);position:absolute;left:0;top:-1px;width:26px;height:26px;border-radius:50%;background:var(--cyan);color:#06203f;font-weight:800;font-size:.85rem;display:grid;place-items:center}
+.land-faq-q{margin:1.35rem 0 .4rem;font-size:1.05rem;font-weight:700;color:var(--ink)}
+.land-rev{margin:0 0 1.1rem;padding:1.15rem 1.25rem;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.land-rev blockquote{margin:0}
+.land-rev blockquote p{color:var(--slate);font-size:.99rem;line-height:1.7;margin:0 0 .75rem}
+.land-rev blockquote p:last-child{margin-bottom:0}
+.land-rev figcaption{margin-top:.8rem;color:var(--ink);font-weight:600;font-size:.92rem}
+.land-rev figcaption span{color:var(--slate);font-weight:500}
+.gproof-rating{font-size:1.05rem;color:var(--ink);margin:0 0 1rem}
+.gproof-stars{color:#f5a623;letter-spacing:2px}
+.gproof-link{margin:.4rem 0 0}
+.gproof-link a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.land-serving{margin:1.2rem 0 0;padding:1.05rem 1.15rem;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--slate);font-size:.97rem;line-height:1.7}
+.land-serving a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.land-cta-repeat{margin:34px 0 0;text-align:center}
+.land-cta-repeat .btn{width:100%}
 @media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}.land-fig-lead{margin-bottom:18px}}
 </style>
 </head>

@@ -93,6 +93,64 @@ const resolveRoutinesLinks = (html) => {
   return out.replace(/<a href="\/routines">([\s\S]*?)<\/a>/g, '$1');
 };
 
+// --- shared lazy YouTube facade (routines hub + the homepage commercial) -----
+// No iframe is in the initial HTML anywhere. A poster image and a play button sit
+// in a reserved 16:9 box, and the real youtube-nocookie iframe is built on click.
+// Both surfaces use this one copy so the two can never drift apart.
+const YT_FACADE_CSS = `<style>
+.yt{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#06203f;margin:0 0 1.3rem;cursor:pointer}
+.yt img{width:100%;height:100%;object-fit:cover;display:block}
+.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.yt-play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(5,25,65,.25);border:0;cursor:pointer;transition:background .2s}
+.yt-play:hover{background:rgba(5,25,65,.45)}
+.yt-play span{width:74px;height:74px;border-radius:50%;background:var(--cyan);display:grid;place-items:center;box-shadow:0 12px 30px -8px rgba(0,178,252,.7)}
+.yt-play svg{width:30px;height:30px;fill:var(--ink);margin-left:4px}
+</style>`;
+
+const YT_FACADE_JS = `<script>
+document.querySelectorAll('.yt').forEach(function(el){
+  el.addEventListener('click', function(){
+    if (el.querySelector('iframe')) return;
+    var id = el.getAttribute('data-yt');
+    // Autoplay is fine here: the visitor clicked, so it is user initiated.
+    var f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1';
+    f.title = el.getAttribute('data-yt-title') || 'Video';
+    f.allow = 'autoplay; encrypted-media; picture-in-picture';
+    f.setAttribute('allowfullscreen', '');
+    el.innerHTML = '';
+    el.appendChild(f);
+    var ev = el.getAttribute('data-yt-event');
+    if (ev) { try { if (typeof window.gtag === 'function') window.gtag('event', ev, { page_path: location.pathname, video_id: id }); } catch (e) {} }
+  });
+});
+</script>`;
+
+// --- homepage commercial ----------------------------------------------------
+// The 16:9 wide cut. A 9:16 vertical cut also exists for Reels and retargeting and
+// must NOT be embedded here. An empty string renders nothing at all, so the slot
+// stays dormant exactly like routines.json and projects.json.
+const COMMERCIAL_YOUTUBE_ID = 'PsLtZRB2Zww';
+// The poster is self hosted so the initial page makes no request to YouTube.
+if (COMMERCIAL_YOUTUBE_ID && !existsSync('images/commercial-poster.jpg')) {
+  throw new Error('COMMERCIAL_YOUTUBE_ID is set but images/commercial-poster.jpg is missing');
+}
+const commercialBlock = COMMERCIAL_YOUTUBE_ID ? `
+<section class="section" id="commercial">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow" style="justify-content:center">Watch</span>
+      <h2>See what we do, in a minute</h2>
+    </div>
+    <div style="max-width:860px;margin:0 auto">
+      <div class="yt" data-yt="${COMMERCIAL_YOUTUBE_ID}" data-yt-title="Infinity Smart Living commercial" data-yt-event="commercial_play">
+        <img src="/images/commercial-poster.jpg" alt="Infinity Smart Living commercial" width="1280" height="720" loading="lazy" decoding="async">
+        <button class="yt-play" aria-label="Play the Infinity Smart Living commercial"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></button>
+      </div>
+    </div>
+  </div>
+</section>` : '';
+
 // Customer reviews. reviews.json is the only source and it ships empty: nothing
 // here writes, paraphrases, or invents a review. Copied verbatim from the GBP by
 // hand or it does not appear. No Review/AggregateRating schema is emitted, see
@@ -129,6 +187,48 @@ const reviewsBlock = (city) => {
 </section>`;
 };
 base.REVIEWS = reviewsBlock(null);
+
+// --- Google proof + landing page review selection ---------------------------
+// The rating and the count are only ever the real Google Business Profile totals,
+// supplied by hand in reviews.json. They render as numbers ONLY when both are
+// present. While either is null the block still ships, as a plain link to the
+// profile with no figure attached: an invented or stale review count is a false
+// claim about the business, and the length of the reviews array is not the number
+// of reviews the profile holds.
+const googleRating = reviewsCfg.google_rating;
+const googleReviewCount = reviewsCfg.google_review_count;
+const googleTotalsReady = googleRating !== null && googleRating !== undefined
+  && googleReviewCount !== null && googleReviewCount !== undefined;
+
+const googleProof = () => {
+  if (!gbpOk) return '';
+  const line = googleTotalsReady
+    ? `<p class="gproof-rating"><span class="gproof-stars" aria-hidden="true">${STARS(Math.round(googleRating))}</span> <strong>${googleRating}</strong> from ${googleReviewCount} Google reviews</p>`
+    : '';
+  // Parts are filtered before joining: while the totals are null the rating line is
+  // an empty string, and interpolating it directly would leave an indented blank
+  // line in the output that git diff --check reports as trailing whitespace.
+  const parts = [
+    '<h2>What homeowners say</h2>',
+    line,
+    ...LANDING_REVIEWS.map(landingReviewCard),
+    `<p class="gproof-link"><a href="${gbpHref}" rel="noopener">Read our Google reviews</a></p>`,
+  ].filter(Boolean);
+  return `<section class="land-sec land-proof">
+    ${parts.join('\n    ')}
+  </section>`;
+};
+
+// Only reviews explicitly marked landing:true. Today that is one review, and one
+// real review is shown as one review: nothing pads it to three.
+const LANDING_REVIEWS = allReviews.filter((r) => r.landing === true);
+// Deliberately no star row on the paid lander. Per review stars read as a rating
+// claim sitting right next to the Google proof line, and no number may appear
+// there until the real profile totals are filled in.
+const landingReviewCard = (r) => `<figure class="land-rev">
+      <blockquote>${String(r.text).split(/\n\s*\n/).map((x) => `<p>${esc(x.trim())}</p>`).join('')}</blockquote>
+      <figcaption>${esc(r.author)}${r.city ? `, ${esc(r.city)}` : ''} · <span>Google review</span></figcaption>
+    </figure>`;
 
 // Footer "Service areas" links to every city page, so no city page is orphaned
 // (internal linking for local SEO). Rendered into templates via {{CITY_LINKS}}.
@@ -559,6 +659,11 @@ ${calendarCall}
 };
 
 base.FORM_SCRIPT = formModule('home');
+base.COMMERCIAL = commercialBlock;
+// The facade CSS and the click handler only ship on the homepage when the slot is
+// actually filled, so an empty COMMERCIAL_YOUTUBE_ID leaves the page byte clean.
+base.COMMERCIAL_CSS = commercialBlock ? YT_FACADE_CSS : '';
+base.COMMERCIAL_JS = commercialBlock ? YT_FACADE_JS : '';
 
 
 const homeTpl = readFileSync('./template-home.html', 'utf8');
@@ -837,6 +942,24 @@ const blogFooter = `<footer>
     </div>
     <div class="foot-bot">
       <!-- PROOF SLOT: electrician license number goes on the DBA line below once confirmed. -->
+      <!-- A2P 10DLC: the DBA sentence is required on the page as its own plain statement. Do not reword or fold it back into the copyright line. -->
+      <span>Infinity Smart Living is a registered DBA of SimpleSafe Technologies LLC.<br>© 2026 SimpleSafe Technologies LLC. All rights reserved.</span>
+      <span><a href="/privacy" style="color:inherit">Privacy</a> · <a href="/terms" style="color:inherit">Terms</a></span>
+    </div>
+  </div>
+</footer>`;
+
+// Paid landing pages get this instead of the site footer. The full footer carries
+// service links, twenty city links, blog and social: on a page bought by the click
+// every one of those is an exit that the click already paid for. What stays is
+// what has to stay: who we are, how to reach us, the A2P DBA sentence, the policy
+// links, and the guarantee.
+const minimalFooterHtml = `<footer class="foot-min">
+  <div class="wrap">
+    <img class="flogo" src="/images/logo-light.png" alt="infinity smart living">
+    <p class="foot-min-contact"><a href="tel:${site.phoneHref}">${site.phone}</a></p>
+    <p class="foot-min-guarantee"><a href="/guarantee">30-Day Satisfaction Guarantee</a></p>
+    <div class="foot-bot">
       <!-- A2P 10DLC: the DBA sentence is required on the page as its own plain statement. Do not reword or fold it back into the copyright line. -->
       <span>Infinity Smart Living is a registered DBA of SimpleSafe Technologies LLC.<br>© 2026 SimpleSafe Technologies LLC. All rights reserved.</span>
       <span><a href="/privacy" style="color:inherit">Privacy</a> · <a href="/terms" style="color:inherit">Terms</a></span>
@@ -1411,6 +1534,32 @@ const LANDING_CSS = `<style>
    figcaption re-asserts --surface so the caption bar stays readable. */
 .land-fig-panel img{background:#06203f}
 .land-fig-panel figcaption{background:var(--surface)}
+/* CRO sections below the form on the paid lander. Everything above stays as is:
+   the form is still the first thing on the page and inside one scroll. */
+.land-sec{margin:38px 0 0;padding-top:30px;border-top:1px solid var(--line)}
+.land-sec h2{font-size:clamp(1.25rem,3.6vw,1.6rem);font-weight:800;color:var(--ink);line-height:1.25;margin:0 0 .85rem}
+.land-sec p{color:var(--slate);font-size:1rem;line-height:1.7;margin:0 0 1rem}
+.land-sec ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.75rem}
+.land-sec ul li{display:flex;gap:.6rem;align-items:flex-start;color:var(--slate);font-size:1rem;line-height:1.55}
+.land-sec ul li svg{flex:none;margin-top:3px}
+.land-steps{list-style:none;margin:0;padding:0;counter-reset:s}
+.land-steps li{counter-increment:s;position:relative;padding:0 0 1.05rem 2.5rem;color:var(--slate);font-size:1rem;line-height:1.6}
+.land-steps li::before{content:counter(s);position:absolute;left:0;top:-1px;width:26px;height:26px;border-radius:50%;background:var(--cyan);color:#06203f;font-weight:800;font-size:.85rem;display:grid;place-items:center}
+.land-faq-q{margin:1.35rem 0 .4rem;font-size:1.05rem;font-weight:700;color:var(--ink)}
+.land-rev{margin:0 0 1.1rem;padding:1.15rem 1.25rem;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.land-rev blockquote{margin:0}
+.land-rev blockquote p{color:var(--slate);font-size:.99rem;line-height:1.7;margin:0 0 .75rem}
+.land-rev blockquote p:last-child{margin-bottom:0}
+.land-rev figcaption{margin-top:.8rem;color:var(--ink);font-weight:600;font-size:.92rem}
+.land-rev figcaption span{color:var(--slate);font-weight:500}
+.gproof-rating{font-size:1.05rem;color:var(--ink);margin:0 0 1rem}
+.gproof-stars{color:#f5a623;letter-spacing:2px}
+.gproof-link{margin:.4rem 0 0}
+.gproof-link a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.land-serving{margin:1.2rem 0 0;padding:1.05rem 1.15rem;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--slate);font-size:.97rem;line-height:1.7}
+.land-serving a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.land-cta-repeat{margin:34px 0 0;text-align:center}
+.land-cta-repeat .btn{width:100%}
 @media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}.land-fig-lead{margin-bottom:18px}}
 </style>`;
 
@@ -1477,14 +1626,20 @@ const LANDING_OG = {
   imageAlt: 'A wall mounted Echo Show 15 running a whole home, installed by our team',
 };
 
-const landingShell = ({ title, description, canonical, headExtra = '', body }) => blogShell({
-  title, description, canonical, ogType: 'website', headExtra, body, ...LANDING_OG,
-}).replace(blogHeader, landingHeader)
+const landingShell = ({ title, description, canonical, headExtra = '', jsonLd = '', minimalFooter = false, body }) => {
+  const full = blogShell({
+    title, description, canonical, ogType: 'website', headExtra, jsonLd, body, ...LANDING_OG,
+  });
+  // ORDER MATTERS: the whole footer is swapped first. The "Get started" strip below
+  // edits the footer markup, and after that runs an exact blogFooter match fails.
+  const shell = minimalFooter ? full.replace(blogFooter, minimalFooterHtml) : full;
+  return shell.replace(blogHeader, landingHeader)
   .replace('<!-- MOBILE STICKY CALL BAR (mobile viewports only) -->', '<!-- sticky call bar omitted: single CTA per landing page -->')
   .replace(/<div class="mobile-cta-bar"[\s\S]*?<\/div>\n/, '')
   // single CTA per page: the footer's "Get started" column would add a second one
   .replace(/<div>\s*<h4>Get started<\/h4>[\s\S]*?<\/div>\n/, '')
   .replace(`${BLOG_CSS}`, `${BLOG_CSS}\n${LANDING_CSS}`);
+};
 
 // --- /free-guide ---
 const guideBody = `<main>
@@ -1548,7 +1703,7 @@ const floorPlanBody = `<main>
   <div class="pwrap">
     <span class="post-cat">Free virtual consultation + free floor plan</span>
     <h1>A smart home floor plan for your exact home, free</h1>
-    <p class="sub">A custom plan for your exact home, room by room, with your full price shown before you spend a dollar. It takes one quick 20 minute video call, and the plan is yours to keep.</p>
+    <p class="sub">We are a home automation company serving South Florida. We map your exact home room by room and show your full price before you spend a dollar. It takes one quick 20 minute video call, and the plan is yours to keep.</p>
   </div>
 </section>
 <div class="land-main">
@@ -1578,6 +1733,7 @@ const floorPlanBody = `<main>
     <li>${CHECK_SVG}Free plan and price before you decide</li>
     <li>${CHECK_SVG}Licensed electrical work is performed by the licensed electrician under contract on your project.</li>
   </ul>
+<!--CRO_SECTIONS-->
   <!-- Proof photo, deliberately below the form and the checkmarks on this page.
        Well under the fold, so it stays lazy: unlike /free-guide this is not the LCP. -->
   <figure class="land-fig land-fig-panel">
@@ -1587,11 +1743,104 @@ const floorPlanBody = `<main>
 </div>
 </main>`;
 
+// FAQ for the paid lander. ONE array drives both the visible copy and the
+// FAQPage JSON-LD, so the two can never drift apart. Same shape as the service
+// pages. Two of these answers are required strings and are reproduced exactly.
+const FLOOR_PLAN_FAQ = [
+  {
+    q: 'What does it cost?',
+    a: 'Nothing. The smart home consultation and the floor plan it produces are both free. The plan shows your complete project price before you decide, so you see the whole number first and there is nothing to work out later.',
+  },
+  {
+    q: 'Do I have to buy anything?',
+    a: 'No. The plan is yours either way. Plenty of people take the plan, sit with it, and come back when the timing suits them.',
+  },
+  {
+    q: 'Who does the electrical work?',
+    a: 'Regulated electrical work is performed by a licensed electrician under contract on the project.',
+  },
+  {
+    q: 'How long does installation take?',
+    a: 'Installation timing depends on the project scope and equipment availability. Your plan and written quote will include the expected installation schedule.',
+  },
+  {
+    q: 'Can we start with one room?',
+    a: 'Yes. Most homes start with one room and grow from there. Your plan is built so the first room works on its own and the rest can follow whenever you want it to.',
+  },
+];
+
+const floorPlanFaqHtml = FLOOR_PLAN_FAQ
+  .map((f) => `<p class="land-faq-q">${f.q}</p>\n    <p>${f.a}</p>`).join('\n    ');
+
+const floorPlanJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      serviceType: 'smart home installation',
+      name: 'Free smart home floor plan and consultation',
+      description: 'A free room by room smart home floor plan for your home, with your complete project price shown before you decide.',
+      provider: { '@id': `${origin}/#business` },
+      areaServed: { '@type': 'State', name: 'Florida' },
+      url: `${origin}/free-floor-plan`,
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: FLOOR_PLAN_FAQ.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+});
+
+// The serving line reuses the service page pattern and is the one place the paid
+// lander names cities. It covers the geo terms without a city modified heading,
+// which on a paid lander reads as a doorway signal.
+const landingServingLine = `<p class="land-serving">We plan and install smart home technology across South Florida, including ${CORE_CITY_LINKS.slice(0, -1).join(', ')}, and ${CORE_CITY_LINKS[CORE_CITY_LINKS.length - 1]}.</p>`;
+
+// Everything below the form. Order is deliberate: proof, then what they get, then
+// how it works, then objections, then the CTA again, then the photo.
+const floorPlanSections = `${googleProof()}
+<section class="land-sec">
+  <h2>What your free smart home plan includes</h2>
+  <ul>
+    <li>${CHECK_SVG}A room by room device map for your exact home</li>
+    <li>${CHECK_SVG}Lighting, climate and voice recommendations for each space</li>
+    <li>${CHECK_SVG}Routine recommendations built around how your household actually runs</li>
+    <li>${CHECK_SVG}Product specifications, so you know exactly what is going in</li>
+    <li>${CHECK_SVG}Your complete project price, before you decide anything</li>
+  </ul>
+</section>
+<section class="land-sec">
+  <h2>How smart home installation works with us</h2>
+  <ol class="land-steps">
+    <li>Request your plan using the form above.</li>
+    <li>Choose a consultation time that suits you. The smart home consultation runs about 20 minutes by video.</li>
+    <li>Receive your plan and your full price in writing.</li>
+    <li>Decide. If it is a yes, we book the install; if it is not, the plan is still yours.</li>
+  </ol>
+  ${landingServingLine}
+</section>
+<section class="land-sec">
+  <h2>Questions homeowners ask first</h2>
+  ${floorPlanFaqHtml}
+</section>
+<div class="land-cta-repeat">
+  <a href="#leadForm" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
+</div>`;
+
 emit('free-floor-plan.html', landingShell({
-  title: 'Free Smart Home Floor Plan + 20 Minute Consult | Infinity Smart Living',
-  description: 'Book a free 20 minute virtual consult and get a custom Alexa floor plan for your exact home, room by room, with your full price shown up front.',
+  // Title serves "smart home installation" (18,100/mo, KD 47), the head term, while
+  // leading with the offer so the ad headline and the page match.
+  title: 'Free Smart Home Floor Plan | Smart Home Installation FL',
+  description: 'Get a free smart home floor plan before you book smart home installation. We map your South Florida home room by room and show your complete project price.',
   canonical: 'free-floor-plan',
-  body: floorPlanBody,
+  jsonLd: floorPlanJsonLd,
+  // Paid traffic only: no service links, no city links, no blog, no social.
+  minimalFooter: true,
+  body: floorPlanBody.replace('<!--CRO_SECTIONS-->', floorPlanSections),
 }) .replace('</body>', `${formModule('floorPlan')}\n</body>`));
 console.log('✓ free-floor-plan.html');
 
@@ -1660,13 +1909,6 @@ if (routineEntries.length) {
 .routine .r-meta{color:var(--slate);font-size:.92rem;margin:0 0 1rem}
 .routine p{color:var(--slate);font-size:1.07rem;line-height:1.75;margin:0 0 1.15rem}
 .routine ul{margin:0 0 1.35rem 1.15rem;color:var(--slate);font-size:1.07rem;line-height:1.7}
-.yt{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#06203f;margin:0 0 1.3rem;cursor:pointer}
-.yt img{width:100%;height:100%;object-fit:cover;display:block}
-.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.yt-play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(5,25,65,.25);border:0;cursor:pointer;transition:background .2s}
-.yt-play:hover{background:rgba(5,25,65,.45)}
-.yt-play span{width:74px;height:74px;border-radius:50%;background:var(--cyan);display:grid;place-items:center;box-shadow:0 12px 30px -8px rgba(0,178,252,.7)}
-.yt-play svg{width:30px;height:30px;fill:var(--ink);margin-left:4px}
 </style>`;
   const routineSections = routineEntries.map((r) => {
     const writeup = readFileSync(`routines-src/${r.slug}.html`, 'utf8').trim();
@@ -1709,22 +1951,8 @@ ${routineSections}
     body: routinesBody,
   })
     .replace('</head>', `${ROUTINES_CSS}\n</head>`)
-    .replace('</body>', `<script>
-document.querySelectorAll('.yt').forEach(function(el){
-  el.addEventListener('click', function(){
-    if (el.querySelector('iframe')) return;
-    var id = el.getAttribute('data-yt');
-    var f = document.createElement('iframe');
-    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1';
-    f.title = 'Routine video';
-    f.allow = 'autoplay; encrypted-media; picture-in-picture';
-    f.setAttribute('allowfullscreen', '');
-    el.innerHTML = '';
-    el.appendChild(f);
-  });
-});
-</script>
-</body>`));
+    .replace('</head>', `${YT_FACADE_CSS}\n</head>`)
+  .replace('</body>', `${YT_FACADE_JS}\n</body>`));
   pages.push('routines.html');
   console.log(`✓ routines.html (${routineEntries.length} routines)`);
 } else {

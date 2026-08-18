@@ -1,13 +1,16 @@
 {
-  "_howto": "REAL customer reviews only, copied by hand from the Google Business Profile. Never write, paraphrase, tidy, shorten, or invent one, and never fix a customer's spelling or punctuation. Fields: author (exactly as it appears on the review), city (must match a city in cities.json to appear on that city page, or empty for a general review), rating (1 to 5), date (YYYY-MM-DD), text (verbatim; use \\n\\n between paragraphs). The block renders on the homepage and city pages only when entries exist, so an empty array ships nothing. City pages lead with a review from that city and fall back to the most recent general ones.",
+  "_howto": "REAL customer reviews only, copied by hand from the Google Business Profile. Never write, paraphrase, tidy, shorten, or invent one, and never fix a customer's spelling or punctuation. Fields: author (exactly as it appears on the review), city (must match a city in cities.json to appear on that city page, or empty for a general review), rating (1 to 5), date (YYYY-MM-DD), text (verbatim; use \\n\\n between paragraphs). The block renders on the homepage and city pages only when entries exist, so an empty array ships nothing. City pages lead with a review from that city and fall back to the most recent general ones. Two more fields control the paid landing page: `landing` (boolean, per review) picks which reviews may appear on /free-floor-plan, and it is a judgement about fit, not quality, so a five star review can still be landing false. Reviews that mention device categories the brand deliberately does not market are landing false, because the paid lander must not carry that framing. Top level `google_rating` and `google_review_count` are the Google Business Profile totals: BOTH must be filled in for any number to render anywhere. While either is null the site links to the profile with no numeric claim at all. Never infer the count from the length of this array and never copy a figure from elsewhere in the repo: read both off the live profile or leave them null.",
   "_schema_note": "We deliberately do NOT emit Review or AggregateRating structured data for these. Google does not allow review rich results for reviews collected on a third party site, which is what GBP reviews are, and self serving review markup on your own LocalBusiness is against their guidelines. Displaying them with clear attribution is fine and is what this does. If first party reviews are ever collected directly on this site, revisit that decision then.",
   "_banned_word_exception": "The Ivey Austin review contains 'security' and 'seamlessly', both banned in our own copy. Alvin approved publishing it on 2026-07-30 after the conflict was flagged. It runs verbatim because a review is either exact or it is not a review. The banned term grep therefore exempts text inside blockquote elements and reports it separately, so our own copy stays held to the rule while a customer's words are left alone. Do not extend this exemption to anything we write.",
+  "google_rating": null,
+  "google_review_count": null,
   "reviews": [
     {
       "author": "Alex Herrera",
       "city": "Coconut Creek",
       "rating": 5,
       "date": "2026-07-28",
+      "landing": false,
       "text": "I travel a lot for work and hated leaving the dog alone. They set up a smart lock and doorbell cam at my house in Coconut Creek, so now I can let the sitter in from my phone and check in on him whenever. I wish I had done it sooner. 5 stars!!"
     },
     {
@@ -15,6 +18,7 @@
       "city": "",
       "rating": 5,
       "date": "2026-07-23",
+      "landing": false,
       "text": "We recently had Infinity Smart Living install a home automation system in my family's home, and we couldn't be happier with the experience. The entire process was smooth, professional, and hassle-free from start to finish.\n\nThe system has made everyday life so much easier,allowing us to conveniently control our lighting, security, and other smart features all in one place. Everything works seamlessly, and the added convenience has been fantastic.\n\nWe highly recommend Infinity Smart Living to anyone looking for a reliable, high-quality home automation solution."
     },
     {
@@ -22,6 +26,7 @@
       "city": "",
       "rating": 5,
       "date": "2026-07-23",
+      "landing": true,
       "text": "I was looking to make my home life simpler while also being practical and cost efficient. Infinity Smart Living not only accomplished that, they exceeded my expectations.\n\nThey helped me automate my blinds, A/C., lights, switches, and several other devices throughout my home. Now when I leave, everything automatically adjusts for energy efficiency, and when I come home, everything is exactly the way I want it for comfort. Being able to control everything with Alexa and my voice has been incredibly convenient.\n\nThe customer service has been outstanding from start to finish. Even after the installation, they've been quick to answer any questions I've had and have provided excellent support whenever I needed it.\n\nI highly recommend Infinity Smart Living to anyone looking to make their home smarter, more efficient, and easier to manage. It's made everyday life more enjoyable, and I'm extremely happy with the results."
     }
   ]
