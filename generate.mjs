@@ -28,6 +28,34 @@ const stamp = (tpl, vars) =>
 // changes, in template-home.html, template-city.html, or CONSENT_HTML below.
 const DISCLOSURE_VERSION = '2026-08-17';
 
+// --- Google Ads direct conversion ---------------------------------------
+// Empty until Alvin creates the conversion action in Google Ads > Goals >
+// Conversions. While they are empty no gtag config call is emitted and the
+// conversion event stays inert behind a runtime guard. Fill both to light it up.
+//   AW_CONVERSION_ID    e.g. 'AW-123456789'  (the Ads account conversion ID)
+//   AW_CONVERSION_LABEL the "Lead Submitted" action label
+// DEDUP IS AN ADS-SIDE SETTING, NOT A TAG FIELD: set the conversion action's
+// Count to "One" in the Google Ads UI. We deliberately do NOT send
+// transaction_id, because Google treats UUID values as inappropriate transaction
+// IDs for lead conversions. submission_id still rides along in the GHL payload
+// and the dataLayer, which is what offline conversion imports match on.
+const AW_CONVERSION_ID = '';
+const AW_CONVERSION_LABEL = '';
+
+// gtag config for the Ads account, injected into <head> next to the GA4 config.
+// Empty string while the constants are blank, so nothing ships until they are set.
+const ADS_CONFIG = AW_CONVERSION_ID
+  ? `\n  gtag('config', ${JSON.stringify(AW_CONVERSION_ID)});`
+  : '';
+
+// The lead webhook is embedded into every form as a build-time string literal, so
+// the old runtime "is this still a {{token}}?" guard is gone. That guard is what
+// stopped an unstamped template from POSTing to itself; this check replaces it and
+// fails the BUILD instead, which is the right place to catch it.
+if (!/^https:\/\/[^\s]+$/.test(String(site.formEndpoint || ''))) {
+  throw new Error('cities.json site.formEndpoint must be an absolute https URL, got: ' + site.formEndpoint);
+}
+
 const base = {
   BOOK_URL: site.bookUrl,
   FORM_ENDPOINT: site.formEndpoint,
@@ -35,6 +63,10 @@ const base = {
   PHONE_HREF: site.phoneHref,
   EMAIL: site.email,
   DISCLOSURE_VERSION,
+  ADS_CONFIG,
+  // FORM_SCRIPT is assigned just below, once formModule exists. index.html gets
+  // the home config; city pages override it per page in their stamp call.
+  FORM_SCRIPT: '',
 };
 
 // /routines is a dormant page: it only gets built once routines.json has an
@@ -260,7 +292,43 @@ base.GBP_LINE = gbpOk
 // in blogShell. Vanilla JS, no external scripts. Delegated listeners fire call_click and
 // booking_click; the form success path fires generate_lead separately. Fully guarded:
 // no-op if gtag is unavailable (ad blockers) so links and the form never break.
-const trackingEvents = `<script>
+// --- session attribution capture (site wide, must run on EVERY page) ---------
+// This lives in the shared tracking script rather than in the form module on
+// purpose: landing_url and referrer are defined as the FIRST page of the session,
+// and most visitors land on a blog, city or service page before they ever reach a
+// form. Capturing only on form pages would record the form page as the landing
+// page and an internal referrer as the referrer, which is exactly the attribution
+// bug this is meant to fix. gbraid/wbraid ride along with gclid: iOS traffic often
+// carries only those, and without them those clicks cannot be matched back to the
+// campaign in the CRM or in an offline conversion import.
+const ISL_ATTR_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
+  'gclid', 'gbraid', 'wbraid', 'fbclid', 'msclkid'];
+
+const attributionCapture = `
+  var ISL_ATTR_KEYS = ${JSON.stringify(ISL_ATTR_KEYS)};
+  (function(){
+    try {
+      var qs = new URLSearchParams(location.search);
+      var stored = JSON.parse(sessionStorage.getItem('isl_attr') || '{}');
+      ISL_ATTR_KEYS.forEach(function(k){ var v = qs.get(k); if (v) stored[k] = v; });
+      sessionStorage.setItem('isl_attr', JSON.stringify(stored));
+      // First page of the session, written once. The sentinel is a SEPARATE key on
+      // purpose: direct traffic has a legitimately empty referrer, and testing the
+      // stored referrer for truthiness would let a later internal referrer
+      // overwrite it on the second page view.
+      if (sessionStorage.getItem('isl_first_seen') !== '1') {
+        sessionStorage.setItem('isl_landing_url', location.href);
+        sessionStorage.setItem('isl_referrer', document.referrer || '');
+        sessionStorage.setItem('isl_first_seen', '1');
+      }
+      // Sticky for the whole session: a tester who lands with ?test_traffic=1 and
+      // then navigates still submits a flagged lead.
+      if (qs.get('test_traffic') === '1') sessionStorage.setItem('isl_test_traffic', '1');
+    } catch (e) {}
+  })();
+`;
+
+const trackingEvents = `<script>${attributionCapture}
 (function(){
   function track(name, params){
     try { if (typeof window.gtag === 'function') { window.gtag('event', name, params || {}); } } catch (e) {}
@@ -278,6 +346,220 @@ const trackingEvents = `<script>
 })();
 </script>`;
 base.TRACKING = trackingEvents;
+
+// --- THE shared lead form module --------------------------------------------
+// One implementation for all four form-bearing pages. It replaces three drifted
+// copies (template-home.html, template-city.html, and the old per-page landing
+// handler here), which is how /free-floor-plan ended up missing ?lead=sent, calendar_view
+// and half the attribution fields while the homepage had them.
+//
+// Per page only these four things differ, everything else is identical:
+const FORM_CONFIG = {
+  // leadSource values are the EXISTING strings GHL already maps. Do not rename
+  // them. home/city sent no lead_source at all before, so those two are new.
+  home:      { leadSource: 'homepage consultation form', googleAdsLead: true,  showCalendar: true,  legacy: 'page' },
+  city:      { leadSource: 'city consultation form',     googleAdsLead: true,  showCalendar: true,  legacy: 'page' },
+  floorPlan: { leadSource: 'floor plan squeeze page',    googleAdsLead: true,  showCalendar: true,  legacy: 'page_url' },
+  // The guide is a content download, not a paid consult lead: no Google Ads
+  // conversion, no calendar, no calendar_view. It keeps its PDF unlock.
+  guide:     { leadSource: 'guide download page',        googleAdsLead: false, showCalendar: false, legacy: 'page_url' },
+};
+
+const formModule = (key) => {
+  const c = FORM_CONFIG[key];
+  if (!c) throw new Error(`formModule: unknown form config "${key}"`);
+
+  // Emitted on paid lead pages only. The constants are stamped in at build time and
+  // the runtime guard keeps the call inert while they are empty, so filling them in
+  // later is a one line change here and no restructuring of the module.
+  // /free-guide gets nothing at all: googleAdsLead is false for the download.
+  const adsConversion = c.googleAdsLead ? `
+    // Google Ads "Lead Submitted", fired only after a genuine 2xx and after
+    // generate_lead. No transaction_id by design, see AW_CONVERSION_ID above.
+    var AW_ID = ${JSON.stringify(AW_CONVERSION_ID)}, AW_LABEL = ${JSON.stringify(AW_CONVERSION_LABEL)};
+    if (AW_ID && AW_LABEL) {
+      try { if (typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', { send_to: AW_ID + '/' + AW_LABEL });
+      } } catch (e) {}
+    }` : '';
+
+  // The booking calendar is injected ONLY after a successful submit. It used to be
+  // an iframe with a live src sitting in the initial HTML, so every visitor paid
+  // for a LeadConnector fetch whether or not they ever submitted.
+  const calendarFn = c.showCalendar ? `
+  function loadBookingCalendar(bookUrl, submissionId){
+    var container = document.getElementById('calendarContainer');
+    if (!container || container.dataset.loaded === '1') return;
+    container.dataset.loaded = '1';
+    var iframe = document.createElement('iframe');
+    iframe.src = bookUrl;
+    iframe.id = 'ghl-booking-calendar';
+    iframe.title = 'Choose your consultation time';
+    iframe.scrolling = 'no';
+    iframe.style.cssText = 'width:100%;border:none;overflow:hidden;min-height:720px';
+    container.appendChild(iframe);
+    if (!document.querySelector('script[data-ghl-calendar-script]')) {
+      var s = document.createElement('script');
+      s.src = 'https://api.leadconnectorhq.com/js/form_embed.js';
+      s.dataset.ghlCalendarScript = '1';
+      document.body.appendChild(s);
+    }
+    // The site runs gtag.js with no GTM container, so a bare dataLayer push never
+    // reaches GA4. gtag() is the one that counts; the push stays for a future GTM.
+    try { if (typeof window.gtag === 'function') window.gtag('event', 'calendar_view', { page_path: location.pathname }); } catch (e) {}
+    try { (window.dataLayer = window.dataLayer || []).push({ event: 'calendar_view' }); } catch (e) {}
+    // Booking intent, read later by /consult-booked so a booking conversion only
+    // fires for someone who actually reached the calendar from a real submit.
+    try { localStorage.setItem('isl_booking_intent', JSON.stringify({ submission_id: submissionId, created_at: Date.now() })); } catch (e) {}
+  }` : '';
+
+  const calendarCall = c.showCalendar ? `
+    loadBookingCalendar(${JSON.stringify(site.bookUrl)}, submissionId);` : '';
+
+  // Legacy fields, kept so existing GHL mappings do not break. `page` is what
+  // home/city have always sent; `page_url` is the landing pages' UTM-enriched URL,
+  // preserved with its original meaning, not just its name.
+  const legacyField = c.legacy === 'page'
+    ? `
+    payload.page = document.title;`
+    : `
+    // page_url = the submission URL re-enriched with any attribution captured
+    // earlier in the session, which is what this field has always carried.
+    try {
+      var pageUrl = new URL(location.href);
+      ATTR_KEYS.forEach(function(k){ if (attr[k] && !pageUrl.searchParams.get(k)) pageUrl.searchParams.set(k, attr[k]); });
+      payload.page_url = pageUrl.href;
+    } catch (e) { payload.page_url = location.href; }`;
+
+  return `<script>
+(function(){
+  var ATTR_KEYS = ${JSON.stringify(ISL_ATTR_KEYS)};
+  var FORM_ENDPOINT = ${JSON.stringify(site.formEndpoint)};
+  var LEAD_SOURCE = ${JSON.stringify(c.leadSource)};
+  var form = document.getElementById('leadForm');
+  if (!form) return;
+
+  function el(id){ return document.getElementById(id); }
+  function val(id){ var e = el(id); return e ? String(e.value || '').trim() : ''; }
+  function isChecked(id){ var e = el(id); return !!(e && e.checked); }
+  // The disclosure the visitor actually read, lifted from the live DOM. It stays
+  // true for that record even after the wording changes and the version is bumped.
+  function consentText(id){
+    var box = el(id);
+    var label = box && box.closest ? box.closest('label') : null;
+    var node = label ? (label.querySelector('span') || label) : null;
+    return node ? (node.textContent || '').replace(/\\s+/g, ' ').trim() : '';
+  }
+  function newSubmissionId(){
+    try { if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID(); } catch (e) {}
+    return 'sub-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+  }
+  function session(k){ try { return sessionStorage.getItem(k) || ''; } catch (e) { return ''; } }
+${calendarFn}
+
+  // Generated once per visitor, NOT once per attempt. If GHL accepts the POST but
+  // the response is lost and the visitor retries, both records carry the same id
+  // and the duplicate is recognisable instead of looking like two leads.
+  var submissionId = '';
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    // In-flight guard: a fast double click would otherwise POST twice and
+    // double-count generate_lead. Also clears any error left from a prior try.
+    if (this.dataset.submitting === '1') return;
+    this.dataset.submitting = '1';
+    var submitBtn = this.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+    var priorErr = el('formError');
+    if (priorErr) priorErr.hidden = true;
+    if (!submissionId) submissionId = newSubmissionId();
+
+    // Attribution was captured on the FIRST page of the session by the shared
+    // tracking script. The live query string is only a fallback.
+    var attr = {};
+    try { attr = JSON.parse(sessionStorage.getItem('isl_attr') || '{}'); } catch (err) {}
+    var params = new URLSearchParams(location.search);
+    function a(k){ return attr[k] || params.get(k) || ''; }
+
+    var now = new Date().toISOString();
+    var payload = {
+      lead_source: LEAD_SOURCE,
+      submission_id: submissionId,
+      submission_timestamp: now,
+      disclosure_version: ${JSON.stringify(DISCLOSURE_VERSION)},
+      user_agent: navigator.userAgent,
+      // submission_url is where the form was actually submitted; source_url is the
+      // long standing GHL field name and carries the same value so existing
+      // mappings keep working; landing_url and referrer are session-first values.
+      submission_url: location.href,
+      source_url: location.href,
+      landing_url: session('isl_landing_url') || location.href,
+      referrer: session('isl_referrer'),
+      test_traffic: session('isl_test_traffic') === '1',
+      consent_service: isChecked('consentService'),
+      consent_marketing: isChecked('consentMarketing'),
+      // Timestamps are per checkbox and only exist when that box was ticked. An
+      // unticked box must not carry a time that looks like evidence of consent.
+      consent_service_timestamp: isChecked('consentService') ? now : '',
+      consent_marketing_timestamp: isChecked('consentMarketing') ? now : '',
+      consent_service_text: consentText('consentService'),
+      consent_marketing_text: consentText('consentMarketing'),
+      // Legacy single timestamp, still mapped in GHL. Kept alongside the per
+      // checkbox ones rather than replaced.
+      consent_timestamp: now
+    };
+    ATTR_KEYS.forEach(function(k){ payload[k] = a(k); });
+    // Identity fields are sent only when the page actually has that input, so the
+    // homepage never POSTs an empty email that could blank a contact record.
+    ['name', 'phone', 'email', 'city', 'zip'].forEach(function(id){ if (el(id)) payload[id] = val(id); });
+${legacyField}
+
+    var leadOk = false;
+    try {
+      var res = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        keepalive: true,
+        // GHL inbound webhook requires application/json; its CORS preflight is allowed.
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      leadOk = !!(res && res.ok);
+    } catch (err) { /* handled below via leadOk */ }
+
+    // Only confirm what actually happened. A failed POST keeps the filled fields on
+    // screen so the visitor can retry, and offers the phone as a fallback, instead
+    // of showing a confirmation for a lead we never received.
+    if (!leadOk) {
+      var errEl = el('formError');
+      if (errEl) {
+        errEl.innerHTML = 'We could not send your details just now. Please try again, or call <a href="tel:${site.phoneHref}" data-loc="form-error">${site.phone}</a> and we will take them over the phone.';
+        errEl.hidden = false;
+        try { errEl.scrollIntoView({ block: 'nearest' }); } catch (e2) {}
+      }
+      try { if (typeof window.gtag === 'function') window.gtag('event', 'form_error', { page_path: location.pathname }); } catch (e3) {}
+      this.dataset.submitting = '0';
+      if (submitBtn) submitBtn.disabled = false;
+      return;
+    }
+
+    // GA4 lead conversion: only after a genuine 2xx, before the confirmation UI.
+    try { if (typeof window.gtag === 'function') window.gtag('event', 'generate_lead', { page_path: location.pathname, form_city: payload.city || 'none', form_name: ${JSON.stringify(key)} }); } catch (e) {}
+    try { (window.dataLayer = window.dataLayer || []).push({ event: 'generate_lead', submission_id: submissionId }); } catch (e) {}
+${adsConversion}
+
+    try { var u = new URL(location.href); u.searchParams.set('lead', 'sent'); history.replaceState(null, '', u); } catch (err) {}
+    var fields = el('formFields');
+    if (fields) fields.style.display = 'none';
+    var success = el('formSuccess');
+    if (success) success.classList.add('show');
+${calendarCall}
+  });
+})();
+</script>`;
+};
+
+base.FORM_SCRIPT = formModule('home');
+
 
 const homeTpl = readFileSync('./template-home.html', 'utf8');
 
@@ -359,7 +641,7 @@ for (const c of cfg.cities) {
     ? `<p style="color:var(--slate);font-size:1.06rem;margin-bottom:1rem">${c.intro.trim()}</p>\n    `
     : '';
   const html = stamp(cityTpl, {
-    ...base, CITY: c.city, AREAS: c.areas, CITY_SLUG: slug,
+    ...base, FORM_SCRIPT: formModule('city'), CITY: c.city, AREAS: c.areas, CITY_SLUG: slug,
     META_DESC: cityMetaDesc(c),
     LOCAL_INTRO: intro, RECENT_PROJECT: recentProjectBlock(c.city),
   });
@@ -593,7 +875,7 @@ const blogShell = ({ title, ogTitle, description, canonical, ogType = 'article',
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-QHTJ4PTKQV');
+  gtag('config', 'G-QHTJ4PTKQV');${ADS_CONFIG}
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -1184,98 +1466,6 @@ const landingFields = `<div class="field">
                button in both landing forms, which share this fields block. -->
           <p class="form-error" id="formError" role="alert" aria-live="assertive" hidden></p>`;
 
-// Same attribution + submit pattern as the homepage form: capture UTM/click ids
-// on landing, POST JSON to GHL, fire generate_lead only on a genuine 2xx, and
-// ALWAYS advance the user to the success step even if the POST fails.
-const landingFormScript = (leadSource) => `<script>
-var ISL_ATTR_KEYS = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid','msclkid'];
-(function(){
-  try {
-    var qs = new URLSearchParams(location.search);
-    var stored = JSON.parse(sessionStorage.getItem('isl_attr') || '{}');
-    ISL_ATTR_KEYS.forEach(function(k){ var v = qs.get(k); if (v) stored[k] = v; });
-    sessionStorage.setItem('isl_attr', JSON.stringify(stored));
-  } catch (e) {}
-})();
-// A2P 10DLC consent evidence, shared by both landing forms and mirrored in
-// template-home.html / template-city.html. submission_id keys one submit event;
-// the consent_*_text fields store the disclosure the visitor actually read, which
-// stays true even after the wording is changed and the version bumped.
-function islSubmissionId(){
-  try { if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID(); } catch (e) {}
-  return 'sub-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
-}
-function islConsentText(id){
-  var box = document.getElementById(id);
-  var label = box && box.closest ? box.closest('label') : null;
-  var el = label ? (label.querySelector('span') || label) : null;
-  return el ? (el.textContent || '').replace(/\\s+/g, ' ').trim() : '';
-}
-document.getElementById('leadForm').addEventListener('submit', async function(e){
-  e.preventDefault();
-  // In-flight guard: a fast double click would otherwise POST the lead twice and
-  // double-count generate_lead. Also clears any error left over from a prior try.
-  if (this.dataset.submitting === '1') return;
-  this.dataset.submitting = '1';
-  var submitBtn = this.querySelector('button[type="submit"]');
-  if (submitBtn) submitBtn.disabled = true;
-  var priorErr = document.getElementById('formError');
-  if (priorErr) priorErr.hidden = true;
-  var stored = {};
-  try { stored = JSON.parse(sessionStorage.getItem('isl_attr') || '{}'); } catch (err) {}
-  // page_url keeps the UTMs even if the visitor navigated after landing
-  var pageUrl = new URL(location.href);
-  ISL_ATTR_KEYS.forEach(function(k){ if (stored[k] && !pageUrl.searchParams.get(k)) pageUrl.searchParams.set(k, stored[k]); });
-  var payload = {
-    name: document.getElementById('name').value.trim(),
-    email: document.getElementById('email').value.trim(),
-    phone: document.getElementById('phone').value.trim(),
-    city: document.getElementById('city').value,
-    lead_source: '${leadSource}',
-    consent_service: document.getElementById('consentService').checked,
-    consent_marketing: document.getElementById('consentMarketing').checked,
-    consent_timestamp: new Date().toISOString(),
-    consent_service_text: islConsentText('consentService'),
-    consent_marketing_text: islConsentText('consentMarketing'),
-    disclosure_version: '${DISCLOSURE_VERSION}',
-    submission_id: islSubmissionId(),
-    user_agent: navigator.userAgent,
-    // source_url carries the same meaning as the homepage/city forms so one GHL
-    // field mapping captures every consent record. page_url stays for attribution:
-    // it is the UTM-enriched variant, which is not the literal consent-page URL.
-    source_url: location.href,
-    page_url: pageUrl.href
-  };
-  var leadOk = false;
-  try {
-    var res = await fetch('${site.formEndpoint}', {
-      method: 'POST',
-      keepalive: true,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    leadOk = !!(res && res.ok);
-  } catch (err) { /* handled below via leadOk */ }
-  // Only confirm what actually happened. A failed POST used to render the same
-  // success step as a delivered one, so the lead was lost with nobody aware.
-  if (!leadOk) {
-    var errEl = document.getElementById('formError');
-    if (errEl) {
-      errEl.innerHTML = 'We could not send your details just now. Please try again, or call <a href="tel:${site.phoneHref}" data-loc="form-error">${site.phone}</a> and we will take them over the phone.';
-      errEl.hidden = false;
-      try { errEl.scrollIntoView({ block: 'nearest' }); } catch (e) {}
-    }
-    try { if (typeof window.gtag === 'function') { window.gtag('event', 'form_error', { page_path: location.pathname }); } } catch (e) {}
-    this.dataset.submitting = '0';
-    if (submitBtn) submitBtn.disabled = false;
-    return;
-  }
-  try { if (typeof gtag === 'function') gtag('event', 'generate_lead', { page_path: location.pathname, form_city: payload.city || 'none' }); } catch (e) {}
-  document.getElementById('formFields').style.display = 'none';
-  document.getElementById('formSuccess').classList.add('show');
-});
-</script>`;
-
 // Both landing pages are distributed by link drops in Facebook DMs and group
 // comments, so the share card is the first thing most visitors see. Same photo on
 // both: one real install shot beats a logo card.
@@ -1349,7 +1539,7 @@ emit('free-guide.html', landingShell({
   // photo sits well below the fold and stays lazy.
   headExtra: '<link rel="preload" as="image" href="/images/echo-show-15-wall-panel.webp" type="image/webp" fetchpriority="high">',
   body: guideBody,
-}) .replace('</body>', `${landingFormScript('guide download page')}\n</body>`));
+}) .replace('</body>', `${formModule('guide')}\n</body>`));
 console.log('✓ free-guide.html');
 
 // --- /free-floor-plan ---
@@ -1376,9 +1566,12 @@ const floorPlanBody = `<main>
     </div>
     <div class="success" id="formSuccess">
       <div class="check">✓</div>
-      <h3>You are all set</h3>
-      <p>We will reach out shortly to schedule your free 20 minute virtual consult. Your free Alexa starter guide is on its way to your inbox too.</p>
-      <a href="${site.bookUrl}" class="btn btn-primary btn-lg" style="width:100%;margin-top:12px">Pick Your Consult Time Now</a>
+      <h3>Step 2 of 2: Choose your consultation time</h3>
+      <p>Your request is in. Pick a time below to lock in your free 20 minute virtual consult. Your free Alexa starter guide is on its way to your inbox too.</p>
+      <!-- The calendar is injected here after a successful submit. It used to be an
+           outbound link to the GHL booking page, which cost a click and sent the
+           visitor off the site at the highest intent moment of the funnel. -->
+      <div id="calendarContainer"></div>
     </div>
   </div>
   <ul class="land-points">
@@ -1399,7 +1592,7 @@ emit('free-floor-plan.html', landingShell({
   description: 'Book a free 20 minute virtual consult and get a custom Alexa floor plan for your exact home, room by room, with your full price shown up front.',
   canonical: 'free-floor-plan',
   body: floorPlanBody,
-}) .replace('</body>', `${landingFormScript('floor plan squeeze page')}\n</body>`));
+}) .replace('</body>', `${formModule('floorPlan')}\n</body>`));
 console.log('✓ free-floor-plan.html');
 
 // --- /consult-booked ---
@@ -1432,8 +1625,24 @@ emit('consult-booked.html', landingShell({
 })
   .replace('<link rel="canonical"', '<meta name="robots" content="noindex, follow">\n<link rel="canonical"')
   .replace('</body>', `<script>
-(function(){
-  try { if (typeof window.gtag === 'function') { window.gtag('event', 'appointment_booked', { page_path: location.pathname }); } } catch (e) {}
+// appointment_booked used to fire unconditionally on every load, so a refresh, a
+// back button, or anyone opening the URL directly counted as another booking. It
+// now needs a real booking identity, and it fires once per identity.
+(function () {
+  let bookingId = '', intent = null;
+  try {
+    bookingId = new URLSearchParams(location.search).get('booking_id') || '';
+    intent = JSON.parse(localStorage.getItem('isl_booking_intent') || 'null');
+  } catch (e) {}
+  // The booking intent is written when the calendar is revealed after a genuine
+  // form submit. Two hours is long enough for someone to pick a time and short
+  // enough that a stale intent from an earlier visit cannot resurrect a booking.
+  const recentIntent = intent && intent.submission_id && Number(intent.created_at) > Date.now() - 2*60*60*1000;
+  const eventId = bookingId || (recentIntent ? intent.submission_id : '');
+  if (!eventId) return;  // direct/bookmarked visits never fire a booking conversion
+  const firedKey = 'isl_appt_fired:' + eventId;
+  try { if (localStorage.getItem(firedKey) === '1') return; localStorage.setItem(firedKey, '1'); } catch (e) {}
+  try { if (typeof window.gtag === 'function') window.gtag('event','appointment_booked',{page_path:location.pathname, booking_reference:eventId}); } catch (e) {}
 })();
 </script>
 </body>`));
@@ -1542,7 +1751,7 @@ const linksHtml = `<!doctype html>
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-QHTJ4PTKQV');
+  gtag('config', 'G-QHTJ4PTKQV');${ADS_CONFIG}
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -1585,6 +1794,10 @@ body.links-page{background:var(--surface);min-height:100vh}
   <p class="links-legal">Infinity Smart Living is a registered DBA of SimpleSafe Technologies LLC.<br>
     <a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms &amp; Conditions</a></p>
 </main>
+<!-- The bio link page is a real entry point from social profiles, so it has to run
+     the shared capture too, otherwise a visitor who arrives here first has the NEXT
+     page recorded as their landing_url. -->
+${trackingEvents}
 </body>
 </html>`;
 emit('links.html', linksHtml);

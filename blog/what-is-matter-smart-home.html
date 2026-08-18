@@ -603,6 +603,28 @@ footer ul a:hover{color:var(--cyan)}
   <a href="/#book" class="mcb-book">Free floor plan</a>
 </div>
 <script>
+  var ISL_ATTR_KEYS = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","gclid","gbraid","wbraid","fbclid","msclkid"];
+  (function(){
+    try {
+      var qs = new URLSearchParams(location.search);
+      var stored = JSON.parse(sessionStorage.getItem('isl_attr') || '{}');
+      ISL_ATTR_KEYS.forEach(function(k){ var v = qs.get(k); if (v) stored[k] = v; });
+      sessionStorage.setItem('isl_attr', JSON.stringify(stored));
+      // First page of the session, written once. The sentinel is a SEPARATE key on
+      // purpose: direct traffic has a legitimately empty referrer, and testing the
+      // stored referrer for truthiness would let a later internal referrer
+      // overwrite it on the second page view.
+      if (sessionStorage.getItem('isl_first_seen') !== '1') {
+        sessionStorage.setItem('isl_landing_url', location.href);
+        sessionStorage.setItem('isl_referrer', document.referrer || '');
+        sessionStorage.setItem('isl_first_seen', '1');
+      }
+      // Sticky for the whole session: a tester who lands with ?test_traffic=1 and
+      // then navigates still submits a flagged lead.
+      if (qs.get('test_traffic') === '1') sessionStorage.setItem('isl_test_traffic', '1');
+    } catch (e) {}
+  })();
+
 (function(){
   function track(name, params){
     try { if (typeof window.gtag === 'function') { window.gtag('event', name, params || {}); } } catch (e) {}

@@ -546,9 +546,12 @@ footer ul a:hover{color:var(--cyan)}
     </div>
     <div class="success" id="formSuccess">
       <div class="check">✓</div>
-      <h3>You are all set</h3>
-      <p>We will reach out shortly to schedule your free 20 minute virtual consult. Your free Alexa starter guide is on its way to your inbox too.</p>
-      <a href="https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa" class="btn btn-primary btn-lg" style="width:100%;margin-top:12px">Pick Your Consult Time Now</a>
+      <h3>Step 2 of 2: Choose your consultation time</h3>
+      <p>Your request is in. Pick a time below to lock in your free 20 minute virtual consult. Your free Alexa starter guide is on its way to your inbox too.</p>
+      <!-- The calendar is injected here after a successful submit. It used to be an
+           outbound link to the GHL booking page, which cost a click and sent the
+           visitor off the site at the highest intent moment of the funnel. -->
+      <div id="calendarContainer"></div>
     </div>
   </div>
   <ul class="land-points">
@@ -614,6 +617,28 @@ footer ul a:hover{color:var(--cyan)}
 </footer>
 <!-- sticky call bar omitted: single CTA per landing page -->
 <script>
+  var ISL_ATTR_KEYS = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","gclid","gbraid","wbraid","fbclid","msclkid"];
+  (function(){
+    try {
+      var qs = new URLSearchParams(location.search);
+      var stored = JSON.parse(sessionStorage.getItem('isl_attr') || '{}');
+      ISL_ATTR_KEYS.forEach(function(k){ var v = qs.get(k); if (v) stored[k] = v; });
+      sessionStorage.setItem('isl_attr', JSON.stringify(stored));
+      // First page of the session, written once. The sentinel is a SEPARATE key on
+      // purpose: direct traffic has a legitimately empty referrer, and testing the
+      // stored referrer for truthiness would let a later internal referrer
+      // overwrite it on the second page view.
+      if (sessionStorage.getItem('isl_first_seen') !== '1') {
+        sessionStorage.setItem('isl_landing_url', location.href);
+        sessionStorage.setItem('isl_referrer', document.referrer || '');
+        sessionStorage.setItem('isl_first_seen', '1');
+      }
+      // Sticky for the whole session: a tester who lands with ?test_traffic=1 and
+      // then navigates still submits a flagged lead.
+      if (qs.get('test_traffic') === '1') sessionStorage.setItem('isl_test_traffic', '1');
+    } catch (e) {}
+  })();
+
 (function(){
   function track(name, params){
     try { if (typeof window.gtag === 'function') { window.gtag('event', name, params || {}); } } catch (e) {}
@@ -631,92 +656,170 @@ footer ul a:hover{color:var(--cyan)}
 })();
 </script>
 <script>
-var ISL_ATTR_KEYS = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid','msclkid'];
 (function(){
-  try {
-    var qs = new URLSearchParams(location.search);
-    var stored = JSON.parse(sessionStorage.getItem('isl_attr') || '{}');
-    ISL_ATTR_KEYS.forEach(function(k){ var v = qs.get(k); if (v) stored[k] = v; });
-    sessionStorage.setItem('isl_attr', JSON.stringify(stored));
-  } catch (e) {}
-})();
-// A2P 10DLC consent evidence, shared by both landing forms and mirrored in
-// template-home.html / template-city.html. submission_id keys one submit event;
-// the consent_*_text fields store the disclosure the visitor actually read, which
-// stays true even after the wording is changed and the version bumped.
-function islSubmissionId(){
-  try { if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID(); } catch (e) {}
-  return 'sub-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
-}
-function islConsentText(id){
-  var box = document.getElementById(id);
-  var label = box && box.closest ? box.closest('label') : null;
-  var el = label ? (label.querySelector('span') || label) : null;
-  return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : '';
-}
-document.getElementById('leadForm').addEventListener('submit', async function(e){
-  e.preventDefault();
-  // In-flight guard: a fast double click would otherwise POST the lead twice and
-  // double-count generate_lead. Also clears any error left over from a prior try.
-  if (this.dataset.submitting === '1') return;
-  this.dataset.submitting = '1';
-  var submitBtn = this.querySelector('button[type="submit"]');
-  if (submitBtn) submitBtn.disabled = true;
-  var priorErr = document.getElementById('formError');
-  if (priorErr) priorErr.hidden = true;
-  var stored = {};
-  try { stored = JSON.parse(sessionStorage.getItem('isl_attr') || '{}'); } catch (err) {}
-  // page_url keeps the UTMs even if the visitor navigated after landing
-  var pageUrl = new URL(location.href);
-  ISL_ATTR_KEYS.forEach(function(k){ if (stored[k] && !pageUrl.searchParams.get(k)) pageUrl.searchParams.set(k, stored[k]); });
-  var payload = {
-    name: document.getElementById('name').value.trim(),
-    email: document.getElementById('email').value.trim(),
-    phone: document.getElementById('phone').value.trim(),
-    city: document.getElementById('city').value,
-    lead_source: 'floor plan squeeze page',
-    consent_service: document.getElementById('consentService').checked,
-    consent_marketing: document.getElementById('consentMarketing').checked,
-    consent_timestamp: new Date().toISOString(),
-    consent_service_text: islConsentText('consentService'),
-    consent_marketing_text: islConsentText('consentMarketing'),
-    disclosure_version: '2026-08-17',
-    submission_id: islSubmissionId(),
-    user_agent: navigator.userAgent,
-    // source_url carries the same meaning as the homepage/city forms so one GHL
-    // field mapping captures every consent record. page_url stays for attribution:
-    // it is the UTM-enriched variant, which is not the literal consent-page URL.
-    source_url: location.href,
-    page_url: pageUrl.href
-  };
-  var leadOk = false;
-  try {
-    var res = await fetch('https://services.leadconnectorhq.com/hooks/Owuc0ZFmPTpX9JcHhLjE/webhook-trigger/fda2080f-da6a-441b-9e0f-0e408ce6bfe4', {
-      method: 'POST',
-      keepalive: true,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    leadOk = !!(res && res.ok);
-  } catch (err) { /* handled below via leadOk */ }
-  // Only confirm what actually happened. A failed POST used to render the same
-  // success step as a delivered one, so the lead was lost with nobody aware.
-  if (!leadOk) {
-    var errEl = document.getElementById('formError');
-    if (errEl) {
-      errEl.innerHTML = 'We could not send your details just now. Please try again, or call <a href="tel:+17543454871" data-loc="form-error">(754) 345-4871</a> and we will take them over the phone.';
-      errEl.hidden = false;
-      try { errEl.scrollIntoView({ block: 'nearest' }); } catch (e) {}
-    }
-    try { if (typeof window.gtag === 'function') { window.gtag('event', 'form_error', { page_path: location.pathname }); } } catch (e) {}
-    this.dataset.submitting = '0';
-    if (submitBtn) submitBtn.disabled = false;
-    return;
+  var ATTR_KEYS = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","gclid","gbraid","wbraid","fbclid","msclkid"];
+  var FORM_ENDPOINT = "https://services.leadconnectorhq.com/hooks/Owuc0ZFmPTpX9JcHhLjE/webhook-trigger/fda2080f-da6a-441b-9e0f-0e408ce6bfe4";
+  var LEAD_SOURCE = "floor plan squeeze page";
+  var form = document.getElementById('leadForm');
+  if (!form) return;
+
+  function el(id){ return document.getElementById(id); }
+  function val(id){ var e = el(id); return e ? String(e.value || '').trim() : ''; }
+  function isChecked(id){ var e = el(id); return !!(e && e.checked); }
+  // The disclosure the visitor actually read, lifted from the live DOM. It stays
+  // true for that record even after the wording changes and the version is bumped.
+  function consentText(id){
+    var box = el(id);
+    var label = box && box.closest ? box.closest('label') : null;
+    var node = label ? (label.querySelector('span') || label) : null;
+    return node ? (node.textContent || '').replace(/\s+/g, ' ').trim() : '';
   }
-  try { if (typeof gtag === 'function') gtag('event', 'generate_lead', { page_path: location.pathname, form_city: payload.city || 'none' }); } catch (e) {}
-  document.getElementById('formFields').style.display = 'none';
-  document.getElementById('formSuccess').classList.add('show');
-});
+  function newSubmissionId(){
+    try { if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID(); } catch (e) {}
+    return 'sub-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+  }
+  function session(k){ try { return sessionStorage.getItem(k) || ''; } catch (e) { return ''; } }
+
+  function loadBookingCalendar(bookUrl, submissionId){
+    var container = document.getElementById('calendarContainer');
+    if (!container || container.dataset.loaded === '1') return;
+    container.dataset.loaded = '1';
+    var iframe = document.createElement('iframe');
+    iframe.src = bookUrl;
+    iframe.id = 'ghl-booking-calendar';
+    iframe.title = 'Choose your consultation time';
+    iframe.scrolling = 'no';
+    iframe.style.cssText = 'width:100%;border:none;overflow:hidden;min-height:720px';
+    container.appendChild(iframe);
+    if (!document.querySelector('script[data-ghl-calendar-script]')) {
+      var s = document.createElement('script');
+      s.src = 'https://api.leadconnectorhq.com/js/form_embed.js';
+      s.dataset.ghlCalendarScript = '1';
+      document.body.appendChild(s);
+    }
+    // The site runs gtag.js with no GTM container, so a bare dataLayer push never
+    // reaches GA4. gtag() is the one that counts; the push stays for a future GTM.
+    try { if (typeof window.gtag === 'function') window.gtag('event', 'calendar_view', { page_path: location.pathname }); } catch (e) {}
+    try { (window.dataLayer = window.dataLayer || []).push({ event: 'calendar_view' }); } catch (e) {}
+    // Booking intent, read later by /consult-booked so a booking conversion only
+    // fires for someone who actually reached the calendar from a real submit.
+    try { localStorage.setItem('isl_booking_intent', JSON.stringify({ submission_id: submissionId, created_at: Date.now() })); } catch (e) {}
+  }
+
+  // Generated once per visitor, NOT once per attempt. If GHL accepts the POST but
+  // the response is lost and the visitor retries, both records carry the same id
+  // and the duplicate is recognisable instead of looking like two leads.
+  var submissionId = '';
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    // In-flight guard: a fast double click would otherwise POST twice and
+    // double-count generate_lead. Also clears any error left from a prior try.
+    if (this.dataset.submitting === '1') return;
+    this.dataset.submitting = '1';
+    var submitBtn = this.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+    var priorErr = el('formError');
+    if (priorErr) priorErr.hidden = true;
+    if (!submissionId) submissionId = newSubmissionId();
+
+    // Attribution was captured on the FIRST page of the session by the shared
+    // tracking script. The live query string is only a fallback.
+    var attr = {};
+    try { attr = JSON.parse(sessionStorage.getItem('isl_attr') || '{}'); } catch (err) {}
+    var params = new URLSearchParams(location.search);
+    function a(k){ return attr[k] || params.get(k) || ''; }
+
+    var now = new Date().toISOString();
+    var payload = {
+      lead_source: LEAD_SOURCE,
+      submission_id: submissionId,
+      submission_timestamp: now,
+      disclosure_version: "2026-08-17",
+      user_agent: navigator.userAgent,
+      // submission_url is where the form was actually submitted; source_url is the
+      // long standing GHL field name and carries the same value so existing
+      // mappings keep working; landing_url and referrer are session-first values.
+      submission_url: location.href,
+      source_url: location.href,
+      landing_url: session('isl_landing_url') || location.href,
+      referrer: session('isl_referrer'),
+      test_traffic: session('isl_test_traffic') === '1',
+      consent_service: isChecked('consentService'),
+      consent_marketing: isChecked('consentMarketing'),
+      // Timestamps are per checkbox and only exist when that box was ticked. An
+      // unticked box must not carry a time that looks like evidence of consent.
+      consent_service_timestamp: isChecked('consentService') ? now : '',
+      consent_marketing_timestamp: isChecked('consentMarketing') ? now : '',
+      consent_service_text: consentText('consentService'),
+      consent_marketing_text: consentText('consentMarketing'),
+      // Legacy single timestamp, still mapped in GHL. Kept alongside the per
+      // checkbox ones rather than replaced.
+      consent_timestamp: now
+    };
+    ATTR_KEYS.forEach(function(k){ payload[k] = a(k); });
+    // Identity fields are sent only when the page actually has that input, so the
+    // homepage never POSTs an empty email that could blank a contact record.
+    ['name', 'phone', 'email', 'city', 'zip'].forEach(function(id){ if (el(id)) payload[id] = val(id); });
+
+    // page_url = the submission URL re-enriched with any attribution captured
+    // earlier in the session, which is what this field has always carried.
+    try {
+      var pageUrl = new URL(location.href);
+      ATTR_KEYS.forEach(function(k){ if (attr[k] && !pageUrl.searchParams.get(k)) pageUrl.searchParams.set(k, attr[k]); });
+      payload.page_url = pageUrl.href;
+    } catch (e) { payload.page_url = location.href; }
+
+    var leadOk = false;
+    try {
+      var res = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        keepalive: true,
+        // GHL inbound webhook requires application/json; its CORS preflight is allowed.
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      leadOk = !!(res && res.ok);
+    } catch (err) { /* handled below via leadOk */ }
+
+    // Only confirm what actually happened. A failed POST keeps the filled fields on
+    // screen so the visitor can retry, and offers the phone as a fallback, instead
+    // of showing a confirmation for a lead we never received.
+    if (!leadOk) {
+      var errEl = el('formError');
+      if (errEl) {
+        errEl.innerHTML = 'We could not send your details just now. Please try again, or call <a href="tel:+17543454871" data-loc="form-error">(754) 345-4871</a> and we will take them over the phone.';
+        errEl.hidden = false;
+        try { errEl.scrollIntoView({ block: 'nearest' }); } catch (e2) {}
+      }
+      try { if (typeof window.gtag === 'function') window.gtag('event', 'form_error', { page_path: location.pathname }); } catch (e3) {}
+      this.dataset.submitting = '0';
+      if (submitBtn) submitBtn.disabled = false;
+      return;
+    }
+
+    // GA4 lead conversion: only after a genuine 2xx, before the confirmation UI.
+    try { if (typeof window.gtag === 'function') window.gtag('event', 'generate_lead', { page_path: location.pathname, form_city: payload.city || 'none', form_name: "floorPlan" }); } catch (e) {}
+    try { (window.dataLayer = window.dataLayer || []).push({ event: 'generate_lead', submission_id: submissionId }); } catch (e) {}
+
+    // Google Ads "Lead Submitted", fired only after a genuine 2xx and after
+    // generate_lead. No transaction_id by design, see AW_CONVERSION_ID above.
+    var AW_ID = "", AW_LABEL = "";
+    if (AW_ID && AW_LABEL) {
+      try { if (typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', { send_to: AW_ID + '/' + AW_LABEL });
+      } } catch (e) {}
+    }
+
+    try { var u = new URL(location.href); u.searchParams.set('lead', 'sent'); history.replaceState(null, '', u); } catch (err) {}
+    var fields = el('formFields');
+    if (fields) fields.style.display = 'none';
+    var success = el('formSuccess');
+    if (success) success.classList.add('show');
+
+    loadBookingCalendar("https://api.leadconnectorhq.com/widget/booking/fYvTpTurGkoZCLMCcdIa", submissionId);
+  });
+})();
 </script>
 </body>
 </html>

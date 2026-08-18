@@ -554,6 +554,28 @@ footer ul a:hover{color:var(--cyan)}
 </footer>
 <!-- sticky call bar omitted: single CTA per landing page -->
 <script>
+  var ISL_ATTR_KEYS = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","gclid","gbraid","wbraid","fbclid","msclkid"];
+  (function(){
+    try {
+      var qs = new URLSearchParams(location.search);
+      var stored = JSON.parse(sessionStorage.getItem('isl_attr') || '{}');
+      ISL_ATTR_KEYS.forEach(function(k){ var v = qs.get(k); if (v) stored[k] = v; });
+      sessionStorage.setItem('isl_attr', JSON.stringify(stored));
+      // First page of the session, written once. The sentinel is a SEPARATE key on
+      // purpose: direct traffic has a legitimately empty referrer, and testing the
+      // stored referrer for truthiness would let a later internal referrer
+      // overwrite it on the second page view.
+      if (sessionStorage.getItem('isl_first_seen') !== '1') {
+        sessionStorage.setItem('isl_landing_url', location.href);
+        sessionStorage.setItem('isl_referrer', document.referrer || '');
+        sessionStorage.setItem('isl_first_seen', '1');
+      }
+      // Sticky for the whole session: a tester who lands with ?test_traffic=1 and
+      // then navigates still submits a flagged lead.
+      if (qs.get('test_traffic') === '1') sessionStorage.setItem('isl_test_traffic', '1');
+    } catch (e) {}
+  })();
+
 (function(){
   function track(name, params){
     try { if (typeof window.gtag === 'function') { window.gtag('event', name, params || {}); } } catch (e) {}
@@ -571,8 +593,24 @@ footer ul a:hover{color:var(--cyan)}
 })();
 </script>
 <script>
-(function(){
-  try { if (typeof window.gtag === 'function') { window.gtag('event', 'appointment_booked', { page_path: location.pathname }); } } catch (e) {}
+// appointment_booked used to fire unconditionally on every load, so a refresh, a
+// back button, or anyone opening the URL directly counted as another booking. It
+// now needs a real booking identity, and it fires once per identity.
+(function () {
+  let bookingId = '', intent = null;
+  try {
+    bookingId = new URLSearchParams(location.search).get('booking_id') || '';
+    intent = JSON.parse(localStorage.getItem('isl_booking_intent') || 'null');
+  } catch (e) {}
+  // The booking intent is written when the calendar is revealed after a genuine
+  // form submit. Two hours is long enough for someone to pick a time and short
+  // enough that a stale intent from an earlier visit cannot resurrect a booking.
+  const recentIntent = intent && intent.submission_id && Number(intent.created_at) > Date.now() - 2*60*60*1000;
+  const eventId = bookingId || (recentIntent ? intent.submission_id : '');
+  if (!eventId) return;  // direct/bookmarked visits never fire a booking conversion
+  const firedKey = 'isl_appt_fired:' + eventId;
+  try { if (localStorage.getItem(firedKey) === '1') return; localStorage.setItem(firedKey, '1'); } catch (e) {}
+  try { if (typeof window.gtag === 'function') window.gtag('event','appointment_booked',{page_path:location.pathname, booking_reference:eventId}); } catch (e) {}
 })();
 </script>
 </body>
