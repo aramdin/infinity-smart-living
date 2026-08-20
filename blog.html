@@ -17,10 +17,10 @@
 <link rel="icon" href="/favicon-navy-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>Smart Home Blog & Guides | Infinity Smart Living</title>
-<meta name="description" content="Free smart home guides for South Florida: home automation, smart lighting, smart thermostats, voice control, costs, and how to choose a local installer.">
+<meta name="description" content="Free smart-home guides for South Florida: Alexa planning, smart lighting, thermostat education, voice control, product costs, and contractor-selection tips.">
 <link rel="canonical" href="https://infinitysmartliving.com/blog">
 <meta property="og:title" content="Smart Home Blog & Guides | Infinity Smart Living">
-<meta property="og:description" content="Free smart home guides for South Florida: home automation, smart lighting, smart thermostats, voice control, costs, and how to choose a local installer.">
+<meta property="og:description" content="Free smart-home guides for South Florida: Alexa planning, smart lighting, thermostat education, voice control, product costs, and contractor-selection tips.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://infinitysmartliving.com/blog">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -253,6 +253,10 @@ header.scrolled{border-color:var(--line);box-shadow:0 6px 20px -16px rgba(5,25,6
 footer{background:var(--ink);color:#b9c8e6;padding:64px 0 32px}
 .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
 footer img.flogo{width:170px;max-width:60%;height:auto;margin-bottom:18px}
+/* Square brand lockup in the footer. It carries the wordmark inside the house,
+   so it replaces the flat wordmark here rather than sitting next to it and
+   printing the name twice. Light ink variant, for the navy footer. */
+footer img.fmark{width:96px;height:96px;margin-bottom:16px;display:block}
 .foot-grid p{font-size:.94rem;max-width:30ch}
 footer h4{font-family:var(--font-display);color:#fff;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px}
 footer ul{list-style:none;display:flex;flex-direction:column;gap:11px}
@@ -321,8 +325,19 @@ footer ul a:hover{color:var(--cyan)}
 
 /* ---- consult lead form ---- */
 .lead-card{background:var(--white);border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:var(--shadow);position:relative}
+/* The CTA jumps here on a phone. The header is position:sticky, so without a
+   scroll margin the jump parks the card heading underneath it and the visitor
+   lands mid form with no context. 76px header plus breathing room. */
+.lead-card{scroll-margin-top:96px}
+/* Brief landing state after the jump, so the form announces itself instead of
+   silently appearing. No transition here: .lead-card also carries .reveal on
+   this page and a transition shorthand would cancel the reveal animation. */
+.lead-card.is-targeted{box-shadow:0 0 0 3px rgba(0,178,252,.28),var(--shadow)}
 .lead-card h3{font-size:1.3rem;margin-bottom:.3rem}
 .lead-card .sub{color:var(--slate);font-size:.95rem;margin-bottom:22px}
+.role-disclosure,.concept-legend{font-size:.78rem;line-height:1.55;text-align:left;border-radius:10px;padding:10px 12px;margin:0 0 12px}
+.role-disclosure{color:var(--ink);background:var(--surface);border:1px solid var(--line)}
+.concept-legend{color:var(--slate);background:#fff;border:1px solid var(--line)}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:.8rem;font-weight:600;color:var(--ink);margin-bottom:6px}
 .field input{width:100%;padding:.9rem 1rem;border:1.5px solid var(--line);border-radius:12px;font:inherit;font-size:1rem;color:var(--ink);background:var(--surface);transition:border-color .15s,background .15s}
@@ -442,12 +457,12 @@ footer ul a:hover{color:var(--cyan)}
   <div class="wrap nav">
     <a href="/" aria-label="infinity smart living home"><img class="logo" src="/images/logo.png" alt="infinity smart living"></a>
     <nav class="nav-links" aria-label="Primary">
-      <a href="/guarantee">Guarantee</a>
+      <a href="/guarantee">Support</a>
       <a href="/blog">Blog</a>
     </nav>
     <div class="nav-cta">
       <a href="tel:+17543454871" class="nav-call" aria-label="Call (754) 345-4871"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">(754) 345-4871</span><span class="nav-call-lbl">Call</span></a>
-      <a href="/#book" class="btn btn-primary">Get My Free Floor Plan</a>
+      <a href="/free-floor-plan" class="btn btn-primary">Get My Free Concept</a>
     </div>
   </div>
 </header>
@@ -456,7 +471,7 @@ footer ul a:hover{color:var(--cyan)}
     <div class="section-head center">
       <span class="eyebrow" style="justify-content:center">Smart home guides</span>
       <h1 style="font-size:clamp(2.1rem,4.4vw,3rem);font-weight:800;margin:.5rem 0 .6rem">Smart home advice for South Florida homeowners</h1>
-      <p style="color:var(--slate);max-width:60ch;margin:0 auto">Free, practical guides on smart home automation, lighting, climate, and getting set up the right way. When you are ready, book a free consultation and we will map a smart home floor plan for your home.</p>
+      <p style="color:var(--slate);max-width:60ch;margin:0 auto">Free, practical guides on smart-home technology, lighting, climate, and Alexa configuration. When you are ready, request a free room-by-room smart-home concept.</p>
     </div>
     <div class="post-grid">
       <a class="post-card" href="/blog/how-to-choose-home-automation-company-broward">
@@ -468,7 +483,7 @@ footer ul a:hover{color:var(--cyan)}
         </div>
       </a>
       <a class="post-card" href="/blog/what-is-matter-smart-home">
-        <div class="card-hero" style="background:linear-gradient(120deg,#06203f 0%,#0a4f8c 52%,#00B2FC 100%)"><img class="card-photo" src="/images/smart-dimmer-switches-led.webp" alt="Smart dimmer switches with LED indicators installed by our team" width="800" height="533" loading="lazy"><span class="post-cat">Trends</span></div>
+        <div class="card-hero" style="background:linear-gradient(120deg,#06203f 0%,#0a4f8c 52%,#00B2FC 100%)"><img class="card-photo" src="/images/smart-dimmer-switches-led.webp" alt="Smart dimmer switches with LED indicators in a finished room" width="800" height="533" loading="lazy"><span class="post-cat">Trends</span></div>
         <div class="card-body">
           <h2>What Is Matter? The Smart Home Standard, Explained Simply</h2>
           <p>Matter explained in plain English: what the smart home standard is, how it works with Thread and Alexa, what it covers today, and how it changes buying.</p>
@@ -476,7 +491,7 @@ footer ul a:hover{color:var(--cyan)}
         </div>
       </a>
       <a class="post-card" href="/blog/smart-home-ecosystem">
-        <div class="card-hero" style="background:linear-gradient(150deg,#06203f 0%,#0a4f8c 52%,#00B2FC 100%)"><img class="card-photo" src="/images/smart-home-lounge-led-lighting-thumb.jpg" alt="Lounge with smart LED lighting installed by the Infinity Smart Living team" width="800" height="606" loading="lazy"><span class="post-cat">Getting Started</span></div>
+        <div class="card-hero" style="background:linear-gradient(150deg,#06203f 0%,#0a4f8c 52%,#00B2FC 100%)"><img class="card-photo" src="/images/smart-home-lounge-led-lighting-thumb.jpg" alt="Lounge with smart LED lighting and Alexa voice control" width="800" height="606" loading="lazy"><span class="post-cat">Getting Started</span></div>
         <div class="card-body">
           <h2>What Is a Smart Home Ecosystem? (And Why It Beats Any Single Gadget)</h2>
           <p>What a smart home ecosystem is, the five pieces every system shares, and why picking one platform first beats collecting gadgets. Explained without jargon.</p>
@@ -516,7 +531,7 @@ footer ul a:hover{color:var(--cyan)}
         </div>
       </a>
       <a class="post-card" href="/blog/how-to-set-up-a-smart-home">
-        <div class="card-hero" style="background:linear-gradient(156deg,#06203f 0%,#0a4f8c 52%,#00B2FC 100%)"><img class="card-photo" src="/images/smart-tv-entertainment-setup-thumb.jpg" alt="Smart TV setup installed by the Infinity Smart Living team" width="800" height="533" loading="lazy"><span class="post-cat">Getting Started</span></div>
+        <div class="card-hero" style="background:linear-gradient(156deg,#06203f 0%,#0a4f8c 52%,#00B2FC 100%)"><img class="card-photo" src="/images/smart-tv-entertainment-setup-thumb.jpg" alt="Smart TV and Alexa entertainment controls in a finished room" width="800" height="533" loading="lazy"><span class="post-cat">Getting Started</span></div>
         <div class="card-body">
           <h2>How to Set Up a Smart Home: A Step by Step Guide for Beginners</h2>
           <p>Learn how to set up a smart home step by step: assess your Wi-Fi, pick an ecosystem, add your first devices, build routines, and expand room by room.</p>
@@ -580,7 +595,7 @@ footer ul a:hover{color:var(--cyan)}
         </div>
       </a>
       <a class="post-card" href="/blog/smart-lighting-installation-room-by-room">
-        <div class="card-hero" style="background:linear-gradient(156deg,#06203f 0%,#0a4f8c 52%,#00B2FC 100%)"><img class="card-photo" src="/images/led-accent-lighting-install-thumb.jpg" alt="LED accent lighting installed along a ceiling by our team" width="800" height="533" loading="lazy"><span class="post-cat">Lighting</span></div>
+        <div class="card-hero" style="background:linear-gradient(156deg,#06203f 0%,#0a4f8c 52%,#00B2FC 100%)"><img class="card-photo" src="/images/led-accent-lighting-install-thumb.jpg" alt="LED accent lighting along a finished ceiling detail" width="800" height="533" loading="lazy"><span class="post-cat">Lighting</span></div>
         <div class="card-body">
           <h2>Smart Lighting Installation: A Room by Room Guide</h2>
           <p>A room by room smart lighting installation guide: scenes, dimming, smart bulbs vs installed switches, and why pro installation wins for whole home use.</p>
@@ -596,7 +611,7 @@ footer ul a:hover{color:var(--cyan)}
         </div>
       </a>
       <a class="post-card" href="/blog/home-automation-what-to-automate-first">
-        <div class="card-hero" style="background:linear-gradient(120deg,#06203f 0%,#0a4f8c 52%,#00B2FC 100%)"><img class="card-photo" src="/images/smart-light-switch-install.webp" alt="Smart light switch installed by our team" width="800" height="533" loading="lazy"><span class="post-cat">Getting Started</span></div>
+        <div class="card-hero" style="background:linear-gradient(120deg,#06203f 0%,#0a4f8c 52%,#00B2FC 100%)"><img class="card-photo" src="/images/smart-light-switch-install.webp" alt="Smart light switch with status indicator" width="800" height="533" loading="lazy"><span class="post-cat">Getting Started</span></div>
         <div class="card-body">
           <h2>Home Automation Services: What's Actually Worth Automating First</h2>
           <p>New to home automation services? Here is what is actually worth automating first, the best payoff for the least cost, and how to avoid the five app mess.</p>
@@ -615,7 +630,7 @@ footer ul a:hover{color:var(--cyan)}
         <div class="card-hero" style="background:linear-gradient(162deg,#06203f 0%,#0a4f8c 52%,#00B2FC 100%)"><img class="card-photo" src="/images/blog-free-smart-home-consultation-what-to-expect-thumb.jpg" alt="Free Smart Home Consultation: What to Expect (and How to Prep)" width="800" height="534" loading="lazy"><span class="post-cat">Getting Started</span></div>
         <div class="card-body">
           <h2>Free Smart Home Consultation: What to Expect (and How to Prep)</h2>
-          <p>What to expect from a free smart home consultation: how it works, how long it takes, what to prepare, and how the custom floor plan and honest quote work.</p>
+          <p>What to expect from a free smart home consultation: how it works, how long it takes, what to prepare, and how the room-by-room concept and honest quote work.</p>
           <span class="card-meta">May 8, 2026 · 6 min read</span>
         </div>
       </a>
@@ -626,8 +641,8 @@ footer ul a:hover{color:var(--cyan)}
   <div class="wrap">
     <div class="foot-grid">
       <div>
-        <img class="flogo" src="/images/logo-light.png" alt="infinity smart living">
-        <p>Professional smart home installation and support for real homes across South Florida.</p>
+        <img class="fmark" src="/images/logo-mark-light.webp" alt="Infinity Smart Living" width="256" height="256" loading="lazy" decoding="async">
+        <p>Smart-home technology planning and non-regulated Alexa configuration for South Florida homes.</p>
         <div class="foot-social">
       <a href="https://www.facebook.com/profile.php?id=61590996226258" rel="me noopener" target="_blank" aria-label="Infinity Smart Living on Facebook" title="Infinity Smart Living on Facebook"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.45 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/></svg></a>
       <a href="https://www.instagram.com/infinitysmartliving/" rel="me noopener" target="_blank" aria-label="Infinity Smart Living on Instagram" title="Infinity Smart Living on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.8 3.8 0 0 1-1.38-.9 3.8 3.8 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07zm0 6.68a3.16 3.16 0 1 0 0 6.32 3.16 3.16 0 0 0 0-6.32zm0 5.21a2.05 2.05 0 1 1 0-4.1 2.05 2.05 0 0 1 0 4.1zm4.02-5.33a.74.74 0 1 1-1.47 0 .74.74 0 0 1 1.47 0z"/></svg></a>
@@ -641,7 +656,7 @@ footer ul a:hover{color:var(--cyan)}
         <ul>
           <li><a href="/">Home</a></li>
           <li><a href="/blog">Blog</a></li>
-          <li><a href="/guarantee">Guarantee</a></li>
+          <li><a href="/guarantee">Support</a></li>
         </ul>
       </div>
       <div>
@@ -656,21 +671,20 @@ footer ul a:hover{color:var(--cyan)}
       <div>
         <h4>Get started</h4>
         <ul>
-          <li><a href="/#book">Get My Free Floor Plan</a></li>
+          <li><a href="/free-floor-plan">Get My Free Concept</a></li>
         </ul>
       </div>
     </div>
-    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom floor plan · No obligation · <a href="/guarantee" style="color:inherit">30-Day Satisfaction Guarantee</a></div>
+    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free room-by-room smart-home concept · No purchase required · Yours to keep</div>
     <div class="foot-areas" style="padding:22px 0;margin-top:8px;border-top:1px solid rgba(255,255,255,.1)">
       <h4 style="margin-bottom:12px">Smart home services</h4>
-      <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0"><a href="/smart-lighting-installation" style="color:#cfe0ff">Smart lighting installation</a> · <a href="/smart-thermostat-installation" style="color:#cfe0ff">Smart thermostat installation</a> · <a href="/smart-lock-and-doorbell-installation" style="color:#cfe0ff">Smart lock and doorbell installation</a> · <a href="/alexa-setup-and-routines" style="color:#cfe0ff">Alexa setup and routines</a> · <a href="/whole-home-voice-control" style="color:#cfe0ff">Whole home voice control</a></p>
+      <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0"><a href="/smart-lighting-installation" style="color:#cfe0ff">Smart lighting planning</a> · <a href="/smart-thermostat-installation" style="color:#cfe0ff">Smart thermostat planning</a> · <a href="/smart-lock-and-doorbell-installation" style="color:#cfe0ff">Smart entry product planning</a> · <a href="/alexa-setup-and-routines" style="color:#cfe0ff">Alexa device and routine configuration</a> · <a href="/whole-home-voice-control" style="color:#cfe0ff">Whole-home voice planning</a></p>
     </div>
     <div class="foot-areas" style="padding:22px 0;border-top:1px solid rgba(255,255,255,.1)">
       <h4 style="margin-bottom:12px">Smart home service areas</h4>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0"><a href="/coral-springs" style="color:#cfe0ff">Coral Springs</a> · <a href="/boca-raton" style="color:#cfe0ff">Boca Raton</a> · <a href="/parkland" style="color:#cfe0ff">Parkland</a> · <a href="/pompano-beach" style="color:#cfe0ff">Pompano Beach</a> · <a href="/coconut-creek" style="color:#cfe0ff">Coconut Creek</a> · <a href="/deerfield-beach" style="color:#cfe0ff">Deerfield Beach</a> · <a href="/delray-beach" style="color:#cfe0ff">Delray Beach</a> · <a href="/boynton-beach" style="color:#cfe0ff">Boynton Beach</a> · <a href="/fort-lauderdale" style="color:#cfe0ff">Fort Lauderdale</a> · <a href="/weston" style="color:#cfe0ff">Weston</a> · <a href="/plantation" style="color:#cfe0ff">Plantation</a> · <a href="/lighthouse-point" style="color:#cfe0ff">Lighthouse Point</a> · <a href="/margate" style="color:#cfe0ff">Margate</a> · <a href="/tamarac" style="color:#cfe0ff">Tamarac</a> · <a href="/sunrise" style="color:#cfe0ff">Sunrise</a> · <a href="/davie" style="color:#cfe0ff">Davie</a> · <a href="/pembroke-pines" style="color:#cfe0ff">Pembroke Pines</a> · <a href="/cooper-city" style="color:#cfe0ff">Cooper City</a> · <a href="/oakland-park" style="color:#cfe0ff">Oakland Park</a> · <a href="/wilton-manors" style="color:#cfe0ff">Wilton Manors</a></p>
     </div>
     <div class="foot-bot">
-      <!-- PROOF SLOT: electrician license number goes on the DBA line below once confirmed. -->
       <!-- A2P 10DLC: the DBA sentence is required on the page as its own plain statement. Do not reword or fold it back into the copyright line. -->
       <span>Infinity Smart Living is a registered DBA of SimpleSafe Technologies LLC.<br>© 2026 SimpleSafe Technologies LLC. All rights reserved.</span>
       <span><a href="/privacy" style="color:inherit">Privacy</a> · <a href="/terms" style="color:inherit">Terms</a></span>
@@ -680,7 +694,7 @@ footer ul a:hover{color:var(--cyan)}
 <!-- MOBILE STICKY CALL BAR (mobile viewports only) -->
 <div class="mobile-cta-bar" aria-label="Quick contact">
   <a href="tel:+17543454871" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
-  <a href="/#book" class="mcb-book">Free floor plan</a>
+  <a href="/free-floor-plan" class="mcb-book">Free smart-home concept</a>
 </div>
 <script>
   var ISL_ATTR_KEYS = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","gclid","gbraid","wbraid","fbclid","msclkid"];

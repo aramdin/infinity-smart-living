@@ -21,11 +21,11 @@
 <link rel="icon" href="/favicon-navy-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>Smart Home Packages & Installation | Infinity Smart Living</title>
-<meta name="description" content="Smart home installation packages for real homes in South Florida. Lighting, climate, voice, and whole home automation, professionally installed. One app, one plan, no monthly lock-in.">
+<meta name="description" content="Smart home installation packages for real homes in South Florida. Lighting, climate, voice, and whole home automation planned around Amazon Alexa. One app, one plan, no monthly lock-in.">
 <meta name="robots" content="noindex, follow">
 <link rel="canonical" href="https://infinitysmartliving.com/packages">
 <meta property="og:title" content="Smart Home Packages &amp; Installation | Infinity Smart Living">
-<meta property="og:description" content="Smart home packages for South Florida homes: lighting, climate, voice, and whole home automation on Amazon Alexa, professionally installed.">
+<meta property="og:description" content="Smart home packages for South Florida homes: lighting, climate, voice, and whole home automation planned around Amazon Alexa.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://infinitysmartliving.com/packages">
 <meta property="og:image" content="https://infinitysmartliving.com/images/home-hero.jpg">
@@ -249,7 +249,15 @@ header.scrolled{border-color:var(--line);box-shadow:0 6px 20px -16px rgba(5,25,6
 /* footer */
 footer{background:var(--ink);color:#b9c8e6;padding:64px 0 32px}
 .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
+/* SHIP 4A compliance blocks. See generate.mjs COMPLIANCE TEXT note. */
+.role-disclosure,.concept-legend{font-size:.78rem;line-height:1.55;text-align:left;border-radius:10px;padding:10px 12px;margin:0 0 12px}
+.role-disclosure{color:var(--ink);background:var(--surface);border:1px solid var(--line)}
+.concept-legend{color:var(--slate);background:#fff;border:1px solid var(--line)}
 footer img.flogo{width:170px;max-width:60%;height:auto;margin-bottom:18px}
+/* Square brand lockup in the footer. It carries the wordmark inside the house,
+   so it replaces the flat wordmark here rather than sitting next to it and
+   printing the name twice. Light ink variant, for the navy footer. */
+footer img.fmark{width:96px;height:96px;margin-bottom:16px;display:block}
 .foot-grid p{font-size:.94rem;max-width:30ch}
 footer h4{font-family:var(--font-display);color:#fff;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px}
 footer ul{list-style:none;display:flex;flex-direction:column;gap:11px}
@@ -350,7 +358,7 @@ footer ul a:hover{color:var(--cyan)}
     </nav>
     <div class="nav-cta">
       <a href="tel:+17543454871" data-loc="nav" class="nav-call" aria-label="Call (754) 345-4871"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">(754) 345-4871</span><span class="nav-call-lbl">Call</span></a>
-      <a href="/#book" class="btn btn-primary">Get My Free Floor Plan</a>
+      <a href="/#book" class="btn btn-primary">Get My Free Concept</a>
       <button class="menu-btn" aria-label="Open menu">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
@@ -364,14 +372,14 @@ footer ul a:hover{color:var(--cyan)}
     <div class="hero-copy reveal">
       <span class="eyebrow">Smart home installation</span>
       <h1>Your whole home, <span class="accent">working together.</span></h1>
-      <p class="lead">Lighting, climate, voice and whole home automation, built on Amazon Alexa and professionally installed. One app, one assistant, no tangled gadgets, no monthly lock-in.</p>
+      <p class="lead">Lighting, climate, voice and whole home automation, planned around Amazon Alexa. One app, one assistant, no tangled gadgets, no monthly lock-in.</p>
       <div class="hero-actions">
-        <a href="/#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
+        <a href="/#book" class="btn btn-primary btn-lg">Get My Free Concept</a>
         <a href="tel:+17543454871" data-loc="hero" class="btn btn-ghost btn-lg">Call (754) 345-4871</a>
         <a href="#how" class="btn btn-ghost btn-lg">See how it works</a>
       </div>
       <div class="hero-trust">
-        <span>Free plan and price before you decide</span>
+        <span>Your price in writing before you decide</span>
         <span>•</span>
         <span>Serving <b>South Florida</b></span>
         <span>•</span>
@@ -433,7 +441,7 @@ footer ul a:hover{color:var(--cyan)}
 <!-- WORKS WITH STRIP -->
 <div class="strip">
   <div class="wrap strip-inner">
-    <span class="lbl">An Amazon Alexa smart home, professionally installed</span>
+    <span class="lbl">An Amazon Alexa smart home, planned room by room</span>
     <span class="brand">Amazon Alexa</span>
     <span class="brand">Echo Show</span>
     <span class="brand">Echo Dot</span>
@@ -445,9 +453,9 @@ footer ul a:hover{color:var(--cyan)}
 <section class="section" style="padding:64px 0">
   <div class="wrap">
     <div class="plan-banner reveal">
-      <p>Every home is different. Your free smart home floor plan shows your exact scope and price before you decide anything.</p>
+      <p>Every home is different. Your free room-by-room smart-home concept shows the proposed scope, and you receive Infinity's written price for what Infinity itself offers before you decide.</p>
       <div class="plan-banner-actions">
-        <a href="/#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
+        <a href="/#book" class="btn btn-primary btn-lg">Get My Free Concept</a>
         <a href="tel:+17543454871" class="btn btn-light btn-lg">Call (754) 345-4871</a>
       </div>
     </div>
@@ -503,7 +511,7 @@ footer ul a:hover{color:var(--cyan)}
     <div class="section-head center reveal">
       <span class="eyebrow" style="justify-content:center">How it works</span>
       <h2>How It Works</h2>
-      <p>Three steps to your Alexa smart home. The floor plan is free.</p>
+      <p>Three steps to your Alexa smart home. The concept is free.</p>
     </div>
     <div class="steps">
       <div class="thread" aria-hidden="true">
@@ -518,13 +526,13 @@ footer ul a:hover{color:var(--cyan)}
       </div>
       <div class="step reveal">
         <div class="num">2</div>
-        <h3>Get your free floor plan</h3>
-        <p>We map your floor plan room by room and show you exactly what goes where, what it will do, and what the project costs, before you spend a dollar.</p>
+        <h3>Get your free concept</h3>
+        <p>We map your concept room by room and show you exactly what goes where and what it will do. You receive your price in writing before you decide, confirmed in your written order.</p>
       </div>
       <div class="step reveal">
         <div class="num">3</div>
-        <h3>Your install, handled</h3>
-        <p>Say yes and we schedule everything. Licensed local installers complete your system, a licensed local electrician under contract handles the regulated electrical work, and we set up your routines before anyone leaves. One point of contact, start to finish.</p>
+        <h3>Choose what happens next</h3>
+        <p>Infinity can provide a written price for only the products and technology services it offers. If regulated work is needed, you independently select and contract with an appropriately licensed contractor, who scopes, prices, schedules, performs, and warrants that work.</p>
       </div>
     </div>
   </div>
@@ -537,8 +545,8 @@ footer ul a:hover{color:var(--cyan)}
   <div class="wrap">
     <div class="section-head center reveal">
       <span class="eyebrow" style="justify-content:center">Packages</span>
-      <h2>Straightforward packages, no surprises</h2>
-      <p>Professionally installed Amazon Alexa packages, usually in a single visit. Every home is scoped to its own space. You see your full plan and your exact price before you decide.</p>
+      <h2>Straightforward packages</h2>
+      <p>Amazon Alexa packages planned around your rooms. Every home is scoped to its own space. You receive your full plan and your price in writing before you decide, confirmed in your written order.</p>
     </div>
     <div class="pkgs">
       <div class="pkg reveal">
@@ -551,14 +559,14 @@ footer ul a:hover{color:var(--cyan)}
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Smart hub + Wi-Fi check & mesh node</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Custom scenes, walkthrough & 90-day warranty</li>
         </ul>
-        <div class="p-price-note">Your exact price comes with your free smart home floor plan.</div>
+        <div class="p-price-note">Your price is provided in writing before you decide and confirmed in your written order.</div>
         <div class="p-actions">
-          <a href="/#book" class="btn btn-primary">Get My Free Floor Plan</a>
+          <a href="/#book" class="btn btn-primary">Get My Free Concept</a>
           <a href="tel:+17543454871" class="btn btn-ghost">Call (754) 345-4871</a>
         </div>
       </div>
       <div class="pkg feature reveal">
-        <span class="tag">Most popular</span>
+
         <div class="p-name">Connected Home</div>
         <p class="p-desc">Mornings, evenings, and leaving the house each run on their own, so the lights and climate follow your routine without a thought. Halls, the laundry, and the garage switch themselves off after you pass through. With Amazon Alexa in a second room, you can ask for what you need from wherever you are standing.</p>
         <ul>
@@ -568,9 +576,9 @@ footer ul a:hover{color:var(--cyan)}
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Echo Show for a second room</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Morning / Away / Night automations + 1-yr warranty</li>
         </ul>
-        <div class="p-price-note">Your exact price comes with your free smart home floor plan.</div>
+        <div class="p-price-note">Your price is provided in writing before you decide and confirmed in your written order.</div>
         <div class="p-actions">
-          <a href="/#book" class="btn btn-primary">Get My Free Floor Plan</a>
+          <a href="/#book" class="btn btn-primary">Get My Free Concept</a>
           <a href="tel:+17543454871" class="btn btn-light">Call (754) 345-4871</a>
         </div>
       </div>
@@ -584,14 +592,14 @@ footer ul a:hover{color:var(--cyan)}
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Expanded climate zones + whole home Wi-Fi mesh</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Priority support + extended warranty</li>
         </ul>
-        <div class="p-price-note">Your exact price comes with your free smart home floor plan.</div>
+        <div class="p-price-note">Your price is provided in writing before you decide and confirmed in your written order.</div>
         <div class="p-actions">
-          <a href="/#book" class="btn btn-primary">Get My Free Floor Plan</a>
+          <a href="/#book" class="btn btn-primary">Get My Free Concept</a>
           <a href="tel:+17543454871" class="btn btn-ghost">Call (754) 345-4871</a>
         </div>
       </div>
     </div>
-    <p style="text-align:center;color:var(--slate);font-size:.9rem;margin-top:26px">Optional <strong style="color:var(--ink)">Always On</strong> support plan for unlimited support, an annual tune-up visit, and one free hardware replacement a year. The monthly price is included in your free smart home floor plan. Never required.</p>
+    <p style="text-align:center;color:var(--slate);font-size:.9rem;margin-top:26px">Ask about Infinity's optional ongoing configuration support when you receive your concept. Any terms are set out in your Infinity order. Never required.</p>
   </div>
 </section>
 
@@ -604,7 +612,7 @@ footer ul a:hover{color:var(--cyan)}
       <div class="why-list">
         <div class="why-item">
           <div class="wic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 12l2 2 4-4"/><path d="M21 12c-1 0-3-1-3-3s2-3 2-5c-2 0-3 2-5 2s-3-2-3-2-1 2-3 2-3-2-5-2c0 2 2 3 2 5s-2 3-3 3c1 0 3 1 3 3s-2 3-2 5c2 0 3-2 5-2s3 2 3 2 1-2 3-2 3 2 5 2c0-2-2-3-2-5s2-3 3-3z"/></svg></div>
-          <div><h3>Installed by a licensed pro</h3><p>A vetted, licensed local installer handles the wiring and mounting, done right the first time.</p></div>
+          <div><h3>Configuration and planning</h3><p>Infinity configures eligible devices, apps, and Alexa routines. Mounting and any regulated work require a separate contractor that you select and hire directly.</p></div>
         </div>
         <div class="why-item">
           <div class="wic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
@@ -621,9 +629,9 @@ footer ul a:hover{color:var(--cyan)}
       </div>
     </div>
     <div class="why-card reveal"><img class="inf" src="/images/logo-light.png" alt="" aria-hidden="true">
-      
-      <div class="stat-l">Free floor plan and price before you decide</div>
-      <p class="quote">You see a full room by room floor plan and your exact price up front. Licensed local installers complete the work, and it all lives in one Amazon Alexa app.</p>
+
+      <div class="stat-l">Your price in writing before you decide</div>
+      <p class="quote">You receive a full room by room concept and your price in writing before you decide, confirmed in your written order. Infinity configures eligible devices and routines, and it all lives in one Amazon Alexa app.</p>
     </div>
   </div>
 </section>
@@ -637,16 +645,16 @@ footer ul a:hover{color:var(--cyan)}
     </div>
     <div class="tgrid">
       <div class="tcard reveal">
-        <p>You see your full smart home floor plan and your exact price before you commit.</p>
+        <p>You receive your full room-by-room smart-home concept and your price in writing before you decide, confirmed in your written order.</p>
       </div>
       <div class="tcard reveal">
-        <p>Licensed local pros do the work: a licensed local electrician under contract handles the regulated electrical work.</p>
+        <p>Infinity configures eligible devices, apps, and Alexa routines. Any regulated work requires a separate contractor that you select and hire directly.</p>
       </div>
       <div class="tcard reveal">
         <p>Everything lives in one Amazon Alexa app, designed to work together from day one.</p>
       </div>
       <div class="tcard reveal">
-        <p>Backed by our 30-day satisfaction guarantee.</p>
+        <p>Your free room-by-room smart-home concept is yours to keep, with no purchase required.</p>
       </div>
     </div>
   </div>
@@ -666,7 +674,7 @@ footer ul a:hover{color:var(--cyan)}
       </div>
       <div class="qa reveal">
         <button><span>Do you build on my existing devices?</span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
-        <div class="ans"><p>Not usually. We plan a complete Amazon Alexa smart home as one cohesive system, and licensed local installers put it in, rather than piecing together mismatched devices, which is what keeps everything reliable and easy to use. If you already have Alexa gear, we can often fold it in, but our focus is bringing you a smart home built around Alexa from the ground up.</p></div>
+        <div class="ans"><p>Not usually. We plan a complete Amazon Alexa smart home as one cohesive system rather than piecing together mismatched devices, which is what keeps everything reliable and easy to use. Any regulated work requires a separate contractor that you select and hire directly. If you already have Alexa gear, we can often fold it in, but our focus is planning a smart home built around Alexa.</p></div>
       </div>
       <div class="qa reveal">
         <button><span>Is there a monthly fee?</span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
@@ -678,7 +686,7 @@ footer ul a:hover{color:var(--cyan)}
       </div>
       <div class="qa reveal">
         <button><span>What if something stops working later?</span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
-        <div class="ans"><p>Call us. Every install includes a warranty period. We can troubleshoot remotely, and a licensed local installer can come out if needed. No overseas call centers.</p></div>
+        <div class="ans"><p>Call us. We will help identify whether your request concerns an Infinity product or configuration, a manufacturer's warranty, or work governed by a separately hired contractor's agreement. No overseas call centers.</p></div>
       </div>
     </div>
   </div>
@@ -688,9 +696,9 @@ footer ul a:hover{color:var(--cyan)}
 <section class="section" style="padding:64px 0 0">
   <div class="wrap">
     <div class="plan-banner reveal">
-      <p>Every home is different. Your free smart home floor plan shows your exact scope and price before you decide anything.</p>
+      <p>Every home is different. Your free room-by-room smart-home concept shows the proposed scope, and you receive Infinity's written price for what Infinity itself offers before you decide.</p>
       <div class="plan-banner-actions">
-        <a href="/#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
+        <a href="/#book" class="btn btn-primary btn-lg">Get My Free Concept</a>
         <a href="tel:+17543454871" class="btn btn-light btn-lg">Call (754) 345-4871</a>
       </div>
     </div>
@@ -701,12 +709,12 @@ footer ul a:hover{color:var(--cyan)}
 <section class="section" id="quote">
   <div class="wrap">
     <div class="cta reveal"><img class="inf" src="/images/logo-light.png" alt="" aria-hidden="true">
-      
+
       <h2>Ready for a home that just works?</h2>
-      <p>Book your free virtual consultation. We'll map your home, build your free smart home floor plan, and quote it honestly, no pressure.</p>
+      <p>Book your free virtual consultation. We'll map your home, build your free room-by-room smart-home concept, and quote it honestly, no pressure.</p>
       <p style="margin-top:1.1rem">Prefer to talk it through? Call (754) 345-4871 and we'll walk your home with you.</p>
       <div class="cta-actions">
-        <a href="/#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
+        <a href="/#book" class="btn btn-primary btn-lg">Get My Free Concept</a>
         <a href="tel:+17543454871" class="btn btn-light btn-lg">Call (754) 345-4871</a>
       </div>
     </div>
@@ -718,7 +726,7 @@ footer ul a:hover{color:var(--cyan)}
   <div class="wrap">
     <div class="foot-grid">
       <div>
-        <img class="flogo" src="/images/logo-light.png" alt="infinity smart living">
+        <img class="fmark" src="/images/logo-mark-light.webp" alt="Infinity Smart Living" width="256" height="256" loading="lazy" decoding="async">
         <p>Professional smart home installation and support for real homes across South Florida.</p>
       </div>
       <div>
@@ -738,7 +746,7 @@ footer ul a:hover{color:var(--cyan)}
           <li><a href="#how">How it works</a></li>
           <li><a href="#packages">Packages</a></li>
           <li><a href="#reviews">Reviews</a></li>
-          <li><a href="/#book">Get My Free Floor Plan</a></li>
+          <li><a href="/#book">Get My Free Concept</a></li>
         </ul>
       </div>
       <div>
@@ -750,7 +758,7 @@ footer ul a:hover{color:var(--cyan)}
         </ul>
       </div>
     </div>
-    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom floor plan · No obligation · <a href="/guarantee" style="color:inherit">30-Day Satisfaction Guarantee</a></div>
+    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free room-by-room smart-home concept · No purchase required · <a href="/guarantee" style="color:inherit">Support</a></div>
     <div class="foot-areas" style="padding:22px 0;margin-top:8px;border-top:1px solid rgba(255,255,255,.1)">
       <h4 style="margin-bottom:12px">Smart home service areas</h4>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0"><a href="/coral-springs" style="color:#cfe0ff">Coral Springs</a> · <a href="/boca-raton" style="color:#cfe0ff">Boca Raton</a> · <a href="/parkland" style="color:#cfe0ff">Parkland</a> · <a href="/pompano-beach" style="color:#cfe0ff">Pompano Beach</a> · <a href="/coconut-creek" style="color:#cfe0ff">Coconut Creek</a> · <a href="/deerfield-beach" style="color:#cfe0ff">Deerfield Beach</a> · <a href="/delray-beach" style="color:#cfe0ff">Delray Beach</a> · <a href="/boynton-beach" style="color:#cfe0ff">Boynton Beach</a> · <a href="/fort-lauderdale" style="color:#cfe0ff">Fort Lauderdale</a> · <a href="/weston" style="color:#cfe0ff">Weston</a> · <a href="/plantation" style="color:#cfe0ff">Plantation</a> · <a href="/lighthouse-point" style="color:#cfe0ff">Lighthouse Point</a> · <a href="/margate" style="color:#cfe0ff">Margate</a> · <a href="/tamarac" style="color:#cfe0ff">Tamarac</a> · <a href="/sunrise" style="color:#cfe0ff">Sunrise</a> · <a href="/davie" style="color:#cfe0ff">Davie</a> · <a href="/pembroke-pines" style="color:#cfe0ff">Pembroke Pines</a> · <a href="/cooper-city" style="color:#cfe0ff">Cooper City</a> · <a href="/oakland-park" style="color:#cfe0ff">Oakland Park</a> · <a href="/wilton-manors" style="color:#cfe0ff">Wilton Manors</a></p>
@@ -794,7 +802,7 @@ document.querySelectorAll('.switch').forEach(s=>{
 <!-- MOBILE STICKY CALL BAR (mobile viewports only) -->
 <div class="mobile-cta-bar" aria-label="Quick contact">
   <a href="tel:+17543454871" data-loc="sticky_bar" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
-  <a href="/#book" class="mcb-book">Free floor plan</a>
+  <a href="/#book" class="mcb-book">Free concept</a>
 </div>
 <script>
   var ISL_ATTR_KEYS = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","gclid","gbraid","wbraid","fbclid","msclkid"];

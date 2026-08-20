@@ -42,6 +42,67 @@ const DISCLOSURE_VERSION = '2026-08-17';
 const AW_CONVERSION_ID = 'AW-18390047805';
 const AW_CONVERSION_LABEL = 'UMp4CM_uyuQcEL24h8FE';
 
+// --- SHIP 4A: interim public role, price, and concept language ------------
+// COMPLIANCE TEXT. Every string in this block is mandated wording for the
+// interim planning-only posture and is NOT marketing copy. It deliberately
+// contains terms the brand rules ban in our own copy (alarm, security,
+// monitoring, emergency, life-safety) because the whole point of the sentence
+// is to DISCLAIM those categories. The banned-term sweep exempts strings
+// marked with the data-compliance attribute for exactly this reason, the same
+// way it already exempts a customer's words inside a blockquote. Do not
+// reword, soften, or "fix" anything in here without counsel.
+//
+// Interim scope, until a counsel approved Ship 4B: Infinity sells technology
+// consultation, a room by room concept, candidate product recommendations and
+// non regulated configuration. It does not offer, contract for, price,
+// schedule, supervise, accept, or warrant regulated work, and it shares no
+// lead with any contractor.
+const ROLE_DISCLOSURE_FULL = 'Infinity Smart Living provides smart-home technology consultation, candidate product recommendations, and non-regulated device and app configuration. Infinity Smart Living is not an electrical, limited-energy, HVAC, alarm, or other licensed contractor and does not offer or contract for regulated work. If regulated work is needed, you independently select and contract directly with an appropriately Florida-licensed contractor.';
+const ROLE_DISCLOSURE_SHORT = 'Infinity provides technology planning and non-regulated configuration only. Any regulated work requires a separate contractor selected and hired directly by the customer.';
+const CONCEPT_LEGEND = 'Illustrative technology concept only. This is not a wiring diagram, electrical, HVAC or alarm design, construction or permit plan, installation specification, or contractor bid. Any regulated work must be independently evaluated, scoped, and priced by a contractor whose active Florida license covers the specific task.';
+const NO_REGULATED_CATEGORIES = 'Infinity does not provide alarm systems, security monitoring, life-safety systems, or emergency-response services.';
+const PRICE_LINE = 'Receive Infinity\u2019s written price for the products and technology services Infinity offers before you decide. Licensed-contractor work is not included in Infinity\u2019s scope or price.';
+const ENERGY_CLAIM = 'Compatible devices can help manage energy use. Results vary by home, equipment, rates, settings, and behavior; no savings are guaranteed.';
+const COMPAT_CLAIM = 'Works with many compatible devices. Verify compatibility, required hubs, and subscriptions by model.';
+const FORM_PRIVACY_LINE = 'We use your details to respond to your request and prepare your smart-home concept. See our <a href="/privacy">Privacy Policy</a>.';
+
+// Rendered blocks. data-compliance marks mandated text for the sweep.
+const roleDisclosureHtml = (short = false) =>
+  `<p class="role-disclosure" data-compliance="role">${short ? ROLE_DISCLOSURE_SHORT : ROLE_DISCLOSURE_FULL}</p>`;
+const conceptLegendHtml = () =>
+  `<p class="concept-legend" data-compliance="legend">${CONCEPT_LEGEND}</p>`;
+
+// --- SHIP 4A: contractor introduction constants --------------------------
+// ALL OFF for Ship 4A. No contractor is named, no introduction checkbox
+// renders, no contractor field enters the payload, and no lead is shared.
+// The build FAILS if identity is partially filled, so a half configured
+// contractor can never ship. Ship 4B turns this on after counsel approval.
+const CONTRACTOR_LEGAL_NAME = '';
+const CONTRACTOR_LICENSE_TYPE = '';
+const CONTRACTOR_LICENSE_NO = '';
+const CONTRACTOR_INTRO_DISCLOSURE_VERSION = '';
+const REFERRAL_COMPENSATION_STATUS = 'UNKNOWN';   // UNKNOWN | NONE | COUNSEL_APPROVED
+const REFERRAL_DISCLOSURE = '';
+
+const CONTRACTOR_IDENTITY = [CONTRACTOR_LEGAL_NAME, CONTRACTOR_LICENSE_TYPE, CONTRACTOR_LICENSE_NO, CONTRACTOR_INTRO_DISCLOSURE_VERSION];
+const CONTRACTOR_ID_FILLED = CONTRACTOR_IDENTITY.filter((v) => String(v).trim() !== '').length;
+if (CONTRACTOR_ID_FILLED !== 0 && CONTRACTOR_ID_FILLED !== CONTRACTOR_IDENTITY.length) {
+  throw new Error('contractor identity is all-or-none: fill every one of CONTRACTOR_LEGAL_NAME, CONTRACTOR_LICENSE_TYPE, CONTRACTOR_LICENSE_NO, CONTRACTOR_INTRO_DISCLOSURE_VERSION, or leave all four empty');
+}
+if (!['UNKNOWN', 'NONE', 'COUNSEL_APPROVED'].includes(REFERRAL_COMPENSATION_STATUS)) {
+  throw new Error('REFERRAL_COMPENSATION_STATUS must be UNKNOWN, NONE or COUNSEL_APPROVED');
+}
+if (REFERRAL_COMPENSATION_STATUS === 'COUNSEL_APPROVED' && !String(REFERRAL_DISCLOSURE).trim()) {
+  throw new Error('REFERRAL_COMPENSATION_STATUS=COUNSEL_APPROVED requires a non-empty REFERRAL_DISCLOSURE');
+}
+// UNKNOWN suppresses everything, and so does empty identity. Both must hold
+// before any introduction UI or payload field may exist.
+const CONTRACTOR_INTRO_ENABLED =
+  CONTRACTOR_ID_FILLED === CONTRACTOR_IDENTITY.length && REFERRAL_COMPENSATION_STATUS !== 'UNKNOWN';
+if (CONTRACTOR_INTRO_ENABLED) {
+  throw new Error('Ship 4A ships with contractor introductions disabled; enabling them is a Ship 4B change that needs counsel sign off');
+}
+
 // gtag config for the Ads account, injected into <head> next to the GA4 config.
 // Empty string while the constants are blank, so nothing ships until they are set.
 const ADS_CONFIG = AW_CONVERSION_ID
@@ -64,6 +125,16 @@ const base = {
   EMAIL: site.email,
   DISCLOSURE_VERSION,
   ADS_CONFIG,
+  // SHIP 4A compliance blocks, stamped into the templates above each lead form
+  // and beside each concept offer. See the COMPLIANCE TEXT note further up.
+  ROLE_DISCLOSURE: roleDisclosureHtml(),
+  ROLE_DISCLOSURE_SHORT: ROLE_DISCLOSURE_SHORT,
+  CONCEPT_LEGEND: conceptLegendHtml(),
+  NO_REGULATED_CATEGORIES,
+  PRICE_LINE,
+  ENERGY_CLAIM,
+  COMPAT_CLAIM,
+  FORM_PRIVACY_LINE,
   // FORM_SCRIPT is assigned just below, once formModule exists. index.html gets
   // the home config; city pages override it per page in their stamp call.
   FORM_SCRIPT: '',
@@ -156,7 +227,10 @@ const commercialBlock = COMMERCIAL_YOUTUBE_ID ? `
 // hand or it does not appear. No Review/AggregateRating schema is emitted, see
 // the _schema_note in reviews.json for why.
 const reviewsCfg = JSON.parse(readFileSync('./reviews.json', 'utf8'));
-const allReviews = (reviewsCfg.reviews || []).filter((r) => r && r.text && r.author);
+// `display:false` suppresses a review everywhere it could render while preserving
+// the source record verbatim for audit/history purposes.
+const allReviews = (reviewsCfg.reviews || []).filter((r) =>
+  r && r.text && r.author && r.display !== false);
 const STARS = (n) => '★'.repeat(Math.max(0, Math.min(5, Number(n) || 0)));
 // Text runs verbatim, so paragraph breaks the customer typed are preserved and
 // nothing is trimmed or tidied. Only HTML special characters are escaped.
@@ -240,11 +314,11 @@ base.CITY_LINKS = cfg.cities
 // the nav collapses to a stacked list on mobile, where a dropdown reads badly.
 // Single source for the five service pages, rendered via {{SERVICE_LINKS}}.
 const SERVICE_NAV = [
-  ['smart-lighting-installation', 'Smart lighting installation'],
-  ['smart-thermostat-installation', 'Smart thermostat installation'],
-  ['smart-lock-and-doorbell-installation', 'Smart lock and doorbell installation'],
-  ['alexa-setup-and-routines', 'Alexa setup and routines'],
-  ['whole-home-voice-control', 'Whole home voice control'],
+  ['smart-lighting-installation', 'Smart lighting planning'],
+  ['smart-thermostat-installation', 'Smart thermostat planning'],
+  ['smart-lock-and-doorbell-installation', 'Smart entry product planning'],
+  ['alexa-setup-and-routines', 'Alexa device and routine configuration'],
+  ['whole-home-voice-control', 'Whole-home voice planning'],
 ];
 base.SERVICE_LINKS = SERVICE_NAV
   .map(([slug, label]) => `<a href="/${slug}" style="color:#cfe0ff">${label}</a>`)
@@ -289,6 +363,29 @@ base.SOCIAL_LINKS = `<div class="foot-social">
 // origin is declared later in this file, after the homepage is stamped, so the
 // schema derives its base URL straight from site.origin instead.
 const SCHEMA_ORIGIN = (site.origin || '').replace(/\/$/, '');
+// ONE address object, read by both the LocalBusiness schema and the visible
+// business identity block on the landing pages. The A2P 10DLC review wants a
+// single NAP across the site, the GBP and the brand registration, so the machine
+// readable copy and the human readable copy are built from the same source and
+// cannot drift. Change it here and both move together.
+const BUSINESS_ADDRESS = {
+  streetAddress: '1509 N State Rd 7, Suite G',
+  addressLocality: 'Margate',
+  addressRegion: 'FL',
+  postalCode: '33063',
+  addressCountry: 'US',
+};
+const BUSINESS_LEGAL_NAME = 'SimpleSafe Technologies LLC';
+// Square brand lockup. Google reads Organization/LocalBusiness `logo` when it
+// builds the business entity, and Ads advertiser verification looks for the same
+// mark on the page, so the schema value and the visible block point at one file.
+const BUSINESS_LOGO = `${SCHEMA_ORIGIN}/images/logo-mark.png`;
+// Service level areaServed used to claim the whole state. Infinity serves the
+// cities in cities.json, so the service and concept schema now say exactly that.
+// The LocalBusiness city list is built separately and is already correct.
+const SERVED_CITIES = cfg.cities.map((c) => ({
+  '@type': 'City', name: c.city, containedInPlace: { '@type': 'State', name: 'Florida' },
+}));
 const SAME_AS = [
   'https://www.facebook.com/profile.php?id=61590996226258',
   'https://www.instagram.com/infinitysmartliving/',
@@ -323,20 +420,14 @@ base.BUSINESS_SCHEMA = JSON.stringify({
   '@type': 'LocalBusiness',
   '@id': `${SCHEMA_ORIGIN}/#business`,
   name: 'Infinity Smart Living',
-  legalName: 'SimpleSafe Technologies LLC',
+  legalName: BUSINESS_LEGAL_NAME,
   url: `${SCHEMA_ORIGIN}/`,
   image: `${SCHEMA_ORIGIN}/favicon-navy-192.png`,
+  logo: BUSINESS_LOGO,
   telephone: site.phoneHref,
   email: site.email,
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: '1509 N State Rd 7, Suite G',
-    addressLocality: 'Margate',
-    addressRegion: 'FL',
-    postalCode: '33063',
-    addressCountry: 'US',
-  },
-  description: 'Full service smart home automation company in South Florida. Infinity consults, designs, prices, and sells the project, and a licensed local electrician under contract performs the regulated electrical work.',
+  address: { '@type': 'PostalAddress', ...BUSINESS_ADDRESS },
+  description: 'Smart-home technology consultation, candidate product recommendations, and non-regulated device and app configuration for South Florida homes. Infinity Smart Living does not offer or contract for regulated work.',
   areaServed: orderedCities.map((name) => ({
     '@type': 'City',
     name,
@@ -354,7 +445,7 @@ base.BUSINESS_SCHEMA = JSON.stringify({
   },
   knowsAbout: [
     'smart home automation',
-    'smart home installation',
+    'smart home technology planning',
     'smart lighting',
     'smart thermostats',
     'voice control',
@@ -459,11 +550,16 @@ const FORM_CONFIG = {
   // them. home/city sent no lead_source at all before, so those two are new.
   home:      { leadSource: 'homepage consultation form', googleAdsLead: true,  showCalendar: true,  legacy: 'page' },
   city:      { leadSource: 'city consultation form',     googleAdsLead: true,  showCalendar: true,  legacy: 'page' },
-  floorPlan: { leadSource: 'floor plan squeeze page',    googleAdsLead: true,  showCalendar: true,  legacy: 'page_url' },
+  floorPlan: { leadSource: 'concept squeeze page',    googleAdsLead: true,  showCalendar: true,  legacy: 'page_url' },
   // The guide is a content download, not a paid consult lead: no Google Ads
   // conversion, no calendar, no calendar_view. It keeps its PDF unlock.
   guide:     { leadSource: 'guide download page',        googleAdsLead: false, showCalendar: false, legacy: 'page_url' },
 };
+
+// Interim Ship 4A safety switch. Keep the calendar loader and booking-intent
+// plumbing in this source for Ship 4B, but do not invoke it until the external
+// GHL calendar language and consent flow have been corrected and approved.
+const CALENDAR_EMBED_ENABLED = false;
 
 const formModule = (key) => {
   const c = FORM_CONFIG[key];
@@ -521,7 +617,7 @@ const formModule = (key) => {
     try { localStorage.setItem('isl_booking_intent', JSON.stringify({ submission_id: submissionId, created_at: Date.now() })); } catch (e) {}
   }` : '';
 
-  const calendarCall = c.showCalendar ? `
+  const calendarCall = c.showCalendar && CALENDAR_EMBED_ENABLED ? `
     loadBookingCalendar(${JSON.stringify(site.bookUrl)}, submissionId);` : '';
 
   // Legacy fields, kept so existing GHL mappings do not break. `page` is what
@@ -590,6 +686,8 @@ ${calendarFn}
     function a(k){ return attr[k] || params.get(k) || ''; }
 
     var now = new Date().toISOString();
+    var serviceConsent = isChecked('consentService');
+    var marketingConsent = isChecked('consentMarketing');
     var payload = {
       lead_source: LEAD_SOURCE,
       submission_id: submissionId,
@@ -604,17 +702,17 @@ ${calendarFn}
       landing_url: session('isl_landing_url') || location.href,
       referrer: session('isl_referrer'),
       test_traffic: session('isl_test_traffic') === '1',
-      consent_service: isChecked('consentService'),
-      consent_marketing: isChecked('consentMarketing'),
+      consent_service: serviceConsent,
+      consent_marketing: marketingConsent,
       // Timestamps are per checkbox and only exist when that box was ticked. An
       // unticked box must not carry a time that looks like evidence of consent.
-      consent_service_timestamp: isChecked('consentService') ? now : '',
-      consent_marketing_timestamp: isChecked('consentMarketing') ? now : '',
-      consent_service_text: consentText('consentService'),
-      consent_marketing_text: consentText('consentMarketing'),
+      consent_service_timestamp: serviceConsent ? now : '',
+      consent_marketing_timestamp: marketingConsent ? now : '',
+      consent_service_text: serviceConsent ? consentText('consentService') : '',
+      consent_marketing_text: marketingConsent ? consentText('consentMarketing') : '',
       // Legacy single timestamp, still mapped in GHL. Kept alongside the per
       // checkbox ones rather than replaced.
-      consent_timestamp: now
+      consent_timestamp: serviceConsent || marketingConsent ? now : ''
     };
     ATTR_KEYS.forEach(function(k){ payload[k] = a(k); });
     // Identity fields are sent only when the page actually has that input, so the
@@ -660,8 +758,71 @@ ${adsConversion}
     if (fields) fields.style.display = 'none';
     var success = el('formSuccess');
     if (success) success.classList.add('show');
+    // Marks the card as done so the guided jump stops trying to put the caret in
+    // fields that are now display:none.
+    var doneCard = document.getElementById('getPlan');
+    if (doneCard) doneCard.dataset.submitted = '1';
 ${calendarCall}
   });
+
+  // --- guided jump: CTA -> the form itself ---------------------------------
+  // Every "Get My Free Concept" button points at #book, which is the hero
+  // section. On desktop that is right: the hero is a two column grid and the form
+  // is already on screen in the right column. Under 960px the grid stacks, so the
+  // same jump lands the visitor on the headline with the form still a scroll away,
+  // which is the one place this funnel leaks on a phone. Below that width the jump
+  // is redirected to the form card and the caret goes in the first empty field.
+  // The markup keeps href="#book", so with JS off the anchor still works.
+  (function () {
+    var card = document.getElementById('getPlan');
+    if (!card) return;
+    var mqReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var isNarrow = function () { return window.matchMedia && window.matchMedia('(max-width: 960px)').matches; };
+
+    function firstEmpty() {
+      var fields = card.querySelectorAll('#formFields input:not([type="checkbox"]):not([type="hidden"]), #formFields select');
+      for (var i = 0; i < fields.length; i++) { if (!fields[i].value) return fields[i]; }
+      return fields[0] || null;
+    }
+
+    function guide(focus) {
+      try { card.scrollIntoView({ behavior: mqReduce ? 'auto' : 'smooth', block: 'start' }); }
+      catch (e) { card.scrollIntoView(); }
+      // Already submitted: the card now holds the booking step, so scrolling to it
+      // is the whole job. Nothing to fill in and nothing to highlight.
+      if (card.dataset.submitted === '1' || !focus) return;
+      card.classList.add('is-targeted');
+      setTimeout(function () { card.classList.remove('is-targeted'); }, 1400);
+      // Focus lands after the smooth scroll settles: focusing mid animation makes
+      // the on screen keyboard open and fight the scroll on a phone.
+      setTimeout(function () {
+        var f = firstEmpty();
+        if (!f) return;
+        try { f.focus({ preventScroll: true }); } catch (e2) { f.focus(); }
+      }, mqReduce ? 0 : 520);
+    }
+
+    document.addEventListener('click', function (ev) {
+      // Leave modified and non primary clicks to the browser: on a narrow desktop
+      // window a cmd/ctrl click on the CTA should still open a tab, not scroll.
+      if (ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+      var a = ev.target.closest && ev.target.closest('a[href="#book"], a[href="#getPlan"], [data-form-jump]');
+      if (!a) return;
+      // #book on a wide screen already shows the form beside the copy: leave the
+      // native anchor alone. data-form-jump is the lander's own repeat CTA and is
+      // always meant for the form.
+      var always = a.hasAttribute('data-form-jump') || a.getAttribute('href') === '#getPlan';
+      if (!always && !isNarrow()) return;
+      ev.preventDefault();
+      guide(true);
+    });
+
+    // Arriving from another page's CTA (/#book, e.g. from /packages) lands on the
+    // hero with the same problem, so the same redirect runs once on load.
+    if (location.hash === '#book' && isNarrow()) {
+      setTimeout(function () { guide(false); }, 60);
+    }
+  })();
 })();
 </script>`;
 };
@@ -809,12 +970,12 @@ const POST_IMAGES = {
   'what-is-matter-smart-home': {
     hero: 'smart-dimmer-switches-led.webp', heroW: 800, heroH: 533,
     thumb: 'smart-dimmer-switches-led.webp', thumbW: 800, thumbH: 533,
-    alt: 'Smart dimmer switches with LED indicators installed by our team',
+    alt: 'Smart dimmer switches with LED indicators in a finished room',
   },
   'smart-home-ecosystem': {
     hero: 'smart-home-lounge-led-lighting.webp', heroW: 1600, heroH: 1213,
     thumb: 'smart-home-lounge-led-lighting-thumb.jpg', thumbW: 800, thumbH: 606,
-    alt: 'Lounge with smart LED lighting installed by the Infinity Smart Living team',
+    alt: 'Lounge with smart LED lighting and Alexa voice control',
   },
   'alexa-for-seniors': {
     hero: 'card-speaker.jpg', heroW: 800, heroH: 532,
@@ -824,17 +985,17 @@ const POST_IMAGES = {
   'smart-lighting-installation-room-by-room': {
     hero: 'led-accent-lighting-install.webp', heroW: 1600, heroH: 1067,
     thumb: 'led-accent-lighting-install-thumb.jpg', thumbW: 800, thumbH: 533,
-    alt: 'LED accent lighting installed along a ceiling by our team',
+    alt: 'LED accent lighting along a finished ceiling detail',
   },
   'how-to-set-up-a-smart-home': {
     hero: 'smart-tv-entertainment-setup.webp', heroW: 1600, heroH: 1067,
     thumb: 'smart-tv-entertainment-setup-thumb.jpg', thumbW: 800, thumbH: 533,
-    alt: 'Smart TV setup installed by the Infinity Smart Living team',
+    alt: 'Smart TV and Alexa entertainment controls in a finished room',
   },
   'home-automation-what-to-automate-first': {
     hero: 'smart-light-switch-install.webp', heroW: 800, heroH: 533,
     thumb: 'smart-light-switch-install.webp', thumbW: 800, thumbH: 533,
-    alt: 'Smart light switch installed by our team',
+    alt: 'Smart light switch with status indicator',
   },
 };
 
@@ -898,12 +1059,12 @@ const blogHeader = `<header id="top">
   <div class="wrap nav">
     <a href="/" aria-label="infinity smart living home"><img class="logo" src="${logo}" alt="infinity smart living"></a>
     <nav class="nav-links" aria-label="Primary">
-      <a href="/guarantee">Guarantee</a>
+      <a href="/guarantee">Support</a>
       <a href="/blog">Blog</a>
     </nav>
     <div class="nav-cta">
       <a href="tel:${site.phoneHref}" class="nav-call" aria-label="Call ${site.phone}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="nav-call-num">${site.phone}</span><span class="nav-call-lbl">Call</span></a>
-      <a href="/#book" class="btn btn-primary">Get My Free Floor Plan</a>
+      <a href="/free-floor-plan" class="btn btn-primary">Get My Free Concept</a>
     </div>
   </div>
 </header>`;
@@ -912,8 +1073,8 @@ const blogFooter = `<footer>
   <div class="wrap">
     <div class="foot-grid">
       <div>
-        <img class="flogo" src="/images/logo-light.png" alt="infinity smart living">
-        <p>Professional smart home installation and support for real homes across South Florida.</p>
+        <img class="fmark" src="/images/logo-mark-light.webp" alt="Infinity Smart Living" width="256" height="256" loading="lazy" decoding="async">
+        <p>Smart-home technology planning and non-regulated Alexa configuration for South Florida homes.</p>
         ${base.SOCIAL_LINKS}
       </div>
       <div>
@@ -921,7 +1082,7 @@ const blogFooter = `<footer>
         <ul>
           <li><a href="/">Home</a></li>
           <li><a href="/blog">Blog</a></li>
-          <li><a href="/guarantee">Guarantee</a></li>
+          <li><a href="/guarantee">Support</a></li>
         </ul>
       </div>
       <div>
@@ -935,11 +1096,11 @@ const blogFooter = `<footer>
       <div>
         <h4>Get started</h4>
         <ul>
-          <li><a href="/#book">Get My Free Floor Plan</a></li>
+          <li><a href="/free-floor-plan">Get My Free Concept</a></li>
         </ul>
       </div>
     </div>
-    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom floor plan · No obligation · <a href="/guarantee" style="color:inherit">30-Day Satisfaction Guarantee</a></div>
+    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free room-by-room smart-home concept · No purchase required · Yours to keep</div>
     <div class="foot-areas" style="padding:22px 0;margin-top:8px;border-top:1px solid rgba(255,255,255,.1)">
       <h4 style="margin-bottom:12px">Smart home services</h4>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">${base.SERVICE_LINKS}</p>
@@ -949,7 +1110,6 @@ const blogFooter = `<footer>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0">${base.CITY_LINKS}</p>
     </div>
     <div class="foot-bot">
-      <!-- PROOF SLOT: electrician license number goes on the DBA line below once confirmed. -->
       <!-- A2P 10DLC: the DBA sentence is required on the page as its own plain statement. Do not reword or fold it back into the copyright line. -->
       <span>Infinity Smart Living is a registered DBA of SimpleSafe Technologies LLC.<br>© 2026 SimpleSafe Technologies LLC. All rights reserved.</span>
       <span><a href="/privacy" style="color:inherit">Privacy</a> · <a href="/terms" style="color:inherit">Terms</a></span>
@@ -961,12 +1121,12 @@ const blogFooter = `<footer>
 // service links, twenty city links, blog and social: on a page bought by the click
 // every one of those is an exit that the click already paid for. What stays is
 // what has to stay: who we are, how to reach us, the A2P DBA sentence, the policy
-// links, and the guarantee.
+// links, and the support page.
 const minimalFooterHtml = `<footer class="foot-min">
   <div class="wrap">
     <img class="flogo" src="/images/logo-light.png" alt="infinity smart living">
     <p class="foot-min-contact"><a href="tel:${site.phoneHref}">${site.phone}</a></p>
-    <p class="foot-min-guarantee"><a href="/guarantee">30-Day Satisfaction Guarantee</a></p>
+    <p class="foot-min-guarantee"><a href="/guarantee">Support</a></p>
     <div class="foot-bot">
       <!-- A2P 10DLC: the DBA sentence is required on the page as its own plain statement. Do not reword or fold it back into the copyright line. -->
       <span>Infinity Smart Living is a registered DBA of SimpleSafe Technologies LLC.<br>© 2026 SimpleSafe Technologies LLC. All rights reserved.</span>
@@ -1031,7 +1191,7 @@ ${blogFooter}
 <!-- MOBILE STICKY CALL BAR (mobile viewports only) -->
 <div class="mobile-cta-bar" aria-label="Quick contact">
   <a href="tel:${site.phoneHref}" class="mcb-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call now</a>
-  <a href="/#book" class="mcb-book">Free floor plan</a>
+  <a href="/free-floor-plan" class="mcb-book">Free smart-home concept</a>
 </div>
 ${trackingEvents}
 </body>
@@ -1043,19 +1203,12 @@ const posts = [...(JSON.parse(readFileSync('./blog.json', 'utf8')).posts || [])]
 
 mkdirSync('blog', { recursive: true });
 
-// End of post CTA (SEO audit, Aug 2026). Every post now ends with the same free
-// floor plan block pointing straight at the booking calendar, so the two posts
-// carrying the organic traffic finally have somewhere to send it. This replaced
-// an earlier split that gave national-intent posts a guide-first CTA; the guide
-// survives as the secondary line for everyone. Restore the split by branching
-// here on slug if the unified CTA underperforms on the national posts.
-// The leadconnectorhq.com href is what the delegated listener in trackingEvents
-// keys on to fire booking_click, so this CTA is measured without extra markup.
-const BOOKING_URL = 'https://api.leadconnectorhq.com/widget/bookings/infinitysmartliving';
+// Every first-step blog CTA stays on the site and enters through the consented
+// lead form. The external calendar remains disconnected during Ship 4A.
 const ctaBox = () => `<div class="cta-box">
-  <h3>Get a free smart home floor plan</h3>
-  <p>On a free virtual consultation we map your Amazon Alexa smart home room by room, so you see the whole plan and an honest price before you commit to anything.</p>
-  <a href="${BOOKING_URL}" class="btn btn-primary btn-lg">Book my free virtual consultation</a>
+  <h3>Get a free room-by-room smart-home concept</h3>
+  <p>Tell us your goals and receive an illustrative technology concept with candidate products and Alexa routine ideas. No purchase is required, and the concept is yours to keep.</p>
+  <a href="/free-floor-plan" class="btn btn-primary btn-lg">Request my free smart-home concept</a>
   <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
   <p style="margin:1.1rem 0 0;font-size:.97rem"><a href="/free-guide" style="color:#fff;text-decoration:underline;text-underline-offset:2px;font-weight:600">Prefer to start on your own? Get the free Alexa Room and Routine Starter Guide.</a></p>
 </div>`;
@@ -1138,7 +1291,7 @@ const blogIndexBody = `<main>
     <div class="section-head center">
       <span class="eyebrow" style="justify-content:center">Smart home guides</span>
       <h1 style="font-size:clamp(2.1rem,4.4vw,3rem);font-weight:800;margin:.5rem 0 .6rem">Smart home advice for South Florida homeowners</h1>
-      <p style="color:var(--slate);max-width:60ch;margin:0 auto">Free, practical guides on smart home automation, lighting, climate, and getting set up the right way. When you are ready, book a free consultation and we will map a smart home floor plan for your home.</p>
+      <p style="color:var(--slate);max-width:60ch;margin:0 auto">Free, practical guides on smart-home technology, lighting, climate, and Alexa configuration. When you are ready, request a free room-by-room smart-home concept.</p>
     </div>
     <div class="post-grid">
 ${cards}
@@ -1148,39 +1301,33 @@ ${cards}
 
 emit('blog.html', blogShell({
   title: 'Smart Home Blog & Guides | Infinity Smart Living',
-  description: 'Free smart home guides for South Florida: home automation, smart lighting, smart thermostats, voice control, costs, and how to choose a local installer.',
+  description: 'Free smart-home guides for South Florida: Alexa planning, smart lighting, thermostat education, voice control, product costs, and contractor-selection tips.',
   canonical: 'blog',
   body: blogIndexBody,
 }));
 pages.push('blog.html');
 console.log('✓ blog.html (index)');
 
-// --- guarantee page ---
-const guaranteeBody = `<main>
+// --- support page (legacy /guarantee URL retained for continuity) ---
+const supportBody = `<main>
 <section class="post-hero" style="background:linear-gradient(135deg,#06203f 0%,#0a4f8c 55%,#00B2FC 100%)">
   <div class="pwrap">
-    <span class="post-cat">Our promise</span>
-    <h1>The 30-Day Satisfaction Guarantee</h1>
-    <p class="post-meta">A free smart home floor plan before you spend a dollar, and 30 days to be sure after your install.</p>
+    <span class="post-cat">Support</span>
+    <h1>How to get help</h1>
+    <p class="post-meta">Start with the business responsible for the product or service involved.</p>
   </div>
 </section>
 <article class="post-body">
-<p>Book a free consultation and we design your smart home floor plan, room by room, for your exact home. You see the full floor plan and your project price before you decide. Like it and you move forward. Don't like it and you keep the floor plan and owe nothing.</p>
-<p>After your installation, live with your system for 30 days. If anything is not right, tell us and we will make it right with adjustments, device swaps, and rework at no charge. If we cannot make it right, we will refund you as set out in your <a href="/terms">project agreement</a>.</p>
-<!-- PROOF SLOT: named customer quote about the guarantee being honored (name + city) goes here. Reserve for real reviews. -->
-<div class="cta-box">
-  <h3>Book your free smart home consultation</h3>
-  <p>See your free Amazon Alexa smart home floor plan and your exact price before you spend a dollar. Serving homeowners across Broward County, Boca Raton, Delray Beach, and Boynton Beach.</p>
-  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
-  <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
-</div>
+<p>Need help with a product purchased directly from Infinity or an Infinity configuration service? Contact Infinity Smart Living at <a href="mailto:${site.email}">${site.email}</a> or <a href="tel:${site.phoneHref}">${site.phone}</a>.</p>
+<p>We will help identify whether your request concerns an Infinity product or configuration, a manufacturer’s warranty, or work governed by a separately hired contractor’s agreement.</p>
+<p>Infinity does not warrant or administer work performed under a separate contractor agreement. Contact that contractor directly about its work and warranty.</p>
 </article>
 </main>`;
 emit('guarantee.html', blogShell({
-  title: 'The 30-Day Satisfaction Guarantee | Infinity Smart Living',
-  description: 'A free Amazon Alexa smart home floor plan, mapped room by room, plus a 30-Day Satisfaction Guarantee after your install. Serving South Florida.',
+  title: 'Support | Infinity Smart Living',
+  description: 'Contact Infinity Smart Living for help identifying whether a request concerns an Infinity product or configuration, a manufacturer, or a separately hired contractor.',
   canonical: 'guarantee',
-  body: guaranteeBody,
+  body: supportBody,
 }));
 pages.push('guarantee.html');
 console.log('✓ guarantee.html');
@@ -1190,7 +1337,7 @@ console.log('✓ guarantee.html');
 // carry the local intent, these carry the service intent, and they link to each
 // other. Each page ships Service + FAQPage schema in one @graph.
 // Pricing stays off the page by design; the "what it costs" section explains
-// that the number arrives with the free floor plan instead.
+// that the number arrives with the free concept instead.
 const CORE_CITY_LINKS = ['Coral Springs', 'Boca Raton', 'Parkland', 'Pompano Beach', 'Coconut Creek', 'Deerfield Beach']
   .map((c) => `<a href="/${slugify(c)}">${c}</a>`);
 const servingLine = (what) => `<p class="serving">We plan and install ${what} across South Florida, including ${CORE_CITY_LINKS.slice(0, -1).join(', ')}, and ${CORE_CITY_LINKS[CORE_CITY_LINKS.length - 1]}.</p>`;
@@ -1214,16 +1361,16 @@ const SERVICES = [
   {
     slug: 'smart-lighting-installation',
     cat: 'Smart lighting',
-    h1: 'Smart Lighting Installation',
-    title: 'Smart Lighting Installation in South Florida | Infinity Smart Living',
-    description: 'Smart lighting installation in South Florida: switches wired in, rooms grouped the way you use them, Alexa control the whole house gets. Free floor plan first.',
-    serviceType: 'smart lighting installation',
+    h1: 'Smart Lighting Planning',
+    title: 'Smart Lighting Planning in South Florida | Infinity Smart Living',
+    description: 'Smart lighting planning in South Florida: candidate compatible products, rooms grouped the way you use them, and Alexa configuration. Free concept first.',
+    serviceType: 'smart lighting planning and Alexa configuration',
     lead: 'Lighting is where nearly every smart home starts, and it is also where most of them go wrong. Here is how we plan it so it still works a year later.',
-    body: `<p>Smart lighting sounds simple until you own it. Most people buy a few colour bulbs, discover that the wall switch now has to stay on permanently or nothing responds, and quietly go back to using their hands. That is not a failure of the technology. It is a planning problem, and it is the reason we draw a floor plan before anyone buys hardware.</p>
+    body: `<p>Smart lighting sounds simple until you own it. Most people buy a few colour bulbs, discover that the wall switch now has to stay on permanently or nothing responds, and quietly go back to using their hands. That is not a failure of the technology. It is a planning problem, and it is the reason we draw a concept before anyone buys hardware.</p>
 
 <h2>Switches or bulbs, and why it matters</h2>
 <p>This is the decision that shapes everything else. A smart bulb puts the intelligence in the light itself, which is cheap to start and fine for a lamp in the corner. The catch is the wall switch: cut the power at the wall and the bulb is just a bulb, so every person in the house has to learn not to touch it.</p>
-<p>A smart switch puts the intelligence in the wall instead. The switch still works exactly like a switch for anyone who walks in and reaches for it, and it also answers to Alexa. Guests, kids, and anyone who is not interested in your smart home can use the room normally. For any ceiling fixture that people actually switch on and off, we specify switches almost every time.</p>
+<p>A smart switch puts the intelligence in the wall instead. The switch still works exactly like a switch for anyone who walks in and reaches for it, and it also answers to Alexa. Guests, kids, and anyone who is not interested in your smart home can use the room normally. For any ceiling fixture that people actually switch on and off, we suggest considering switches almost every time.</p>
 <p>Bulbs still earn their place. Lamps, accent fixtures, anything you want in a colour, and anything on a plug are all good candidates. A real plan usually ends up mixed, and the mix is the point.</p>
 
 ${fig('smart-light-switch-install.webp', 'A smart light switch being wired into a wall box during an install', 800, 533, 'Switches go in the wall, so the room still works normally for everyone who lives in it.')}
@@ -1234,22 +1381,22 @@ ${fig('smart-light-switch-install.webp', 'A smart light switch being wired into 
 
 <h2>Grouping and dimming</h2>
 <p>A light you have to name individually is a light you will stop using by voice. The work that makes lighting feel effortless is grouping: the four cans over the island, the two lamps and the floor light in the living room, the whole back patio, each answering to one plain name that the family agreed on.</p>
-<p>Dimming is the other half. Warm and low in the evening, bright and cool in the morning, and the same fixture doing both without anyone thinking about it. Not every fixture dims well, and LED retrofits in older Broward homes are particularly fussy about which dimmer they are paired with. We check that in the plan rather than discovering it on install day.</p>
+<p>Dimming is the other half. Warm and low in the evening, bright and cool in the morning, and the same fixture doing both without anyone thinking about it. Not every fixture dims well, and LED retrofits in older Broward homes are particularly fussy about which dimmer they are paired with. The concept notes candidate dimmer and bulb combinations to discuss, and the licensed contractor you hire confirms the final pairing.</p>
 
 ${fig('led-accent-lighting-install.webp', 'LED accent lighting installed along a ceiling detail in a finished room', 1600, 1067, 'Accent runs like this are planned with the room, not added afterwards.')}
 
 <h2>What the install actually involves</h2>
-<p>Switch work is electrical work. On your project the regulated electrical work is performed by the licensed electrician under contract, which is how we keep the wiring side properly accountable. Older homes here sometimes lack a neutral wire in the switch box, which narrows the switch choice, and that is exactly the sort of thing the floor plan flags before you have bought anything.</p>
+<p>Switch work is electrical work. Any regulated work requires a separate contractor that you select and hire directly. Older homes here sometimes lack a neutral wire in the switch box, which can narrow the switch choice. Whether that applies to your home is a determination for the licensed contractor you hire, not something the concept decides.</p>
 <p>Once the hardware is in, the setup work begins: rooms built in the Alexa app, names everyone can remember, dimming levels set, and routines wired to the moments that matter. We do not leave you with an app full of unnamed devices.</p>
 
 <h2>What it costs</h2>
 <p>We do not publish lighting prices, and there is a reason for it. A four room switch job in a newer Parkland house and a whole floor of dimmable accent work in an older Delray home are not the same project, and any number posted on a page would be wrong for one of you.</p>
-<p>Instead you get the number with your free smart home floor plan. We map the rooms, specify the switches and bulbs by fixture, and show you the full price before you commit to anything. Like the plan and you move forward. Do not like it and you keep the plan and owe nothing.</p>`,
+<p>Instead you receive your price in writing before you decide, confirmed in your written order. We map the rooms and specify the switches and bulbs by fixture. Like the plan and you move forward. Do not like it and you keep the plan and owe nothing.</p>`,
     faq: [
-      { q: 'Do smart lights still work if the internet goes down?', a: 'The switch on the wall keeps working, because it is still a switch. Voice control and app control need the network, so those pause until it comes back. This is a large part of why we specify switches over bulbs for ceiling fixtures.' },
+      { q: 'Do smart lights still work if the internet goes down?', a: 'The switch on the wall keeps working, because it is still a switch. Voice control and app control need the network, so those pause until it comes back. This is a large part of why we recommend considering switches over bulbs for ceiling fixtures.' },
       { q: 'Can I keep my existing light fixtures?', a: 'Usually yes. Smart switches control the fixture you already have, so the ceiling lights, the pendants, and the outdoor lights all stay where they are. Bulb swaps are only needed where you want colour or where a fixture cannot take a switch.' },
-      { q: 'Will the dimmer work with my LED bulbs?', a: 'Some pairings hum or flicker at low levels, and older homes here throw up that combination more often. We check the fixture and bulb pairing while drawing the floor plan so the dimmer we specify is one that behaves.' },
-      { q: 'Do I have to do the whole house at once?', a: 'No. Plenty of our lighting projects start with one or two rooms and grow later. The floor plan covers the whole home either way, so what you add next year still fits what we installed this year.' },
+      { q: 'Will the dimmer work with my LED bulbs?', a: 'Some pairings hum or flicker at low levels, and older homes here throw up that combination more often. The concept can list candidate dimmer and bulb combinations to consider. The licensed contractor you hire confirms the final pairing and the exact model before any regulated work.' },
+      { q: 'Do I have to do the whole house at once?', a: 'No. Plenty of our lighting projects start with one or two rooms and grow later. The concept covers the whole home either way, so what you add next year still fits what is already in place.' },
     ],
     next: 'Room by room detail on where lighting pays off first is in our <a href="/blog/smart-lighting-installation-room-by-room">room by room smart lighting guide</a>. Lighting is also the most common first step in <a href="/blog/home-automation-what-to-automate-first">what is actually worth automating first</a>.',
     serving: 'smart lighting',
@@ -1259,13 +1406,13 @@ ${fig('led-accent-lighting-install.webp', 'LED accent lighting installed along a
     cat: 'Alexa setup',
     h1: 'Alexa Smart Home Setup and Routines',
     title: 'Alexa Smart Home Setup and Routines | Infinity Smart Living',
-    description: 'Alexa setup done properly: rooms grouped, devices named so the family remembers them, routines built around your actual day. Free floor plan before anything.',
+    description: 'Alexa setup done properly: rooms grouped, devices named so the family remembers them, routines built around your actual day. Free concept before anything.',
     serviceType: 'Alexa smart home setup',
     lead: 'Anyone can plug in an Echo. The difference between a smart home that gets used and one that gets ignored is almost entirely in the setup.',
     body: `<p>Most homes we walk into already have Alexa in them somewhere. There is an Echo in the kitchen, a couple of plugs, maybe a thermostat, and a device list forty items long full of names like "Third Plug" that nobody can remember. Everything technically works. Nobody uses it.</p>
 <p>Good Alexa setup is not about owning more. It is about structure, naming, and a small number of routines that match how your household actually moves through the day.</p>
 
-${fig('echo-show-15-wall-panel.webp', 'A wall mounted Echo Show 15 running a whole home, installed by our team', 1600, 1067, 'One Echo Show 15 on the wall, running the whole home. Installed and set up by our team.')}
+${fig('echo-show-15-wall-panel.webp', 'A wall mounted Echo Show 15 running a whole home', 1600, 1067, 'One Echo Show 15 on the wall, running the whole home.')}
 
 <h2>Rooms are the foundation</h2>
 <p>Alexa needs to know which devices live where. Once a device is assigned to a room, "turn on the lights" said in that room does the obvious thing, without anyone naming a single device. This one piece of structure removes more daily friction than any gadget you can buy.</p>
@@ -1290,12 +1437,12 @@ ${fig('echo-show-15-wall-panel.webp', 'A wall mounted Echo Show 15 running a who
 
 <h2>What it costs</h2>
 <p>Setup work varies with how much is already in the house and how much of it needs undoing. A new build with nothing installed and a ten year old home with three generations of half finished smart devices are very different afternoons.</p>
-<p>So the price arrives with your free smart home floor plan, after we have seen the rooms and the device list. No numbers before then, because they would be guesses. You keep the plan whether or not you go ahead.</p>`,
+<p>So the price arrives with your free room-by-room smart-home concept, after we have seen the rooms and the device list. No numbers before then, because they would be guesses. You keep the plan whether or not you go ahead.</p>`,
     faq: [
       { q: 'Do I need to replace the Echo devices I already own?', a: 'Usually not. Older Echo speakers and shows work fine as voice points, and we build the room structure around what you already have. We only suggest a change where a device genuinely cannot do the job, like a screen you want on the wall.' },
       { q: 'How many routines does a normal home end up with?', a: 'Most households settle on four to six that run daily, plus a couple of seasonal ones. More than that and people stop remembering the phrases, which is why we would rather build fewer and make them right.' },
       { q: 'Can everyone in the house use it, or just me?', a: 'Everyone, and that is the standard we build to. Plain names, room based commands, and wall switches that still behave like switches mean guests and family who have no interest in any of this can walk in and use the room.' },
-      { q: 'Will you set up devices I bought myself?', a: 'Yes. Plenty of our setup work is on hardware the homeowner already has. The floor plan tells us what fits where, and anything missing gets specified alongside it.' },
+      { q: 'Will you set up devices I bought myself?', a: 'Yes. Plenty of our setup work is on hardware the homeowner already has. The concept tells us what fits where, and anything missing gets specified alongside it.' },
     ],
     next: 'New to all of this? Start with <a href="/blog/voice-control-whole-home-automation-guide">voice control and whole home automation</a>, or see <a href="/blog/alexa-for-seniors">Alexa for seniors</a> if you are setting a home up for a parent.',
     serving: 'Alexa setup and routines',
@@ -1303,10 +1450,10 @@ ${fig('echo-show-15-wall-panel.webp', 'A wall mounted Echo Show 15 running a who
   {
     slug: 'smart-lock-and-doorbell-installation',
     cat: 'Locks and doorbells',
-    h1: 'Smart Lock and Video Doorbell Installation',
-    title: 'Smart Lock and Video Doorbell Installation | Infinity Smart Living',
-    description: 'Smart lock and video doorbell installation across South Florida. See the door from anywhere, lock up from bed, hand out codes not keys. Free floor plan first.',
-    serviceType: 'smart lock and video doorbell installation',
+    h1: 'Smart Entry Product Planning',
+    title: 'Smart Lock and Video Doorbell Planning | Infinity Smart Living',
+    description: 'Smart lock and video doorbell product planning across South Florida. See the door from anywhere, lock up from bed, hand out codes not keys. Free concept first.',
+    serviceType: 'smart entry product planning',
     lead: 'The two devices people reach for most on an ordinary day: the one that lets you stop hunting for keys, and the one that tells you who is standing outside.',
     body: `<p>Locks and doorbells are the most used smart devices in most homes, and it has very little to do with technology. It is that both of them remove a small daily annoyance you have stopped noticing: digging for keys with an armful of shopping, and walking to the door to find out it was a delivery.</p>
 
@@ -1318,7 +1465,7 @@ ${fig('blog-best-smart-locks.jpg', 'A smart deadbolt installed on a front door',
 
 <h2>Doors are not all the same</h2>
 <p>This is the part that catches people out. Deadbolt backset, door thickness, whether the door is metal or solid wood, and how well the door sits in its frame all decide which locks will actually work on your house. A door that needs a shoulder to close is a door where a motorised bolt will jam.</p>
-<p>South Florida adds humidity and swelling to the list, particularly on older wooden doors. We check the door itself while drawing the plan, because the wrong lock on a slightly warped door is a support call every week.</p>
+<p>South Florida adds humidity and swelling to the list, particularly on older wooden doors. Door condition matters, because the wrong lock on a slightly warped door is a support call every week. Whether a given lock suits your door is for the contractor you hire to determine.</p>
 
 <h2>Video doorbells and what they are actually for</h2>
 <p>A video doorbell answers one question from anywhere: who is at my door. Talk to the delivery driver and tell them where to leave the box. Tell the person selling something that you are not home without opening the door. See that your kid got in from school. Watch the dog walker arrive on time.</p>
@@ -1335,11 +1482,11 @@ ${fig('blog-best-video-doorbells.jpg', 'A video doorbell mounted beside a front 
 
 <h2>What it costs</h2>
 <p>Price depends on the door, the number of entries, and whether the doorbell has usable wiring behind it. One front door on a modern build and three entries on a 1950s Oakland Park house are different jobs.</p>
-<p>You get the number on your free smart home floor plan, after we have looked at the doors. Nothing to pay to find out, and the plan is yours to keep either way.</p>`,
+<p>You get the number on your free room-by-room smart-home concept, after we have looked at the doors. Nothing to pay to find out, and the plan is yours to keep either way.</p>`,
     faq: [
-      { q: 'Can I still use a normal key?', a: 'Yes. The smart deadbolts we install keep a standard key cylinder, so a key works exactly as it does now. The codes, the app, and the voice control are additions rather than replacements.' },
+      { q: 'Can I still use a normal key?', a: 'Yes. The smart deadbolts we recommend keep a standard key cylinder, so a key works exactly as it does now. The codes, the app, and the voice control are additions rather than replacements.' },
       { q: 'What happens to a smart lock if the batteries die?', a: 'They give you weeks of warnings first, in the app and on the keypad. If they do run flat, your key still opens the door, and most models also take a jump from a battery pack at the keypad.' },
-      { q: 'Does a video doorbell need existing doorbell wiring?', a: 'A wired one does, and we check the transformer behind your chime is up to the job before specifying it. If there is no usable wiring, a battery model works and we will say so in the plan rather than quoting you for wiring that is not there.' },
+      { q: 'Does a video doorbell need existing doorbell wiring?', a: 'A wired one does. Whether your existing chime wiring and transformer suit a given model is an electrical determination for the licensed contractor you hire. Battery models avoid that question, and the concept can list both as candidates.' },
       { q: 'Can Alexa lock the door for me?', a: 'Yes, and it is one of the most used routines we build. Locking by voice or as part of a good night routine is straightforward. Unlocking by voice is deliberately restricted by the lock makers and normally asks for a spoken code.' },
     ],
     next: 'Our picks and how to choose between them are in <a href="/blog/best-smart-locks">the best smart locks</a> and <a href="/blog/best-video-doorbells">the best video doorbells</a>.',
@@ -1348,10 +1495,10 @@ ${fig('blog-best-video-doorbells.jpg', 'A video doorbell mounted beside a front 
   {
     slug: 'smart-thermostat-installation',
     cat: 'Smart thermostats',
-    h1: 'Smart Thermostat Installation',
-    title: 'Smart Thermostat Installation in South Florida | Infinity Smart Living',
-    description: 'Smart thermostat installation for South Florida homes, where the AC runs most of the year. Set up around humidity, real schedules, Alexa. Free floor plan first.',
-    serviceType: 'smart thermostat installation',
+    h1: 'Smart Thermostat Planning',
+    title: 'Smart Thermostat Planning in South Florida | Infinity Smart Living',
+    description: 'Smart thermostat product planning for South Florida homes, where the AC runs most of the year. Set up around humidity, real schedules, Alexa. Free concept first.',
+    serviceType: 'smart thermostat product planning',
     lead: 'In most of the country a smart thermostat is about heating. Here it is about an air conditioner that runs most of the year, and that changes how it should be set up.',
     body: `<p>A smart thermostat is the one upgrade in this climate that quietly pays attention while you are not. Your AC is the largest single load in a South Florida house for most of the year, and the thermostat is the only thing standing between it and running harder than it needs to.</p>
 
@@ -1363,7 +1510,7 @@ ${fig('blog-smart-thermostats-florida-cut-ac-bill.jpg', 'A smart thermostat moun
 
 <h2>The C wire question</h2>
 <p>This is the first thing worth checking and the most common reason an install stalls. Smart thermostats need constant power, which normally comes from a common wire, and older Broward and Palm Beach homes frequently do not have one run to the thermostat.</p>
-<p>The fixes range from an adapter at the air handler to running a new conductor. All of them are manageable. What is not manageable is finding out on the day, which is why we look behind the existing thermostat while we are drawing the plan.</p>
+<p>The fixes range from an adapter at the air handler to running a new conductor. All of them are manageable, and all of them are the licensed contractor's determination to make, not the concept's. Raising the question early is why it is worth asking a contractor before you buy a thermostat.</p>
 
 <h2>Schedules that match your actual week</h2>
 <p>Most thermostats are installed with a schedule nobody has ever edited. If the house is empty from eight to five, that is a large stretch every weekday where the AC could be working less. If somebody works from home three days a week, it is not, and pretending otherwise just makes people uncomfortable.</p>
@@ -1377,12 +1524,12 @@ ${fig('blog-smart-thermostats-florida-cut-ac-bill.jpg', 'A smart thermostat moun
 
 <h2>What it costs</h2>
 <p>It depends on whether you have a usable common wire, how many systems the house runs, and where the thermostats sit. A single zone swap with good wiring behind it and a two system house needing a conductor run are different projects.</p>
-<p>The price comes with your free smart home floor plan, once we know which of those you are. We would rather look first than post a number that turns out to be wrong for your house.</p>`,
+<p>The price comes with your free room-by-room smart-home concept, once we know which of those you are. We would rather look first than post a number that turns out to be wrong for your house.</p>`,
     faq: [
       { q: 'Will a smart thermostat really lower my electric bill here?', a: 'It helps most where the current schedule does not match the household, which is very common. The saving comes from the AC not running hard while nobody is home, and from run times that suit the humidity. We are careful not to promise a figure, because it depends entirely on how the house is used now.' },
-      { q: 'What is a C wire and do I have one?', a: 'It is the common wire that gives the thermostat constant power. Plenty of older homes here do not have one at the thermostat. We check behind your existing unit while drawing the plan, and if it is missing we specify the fix rather than discovering it mid install.' },
+      { q: 'What is a C wire and do I have one?', a: 'It is the common wire that gives the thermostat constant power. Plenty of older homes here do not have one at the thermostat. Whether your home has one, and what to do if it does not, is a determination for the licensed contractor you hire. The concept can list candidate thermostats that suit either case.' },
       { q: 'I have two air conditioning systems. Do I need two thermostats?', a: 'Yes, one per system, but they should be planned together. Two units running independent schedules tend to work against each other. Brought into one app and one set of routines, the upstairs and downstairs finally agree.' },
-      { q: 'Can I still just use the buttons on the wall?', a: 'Always. Every thermostat we install works by hand exactly like the one it replaced, so anyone in the house can walk up and change it without an app or a phrase.' },
+      { q: 'Can I still just use the buttons on the wall?', a: 'Always. Every thermostat we recommend works by hand exactly like the one it replaced, so anyone in the house can walk up and change it without an app or a phrase.' },
     ],
     next: 'The full South Florida picture, including what actually moves the number, is in <a href="/blog/smart-thermostats-florida-cut-ac-bill">smart thermostats in Florida</a>.',
     serving: 'smart thermostats',
@@ -1392,7 +1539,7 @@ ${fig('blog-smart-thermostats-florida-cut-ac-bill.jpg', 'A smart thermostat moun
     cat: 'Voice control',
     h1: 'Whole Home Voice Control',
     title: 'Whole Home Voice Control with Alexa | Infinity Smart Living',
-    description: 'Whole home voice control with Alexa: every room covered, plain names your family remembers, lights and climate answering where you stand. Free floor plan first.',
+    description: 'Whole home voice control with Alexa: every room covered, plain names your family remembers, lights and climate answering where you stand. Free concept first.',
     serviceType: 'whole home voice control',
     lead: 'Voice control stops being a novelty at the point where it works in every room, from where you are standing, without anyone thinking about which device is listening.',
     body: `<p>Whole home voice control means you can speak to your house from anywhere in it and have the right thing happen. Not one clever speaker in the kitchen. The whole house, with the rooms knowing which lights are theirs, and no one in the family needing a list of magic words.</p>
@@ -1422,16 +1569,16 @@ ${fig('motorized-smart-shade-install.webp', 'Motorised smart shades installed on
 
 <h2>The network underneath it</h2>
 <p>Voice control leans on wifi, and the far corners of a larger Weston or Parkland home are exactly where wifi runs out. A speaker on a weak signal is a speaker that answers late, which reads to everyone in the house as the system being unreliable.</p>
-<p>Coverage is part of the floor plan for that reason. We would rather flag a weak corner while it is still a drawing than have you discover it in the back bedroom afterwards.</p>
+<p>Coverage is part of the concept for that reason. We would rather flag a weak corner while it is still a drawing than have you discover it in the back bedroom afterwards.</p>
 
 <h2>What it costs</h2>
 <p>It comes down to how many rooms you want covered and what is in them already. A three room start and a full house with shades and media on voice are different projects, and both are perfectly reasonable places to begin.</p>
-<p>Your free smart home floor plan carries the price, room by room, before you commit to any of it. Like it and we go ahead. Do not and you still keep the plan.</p>`,
+<p>Your free room-by-room smart-home concept carries the price, room by room, before you commit to any of it. Like it and we go ahead. Do not and you still keep the plan.</p>`,
     faq: [
       { q: 'How many Echo devices does a whole house need?', a: 'One per room where you would actually speak, which for most homes lands between four and eight. It is worth counting the patio and the garage, since those are the ones people forget and then wish they had.' },
       { q: 'Do the speakers all hear me at once and answer over each other?', a: 'Alexa picks the device that heard you most clearly, so the nearest one answers. Where devices sit close together we set them up so the overlap does not cause the two room echo that annoys people.' },
-      { q: 'Can voice control work if my wifi is weak at the back of the house?', a: 'Not well, and pretending otherwise is how projects disappoint. Coverage gets checked as part of the floor plan, and if the far bedroom is short of signal we say so upfront and plan around it.' },
-      { q: 'Does everyone have to use voice, or do switches still work?', a: 'Switches always still work. We specify wall switches precisely so the house behaves normally for anyone who does not want to talk to it, with voice sitting on top as an option rather than a requirement.' },
+      { q: 'Can voice control work if my wifi is weak at the back of the house?', a: 'Not well, and pretending otherwise is how projects disappoint. Coverage gets checked as part of the concept, and if the far bedroom is short of signal we say so upfront and plan around it.' },
+      { q: 'Does everyone have to use voice, or do switches still work?', a: 'Switches always still work. We recommend wall switches precisely so the house behaves normally for anyone who does not want to talk to it, with voice sitting on top as an option rather than a requirement.' },
     ],
     next: 'A plain introduction to how this all fits together is in <a href="/blog/voice-control-whole-home-automation-guide">voice control and whole home automation</a>, and you can watch real routines running on our <a href="/routines">routines page</a>.',
     serving: 'whole home voice control',
@@ -1449,7 +1596,7 @@ for (const s of SERVICES) {
         name: s.h1,
         description: s.description,
         provider: { '@id': `${origin}/#business` },
-        areaServed: { '@type': 'State', name: 'Florida' },
+        areaServed: SERVED_CITIES,
         url: `${origin}/${s.slug}`,
       },
       {
@@ -1483,8 +1630,8 @@ ${servingLine(s.serving)}
 
 <div class="cta-box">
   <h3>See it planned for your home first</h3>
-  <p>Book a free virtual consultation and we build your smart home floor plan room by room, with your full price shown before you spend a dollar.</p>
-  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
+  <p>Book a free virtual consultation and we prepare your room-by-room smart-home concept, with Infinity's written price for its own products and technology services before you decide.</p>
+  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Concept</a>
 </div>
 </article>
 </main>`;
@@ -1508,7 +1655,7 @@ ${servingLine(s.serving)}
 // same generate_lead event on a 2xx. The guide PDF path is deliberately
 // non-guessable and /guides/ is disallowed in robots.txt.
 const GUIDE_PDF_PATH = '/guides/alexa-starter-guide-k7m2.pdf';
-const LANDING_CITIES = ['Coral Springs', 'Boca Raton', 'Parkland', 'Pompano Beach', 'Coconut Creek', 'Deerfield Beach', 'Other nearby'];
+const LANDING_CITIES = ['Coral Springs', 'Boca Raton', 'Parkland', 'Pompano Beach', 'Coconut Creek', 'Deerfield Beach', 'Fort Lauderdale', 'Margate', 'Other nearby'];
 
 const LANDING_CSS = `<style>
 .land-hero{position:relative;overflow:hidden;padding:52px 0 40px;color:#fff;text-align:center;background:linear-gradient(135deg,#06203f 0%,#0a4f8c 55%,#00B2FC 100%)}
@@ -1566,10 +1713,65 @@ const LANDING_CSS = `<style>
 .gproof-link a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
 .land-serving{margin:1.2rem 0 0;padding:1.05rem 1.15rem;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--slate);font-size:.97rem;line-height:1.7}
 .land-serving a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+/* SHIP 4A compliance blocks on the landers. Same two classes the templates use,
+   so the disclosure looks identical everywhere it appears. See COMPLIANCE TEXT. */
+.role-disclosure,.concept-legend{font-size:.78rem;line-height:1.55;text-align:left;border-radius:10px;padding:10px 12px;margin:0 0 12px}
+.role-disclosure{color:var(--ink);background:var(--surface);border:1px solid var(--line)}
+.concept-legend{color:var(--slate);background:#fff;border:1px solid var(--line)}
 .land-cta-repeat{margin:34px 0 0;text-align:center}
 .land-cta-repeat .btn{width:100%}
-@media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}.land-fig-lead{margin-bottom:18px}}
+/* The landing card carries no .reveal class, so it is the one place the highlight
+   can be eased in without overriding the reveal transition. Scroll margin and the
+   highlight colour itself live in the templates, shared with home and city. */
+@media(prefers-reduced-motion:no-preference){.lead-card{transition:box-shadow .45s ease}}
+/* --- business identity block (Google Ads advertiser verification) ---
+   Same surface + line + radius as .land-serving and .land-rev above it, so it
+   reads as part of the page rather than a compliance strip bolted on the end.
+   The mark is the only place the square brand lockup appears at a size where it
+   is actually legible, which is the point: a reviewer checking who is behind the
+   ad should not have to hunt for it. */
+.biz-id{max-width:560px;margin:0 auto;padding:0 20px 38px}
+.biz-id-card{padding:1.6rem 1.35rem;border-radius:16px;background:var(--surface);border:1px solid var(--line);text-align:center}
+.biz-id-mark{width:88px;height:88px;margin:0 auto .95rem;display:block}
+.biz-id p,.biz-id address{margin:0;font-style:normal;color:var(--slate);font-size:.92rem;line-height:1.65}
+.biz-id-name{font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:var(--ink);letter-spacing:-.01em}
+.biz-id-legal{margin-top:.3rem;font-size:.86rem}
+.biz-id-addr{margin-top:.75rem}
+.biz-id-contact{margin-top:.35rem}
+.biz-id-contact a{color:var(--cyan-deep);font-weight:600}
+.biz-id-hours{margin-top:.35rem}
+@media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}.land-fig-lead{margin-bottom:18px}.biz-id{padding:0 16px 32px}.biz-id-card{padding:1.4rem 1.15rem}.biz-id-mark{width:80px;height:80px}}
 </style>`;
+
+// --- business identity block (landing pages) ---------------------------------
+// The paid landers are the pages a Google Ads reviewer actually opens, so the
+// business identity has to be legible ON the page, not only in the schema. Name,
+// legal name, address, phone and hours are all built from the same constants the
+// LocalBusiness schema uses, so the visible NAP and the machine readable NAP are
+// the same facts by construction. Nothing here is a claim or an offer: it is the
+// registered identity, which is what verification is checking for. It is not a
+// CTA either, so the single CTA per landing page rule still holds.
+const HOURS_LINE = (() => {
+  const h = OPENING_HOURS[0];
+  const days = h.dayOfWeek;
+  const hr = (t) => {
+    const [H] = t.split(':').map(Number);
+    return `${H % 12 || 12}${H < 12 ? 'am' : 'pm'}`;
+  };
+  return `${days[0]} to ${days[days.length - 1]}, ${hr(h.opens)} to ${hr(h.closes)}`;
+})();
+
+const businessIdentityBlock = `<aside class="biz-id" aria-labelledby="biz-id-name">
+  <div class="biz-id-card">
+    <img class="biz-id-mark" src="/images/logo-mark.webp" alt="Infinity Smart Living" width="256" height="256" loading="lazy" decoding="async">
+    <p class="biz-id-name" id="biz-id-name">Infinity Smart Living</p>
+    <!-- A2P 10DLC: same DBA sentence as the footer, word for word. Do not reword. -->
+    <p class="biz-id-legal">Infinity Smart Living is a registered DBA of ${BUSINESS_LEGAL_NAME}.</p>
+    <address class="biz-id-addr">${BUSINESS_ADDRESS.streetAddress}<br>${BUSINESS_ADDRESS.addressLocality}, ${BUSINESS_ADDRESS.addressRegion} ${BUSINESS_ADDRESS.postalCode}</address>
+    <p class="biz-id-contact"><a href="tel:${site.phoneHref}">${site.phone}</a> · <a href="mailto:${site.email}">${site.email}</a></p>
+    <p class="biz-id-hours">${HOURS_LINE}</p>
+  </div>
+</aside>`;
 
 const landingHeader = `<header id="top">
   <div class="wrap nav">
@@ -1631,17 +1833,26 @@ const LANDING_OG = {
   imageW: '1200',
   imageH: '630',
   twitterCard: 'summary_large_image',
-  imageAlt: 'A wall mounted Echo Show 15 running a whole home, installed by our team',
+  imageAlt: 'A wall mounted Echo Show 15 running a whole home',
 };
 
 const landingShell = ({ title, description, canonical, headExtra = '', jsonLd = '', minimalFooter = false, body }) => {
   const full = blogShell({
-    title, description, canonical, ogType: 'website', headExtra, jsonLd, body, ...LANDING_OG,
+    // The identity block rides with the body so it lands after </main> and before
+    // the footer on every landing page, without a second shell parameter.
+    title, description, canonical, ogType: 'website', headExtra, jsonLd,
+    body: `${body}\n${businessIdentityBlock}`, ...LANDING_OG,
   });
   // ORDER MATTERS: the whole footer is swapped first. The "Get started" strip below
   // edits the footer markup, and after that runs an exact blogFooter match fails.
   const shell = minimalFooter ? full.replace(blogFooter, minimalFooterHtml) : full;
   return shell.replace(blogHeader, landingHeader)
+  // The identity card already shows the square mark, large, a few rems above the
+  // footer. Showing it again in the footer stacks two copies of the same lockup,
+  // so landing page footers stay on the flat wordmark.
+  .replace(
+    '<img class="fmark" src="/images/logo-mark-light.webp" alt="Infinity Smart Living" width="256" height="256" loading="lazy" decoding="async">',
+    '<img class="flogo" src="/images/logo-light.png" alt="infinity smart living">')
   .replace('<!-- MOBILE STICKY CALL BAR (mobile viewports only) -->', '<!-- sticky call bar omitted: single CTA per landing page -->')
   .replace(/<div class="mobile-cta-bar"[\s\S]*?<\/div>\n/, '')
   // single CTA per page: the footer's "Get started" column would add a second one
@@ -1662,13 +1873,14 @@ const guideBody = `<main>
   <figure class="land-fig land-fig-lead land-fig-panel">
     <!-- LCP element: sits inside the first screen at 390px, so it loads eagerly at
          high priority. Do not add loading="lazy" here, it defers the largest paint. -->
-    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home, installed by our team" width="1600" height="1067" fetchpriority="high" decoding="async">
-    <figcaption>One Echo Show 15 on the wall, running the whole home. Installed and set up by our team.</figcaption>
+    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home" width="1600" height="1067" fetchpriority="high" decoding="async">
+    <figcaption>One Echo Show 15 on the wall, running the whole home.</figcaption>
   </figure>
   <div class="lead-card">
     <div id="formFields">
       <h3>Get the guide free</h3>
       <p class="sub">Tell us where to send it and the download opens right here.</p>
+      ${roleDisclosureHtml()}
       <form id="leadForm" method="POST">
           ${landingFields}
           <button type="submit" class="btn btn-primary btn-lg" style="width:100%">Send Me the Free Guide</button>
@@ -1680,7 +1892,7 @@ const guideBody = `<main>
       <h3>Your guide is ready</h3>
       <p>A copy is also on its way to your inbox.</p>
       <a href="${GUIDE_PDF_PATH}" class="btn btn-primary btn-lg" style="width:100%;margin-top:12px" download>Download the Guide</a>
-      <p style="margin-top:16px;font-size:.95rem">Want it planned for your exact home? <a href="/free-floor-plan" style="color:var(--cyan-deep);font-weight:600">Get a free custom floor plan</a>.</p>
+      <p style="margin-top:16px;font-size:.95rem">Want it planned for your exact home? <a href="/free-floor-plan" style="color:var(--cyan-deep);font-weight:600">Get a free room-by-room concept</a>.</p>
     </div>
   </div>
   <ul class="land-points">
@@ -1688,7 +1900,7 @@ const guideBody = `<main>
     <li>${CHECK_SVG}Simple naming tips the whole household will actually remember</li>
     <li>${CHECK_SVG}Starter routines for good morning, good night, and leaving home, ready to copy</li>
   </ul>
-  <div class="land-cross">Prefer it done for you? Get a free 20 minute virtual consult and a <a href="/free-floor-plan">free custom floor plan</a> for your exact home.</div>
+  <div class="land-cross">Prefer it planned for you? Get a free virtual consultation and a <a href="/free-floor-plan">free room-by-room smart-home concept</a> for your home.</div>
 </div>
 </main>`;
 
@@ -1709,28 +1921,30 @@ console.log('✓ free-guide.html');
 const floorPlanBody = `<main>
 <section class="land-hero">
   <div class="pwrap">
-    <span class="post-cat">Free virtual consultation + free floor plan</span>
-    <h1>A smart home floor plan for your exact home, free</h1>
-    <p class="sub">We are a home automation company serving South Florida. We map your exact home room by room and show your full price before you spend a dollar. It takes one quick 20 minute video call, and the plan is yours to keep.</p>
+    <span class="post-cat">Free virtual consultation + free concept</span>
+    <h1>A room-by-room smart-home concept for your exact home, free</h1>
+    <p class="sub">We are a home automation company serving South Florida. We sketch an illustrative concept for your home room by room. You receive your price in writing before you decide, confirmed in your written order. It takes one short video call, and the concept is yours to keep.</p>
   </div>
 </section>
 <div class="land-main">
-  <div class="lead-card">
+  <div class="lead-card" id="getPlan">
     <div id="formFields">
-      <h3>Get my free floor plan</h3>
-      <p class="sub">A few quick details and we will map your home room by room.</p>
+      <h3>Get my free room-by-room smart-home concept</h3>
+      <p class="sub">A few quick details and we will sketch a room-by-room concept for your home.</p>
+      ${roleDisclosureHtml()}
+      ${conceptLegendHtml()}
       <form id="leadForm" method="POST">
           ${landingFields}
-          <button type="submit" class="btn btn-primary btn-lg" style="width:100%">Get My Free Floor Plan</button>
+          <button type="submit" class="btn btn-primary btn-lg" style="width:100%">Get My Free Concept</button>
       </form>
       <!-- PROOF SLOT: one line trust stat under the form button (star rating + homes-done count). Reserve for showcase-home assets. -->
       <p class="land-note"><b>Bonus:</b> sign up today and the free Alexa Room and Routine Starter Guide comes with it.</p>
-      <p class="land-note">Free plan and price before you decide · No obligation · <a href="/guarantee" style="color:var(--cyan-deep);font-weight:600">30-Day Satisfaction Guarantee</a></p>
+      <p class="land-note">Free concept, yours to keep · No purchase required · <a href="/guarantee" style="color:var(--cyan-deep);font-weight:600">Support</a></p>
     </div>
     <div class="success" id="formSuccess">
       <div class="check">✓</div>
       <h3>Step 2 of 2: Choose your consultation time</h3>
-      <p>Your request is in. Pick a time below to lock in your free 20 minute virtual consult. Your free Alexa starter guide is on its way to your inbox too.</p>
+      <p>Your request is in. Pick a time below to lock in your free virtual consultation. Your free Alexa starter guide is on its way to your inbox too.</p>
       <!-- The calendar is injected here after a successful submit. It used to be an
            outbound link to the GHL booking page, which cost a click and sent the
            visitor off the site at the highest intent moment of the funnel. -->
@@ -1738,15 +1952,15 @@ const floorPlanBody = `<main>
     </div>
   </div>
   <ul class="land-points">
-    <li>${CHECK_SVG}Free plan and price before you decide</li>
-    <li>${CHECK_SVG}Licensed electrical work is performed by the licensed electrician under contract on your project.</li>
+    <li>${CHECK_SVG}Your price in writing before you decide</li>
+    <li>${CHECK_SVG}Any regulated work requires a separate contractor that you select and hire directly.</li>
   </ul>
 <!--CRO_SECTIONS-->
   <!-- Proof photo, deliberately below the form and the checkmarks on this page.
        Well under the fold, so it stays lazy: unlike /free-guide this is not the LCP. -->
   <figure class="land-fig land-fig-panel">
-    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home, installed by our team" width="1600" height="1067" loading="lazy" decoding="async">
-    <figcaption>A whole home running from one wall panel, installed by our team. Your free floor plan maps what fits your rooms.</figcaption>
+    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home" width="1600" height="1067" loading="lazy" decoding="async">
+    <figcaption>A whole home running from one wall panel. Your free room-by-room concept sketches what could fit your rooms.</figcaption>
   </figure>
 </div>
 </main>`;
@@ -1757,7 +1971,7 @@ const floorPlanBody = `<main>
 const FLOOR_PLAN_FAQ = [
   {
     q: 'What does it cost?',
-    a: 'Nothing. The smart home consultation and the floor plan it produces are both free. The plan shows your complete project price before you decide, so you see the whole number first and there is nothing to work out later.',
+    a: 'Nothing. The smart home consultation and the concept it produces are both free. You receive your price in writing before you decide, confirmed in your written order.',
   },
   {
     q: 'Do I have to buy anything?',
@@ -1765,7 +1979,7 @@ const FLOOR_PLAN_FAQ = [
   },
   {
     q: 'Who does the electrical work?',
-    a: 'Regulated electrical work is performed by a licensed electrician under contract on the project.',
+    a: 'Any regulated work requires a separate contractor that you select and hire directly.',
   },
   {
     q: 'How long does installation take?',
@@ -1785,11 +1999,11 @@ const floorPlanJsonLd = JSON.stringify({
   '@graph': [
     {
       '@type': 'Service',
-      serviceType: 'smart home installation',
-      name: 'Free smart home floor plan and consultation',
-      description: 'A free room by room smart home floor plan for your home, with your complete project price shown before you decide.',
+      serviceType: 'smart home technology planning',
+      name: 'Free room-by-room smart-home concept and consultation',
+      description: 'A free room by room room-by-room smart-home concept for your home, with your price provided in writing before you decide and confirmed in your written order.',
       provider: { '@id': `${origin}/#business` },
-      areaServed: { '@type': 'State', name: 'Florida' },
+      areaServed: SERVED_CITIES,
       url: `${origin}/free-floor-plan`,
     },
     {
@@ -1818,15 +2032,15 @@ const floorPlanSections = `${googleProof()}
     <li>${CHECK_SVG}Lighting, climate and voice recommendations for each space</li>
     <li>${CHECK_SVG}Routine recommendations built around how your household actually runs</li>
     <li>${CHECK_SVG}Product specifications, so you know exactly what is going in</li>
-    <li>${CHECK_SVG}Your complete project price, before you decide anything</li>
+    <li>${CHECK_SVG}Your price in writing before you decide, confirmed in your written order</li>
   </ul>
 </section>
 <section class="land-sec">
   <h2>How smart home installation works with us</h2>
   <ol class="land-steps">
-    <li>Request your plan using the form above.</li>
-    <li>Choose a consultation time that suits you. The smart home consultation runs about 20 minutes by video.</li>
-    <li>Receive your plan and your full price in writing.</li>
+    <li>Request your concept using the form above.</li>
+    <li>Choose a consultation time that suits you. The consultation runs by video.</li>
+    <li>Receive your concept, and Infinity's written price for what Infinity itself offers.</li>
     <li>Decide. If it is a yes, we book the install; if it is not, the plan is still yours.</li>
   </ol>
   ${landingServingLine}
@@ -1836,14 +2050,14 @@ const floorPlanSections = `${googleProof()}
   ${floorPlanFaqHtml}
 </section>
 <div class="land-cta-repeat">
-  <a href="#leadForm" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
+  <a href="#getPlan" class="btn btn-primary btn-lg" data-form-jump>Get My Free Concept</a>
 </div>`;
 
 emit('free-floor-plan.html', landingShell({
   // Title serves "smart home installation" (18,100/mo, KD 47), the head term, while
   // leading with the offer so the ad headline and the page match.
-  title: 'Free Smart Home Floor Plan | Smart Home Installation FL',
-  description: 'Get a free smart home floor plan before you book smart home installation. We map your South Florida home room by room and show your complete project price.',
+  title: 'Free Room-by-Room Smart-Home Concept | Infinity Smart Living',
+  description: 'Get a free room-by-room smart-home concept before you book smart home installation. We map your South Florida home room by room and provide your price in writing before you decide.',
   canonical: 'free-floor-plan',
   jsonLd: floorPlanJsonLd,
   // Paid traffic only: no service links, no city links, no blog, no social.
@@ -1867,8 +2081,8 @@ const consultBookedBody = `<main>
 <div class="land-main">
   <ul class="land-points">
     <li>${CHECK_SVG}We confirm your time by text shortly.</li>
-    <li>${CHECK_SVG}We prep your floor plan questions before the call.</li>
-    <li>${CHECK_SVG}The call itself takes about 20 minutes.</li>
+    <li>${CHECK_SVG}We prep your room-by-room concept questions before the call.</li>
+
   </ul>
   <p class="land-note" style="text-align:center;margin-top:22px">Need to change your time? Call or text ${site.phone} and we will move it, no problem.</p>
 </div>
@@ -1876,7 +2090,7 @@ const consultBookedBody = `<main>
 
 emit('consult-booked.html', landingShell({
   title: 'You Are Booked | Infinity Smart Living',
-  description: 'Your free smart home consultation is booked. We confirm by text and the call takes about 20 minutes.',
+  description: 'Your free smart home consultation is booked. We confirm by text before the call.',
   canonical: 'consult-booked',
   body: consultBookedBody,
 })
@@ -1896,6 +2110,10 @@ emit('consult-booked.html', landingShell({
   // enough that a stale intent from an earlier visit cannot resurrect a booking.
   const recentIntent = intent && intent.submission_id && Number(intent.created_at) > Date.now() - 2*60*60*1000;
   const eventId = bookingId || (recentIntent ? intent.submission_id : '');
+  // SHIP 4A: the calendar is disconnected, so no booking can originate here.
+  // The guard stays explicit rather than relying on eventId being unreachable.
+  var CALENDAR_LIVE = false;
+  if (!CALENDAR_LIVE) return;
   if (!eventId) return;  // direct/bookmarked visits never fire a booking conversion
   const firedKey = 'isl_appt_fired:' + eventId;
   try { if (localStorage.getItem(firedKey) === '1') return; localStorage.setItem(firedKey, '1'); } catch (e) {}
@@ -1945,8 +2163,8 @@ ${routineSections}
 <article class="post-body" style="padding-top:0">
 <div class="cta-box">
   <h3>Want routines like these in your home?</h3>
-  <p>Book a free virtual consultation and your free smart home floor plan maps the routines that fit how you live.</p>
-  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Floor Plan</a>
+  <p>Book a free virtual consultation and your free room-by-room smart-home concept maps the routines that fit how you live.</p>
+  <a href="/#book" class="btn btn-primary btn-lg">Get My Free Concept</a>
   <a href="tel:${site.phoneHref}" class="btn btn-light btn-lg">Call ${site.phone}</a>
 </div>
 </article>
@@ -2020,8 +2238,8 @@ body.links-page{background:var(--surface);min-height:100vh}
   <img class="links-logo" src="${logo}" alt="Infinity Smart Living">
   <p class="links-tag">Your complete Amazon Alexa smart home. Serving Broward County and South Palm Beach.</p>
   <div class="links-stack">
-    <a class="link-btn primary" href="/${LINK_UTM}#book">Get My Free Floor Plan</a>
-    <a class="link-btn guarantee" href="/guarantee${LINK_UTM}">Free Floor Plan, No Obligation</a>
+    <a class="link-btn primary" href="/${LINK_UTM}#book">Get My Free Concept</a>
+    <a class="link-btn guarantee" href="/guarantee${LINK_UTM}">Free Concept, No Obligation</a>
     <a class="link-btn" href="/${LINK_UTM}">Visit Our Website</a>
     <a class="link-btn" href="tel:+17543454871">Call Us: (754) 345-4871</a>
     <a class="link-btn" href="/blog${LINK_UTM}">Smart Home Guides</a>
@@ -2119,18 +2337,18 @@ const llmsLink = (path, label, desc) =>
 
 const llmsTxt = `# Infinity Smart Living
 
-> Full service Amazon Alexa smart home company serving Broward County and South Palm Beach, Florida. Infinity consults on, designs, and sells the project, and a licensed local electrician under contract performs the regulated electrical work.
+> Amazon Alexa smart-home technology planning company serving Broward County and South Palm Beach, Florida. Infinity consults on, designs, and sells the project. Any regulated work requires a separate contractor that you select and hire directly.
 
 Infinity Smart Living is a registered DBA of SimpleSafe Technologies LLC. Every system we design is built on Amazon Alexa, so the guidance across this site assumes an Alexa household rather than a mixed platform one. Smart locks and video doorbells are covered as convenience features, for example seeing who is at the door or letting someone in without getting up.
 
-Every project starts with a free smart home floor plan: we walk the home room by room and map what goes where before any pricing conversation. Package pricing is not published on the site. Contact: (754) 345-4871, info@infinitysmartliving.com.
+Every project starts with a free room-by-room smart-home concept: we walk the home room by room and map what goes where before any pricing conversation. Package pricing is not published on the site. Contact: (754) 345-4871, info@infinitysmartliving.com.
 
 ## Main pages
 
-${llmsLink('', 'Home', 'What Infinity does, how the floor plan process works, and the main enquiry form.')}
-${llmsLink('free-floor-plan', 'Free smart home floor plan', 'Landing page for the free room by room floor plan offer.')}
+${llmsLink('', 'Home', 'What Infinity does, how the concept process works, and the main enquiry form.')}
+${llmsLink('free-floor-plan', 'Free room-by-room smart-home concept', 'Landing page for the free room-by-room smart-home concept offer.')}
 ${llmsLink('free-guide', 'Free Alexa starter guide', 'Landing page offering a downloadable Alexa starter guide.')}
-${llmsLink('guarantee', 'Satisfaction guarantee', 'The 30 day satisfaction guarantee and what it covers.')}
+${llmsLink('guarantee', 'Support', 'How to contact Infinity about a product or configuration it provided.')}
 ${llmsLink('blog', 'Smart home guides', 'Index of every published guide and article.')}
 
 ## Services

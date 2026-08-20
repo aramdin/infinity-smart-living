@@ -1,26 +1,26 @@
 # Infinity Smart Living
 
-> Full service Amazon Alexa smart home company serving Broward County and South Palm Beach, Florida. Infinity consults on, designs, and sells the project, and a licensed local electrician under contract performs the regulated electrical work.
+> Amazon Alexa smart-home technology planning company serving Broward County and South Palm Beach, Florida. Infinity consults on, designs, and sells the project. Any regulated work requires a separate contractor that you select and hire directly.
 
 Infinity Smart Living is a registered DBA of SimpleSafe Technologies LLC. Every system we design is built on Amazon Alexa, so the guidance across this site assumes an Alexa household rather than a mixed platform one. Smart locks and video doorbells are covered as convenience features, for example seeing who is at the door or letting someone in without getting up.
 
-Every project starts with a free smart home floor plan: we walk the home room by room and map what goes where before any pricing conversation. Package pricing is not published on the site. Contact: (754) 345-4871, info@infinitysmartliving.com.
+Every project starts with a free room-by-room smart-home concept: we walk the home room by room and map what goes where before any pricing conversation. Package pricing is not published on the site. Contact: (754) 345-4871, info@infinitysmartliving.com.
 
 ## Main pages
 
-- [Home](https://infinitysmartliving.com/): What Infinity does, how the floor plan process works, and the main enquiry form.
-- [Free smart home floor plan](https://infinitysmartliving.com/free-floor-plan): Landing page for the free room by room floor plan offer.
+- [Home](https://infinitysmartliving.com/): What Infinity does, how the concept process works, and the main enquiry form.
+- [Free room-by-room smart-home concept](https://infinitysmartliving.com/free-floor-plan): Landing page for the free room-by-room smart-home concept offer.
 - [Free Alexa starter guide](https://infinitysmartliving.com/free-guide): Landing page offering a downloadable Alexa starter guide.
-- [Satisfaction guarantee](https://infinitysmartliving.com/guarantee): The 30 day satisfaction guarantee and what it covers.
+- [Support](https://infinitysmartliving.com/guarantee): How to contact Infinity about a product or configuration it provided.
 - [Smart home guides](https://infinitysmartliving.com/blog): Index of every published guide and article.
 
 ## Services
 
-- [Smart lighting installation](https://infinitysmartliving.com/smart-lighting-installation)
-- [Smart thermostat installation](https://infinitysmartliving.com/smart-thermostat-installation)
-- [Smart lock and doorbell installation](https://infinitysmartliving.com/smart-lock-and-doorbell-installation)
-- [Alexa setup and routines](https://infinitysmartliving.com/alexa-setup-and-routines)
-- [Whole home voice control](https://infinitysmartliving.com/whole-home-voice-control)
+- [Smart lighting planning](https://infinitysmartliving.com/smart-lighting-installation)
+- [Smart thermostat planning](https://infinitysmartliving.com/smart-thermostat-installation)
+- [Smart entry product planning](https://infinitysmartliving.com/smart-lock-and-doorbell-installation)
+- [Alexa device and routine configuration](https://infinitysmartliving.com/alexa-setup-and-routines)
+- [Whole-home voice planning](https://infinitysmartliving.com/whole-home-voice-control)
 
 ## Service areas
 
@@ -66,7 +66,7 @@ Every project starts with a free smart home floor plan: we walk the home room by
 - [Smart Thermostats in Florida: Cut Your AC Bill Without the Guesswork](https://infinitysmartliving.com/blog/smart-thermostats-florida-cut-ac-bill): How smart thermostat installation helps Florida homes manage cooling and humidity, plus scheduling, geofencing, multi zone homes, and HVAC compatibility.
 - [Home Automation Services: What's Actually Worth Automating First](https://infinitysmartliving.com/blog/home-automation-what-to-automate-first): New to home automation services? Here is what is actually worth automating first, the best payoff for the least cost, and how to avoid the five app mess.
 - [Voice Control and Whole Home Automation: A Beginner's Guide](https://infinitysmartliving.com/blog/voice-control-whole-home-automation-guide): A beginner's guide to voice control and home automation: what voice does well, routines that run on their own, and one system instead of many apps.
-- [Free Smart Home Consultation: What to Expect (and How to Prep)](https://infinitysmartliving.com/blog/free-smart-home-consultation-what-to-expect): What to expect from a free smart home consultation: how it works, how long it takes, what to prepare, and how the custom floor plan and honest quote work.
+- [Free Smart Home Consultation: What to Expect (and How to Prep)](https://infinitysmartliving.com/blog/free-smart-home-consultation-what-to-expect): What to expect from a free smart home consultation: how it works, how long it takes, what to prepare, and how the room-by-room concept and honest quote work.
 
 ## Legal
 

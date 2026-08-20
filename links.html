@@ -247,6 +247,10 @@ header.scrolled{border-color:var(--line);box-shadow:0 6px 20px -16px rgba(5,25,6
 footer{background:var(--ink);color:#b9c8e6;padding:64px 0 32px}
 .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
 footer img.flogo{width:170px;max-width:60%;height:auto;margin-bottom:18px}
+/* Square brand lockup in the footer. It carries the wordmark inside the house,
+   so it replaces the flat wordmark here rather than sitting next to it and
+   printing the name twice. Light ink variant, for the navy footer. */
+footer img.fmark{width:96px;height:96px;margin-bottom:16px;display:block}
 .foot-grid p{font-size:.94rem;max-width:30ch}
 footer h4{font-family:var(--font-display);color:#fff;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px}
 footer ul{list-style:none;display:flex;flex-direction:column;gap:11px}
@@ -315,8 +319,19 @@ footer ul a:hover{color:var(--cyan)}
 
 /* ---- consult lead form ---- */
 .lead-card{background:var(--white);border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:var(--shadow);position:relative}
+/* The CTA jumps here on a phone. The header is position:sticky, so without a
+   scroll margin the jump parks the card heading underneath it and the visitor
+   lands mid form with no context. 76px header plus breathing room. */
+.lead-card{scroll-margin-top:96px}
+/* Brief landing state after the jump, so the form announces itself instead of
+   silently appearing. No transition here: .lead-card also carries .reveal on
+   this page and a transition shorthand would cancel the reveal animation. */
+.lead-card.is-targeted{box-shadow:0 0 0 3px rgba(0,178,252,.28),var(--shadow)}
 .lead-card h3{font-size:1.3rem;margin-bottom:.3rem}
 .lead-card .sub{color:var(--slate);font-size:.95rem;margin-bottom:22px}
+.role-disclosure,.concept-legend{font-size:.78rem;line-height:1.55;text-align:left;border-radius:10px;padding:10px 12px;margin:0 0 12px}
+.role-disclosure{color:var(--ink);background:var(--surface);border:1px solid var(--line)}
+.concept-legend{color:var(--slate);background:#fff;border:1px solid var(--line)}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:.8rem;font-weight:600;color:var(--ink);margin-bottom:6px}
 .field input{width:100%;padding:.9rem 1rem;border:1.5px solid var(--line);border-radius:12px;font:inherit;font-size:1rem;color:var(--ink);background:var(--surface);transition:border-color .15s,background .15s}
@@ -396,8 +411,8 @@ body.links-page{background:var(--surface);min-height:100vh}
   <img class="links-logo" src="/images/logo.png" alt="Infinity Smart Living">
   <p class="links-tag">Your complete Amazon Alexa smart home. Serving Broward County and South Palm Beach.</p>
   <div class="links-stack">
-    <a class="link-btn primary" href="/?utm_source=linktree&utm_medium=bio&utm_campaign=links#book">Get My Free Floor Plan</a>
-    <a class="link-btn guarantee" href="/guarantee?utm_source=linktree&utm_medium=bio&utm_campaign=links">Free Floor Plan, No Obligation</a>
+    <a class="link-btn primary" href="/?utm_source=linktree&utm_medium=bio&utm_campaign=links#book">Get My Free Concept</a>
+    <a class="link-btn guarantee" href="/guarantee?utm_source=linktree&utm_medium=bio&utm_campaign=links">Free Concept, No Obligation</a>
     <a class="link-btn" href="/?utm_source=linktree&utm_medium=bio&utm_campaign=links">Visit Our Website</a>
     <a class="link-btn" href="tel:+17543454871">Call Us: (754) 345-4871</a>
     <a class="link-btn" href="/blog?utm_source=linktree&utm_medium=bio&utm_campaign=links">Smart Home Guides</a>

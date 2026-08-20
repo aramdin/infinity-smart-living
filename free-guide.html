@@ -26,7 +26,7 @@
 <meta property="og:image" content="https://infinitysmartliving.com/images/echo-show-15-wall-panel-og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="A wall mounted Echo Show 15 running a whole home, installed by our team">
+<meta property="og:image:alt" content="A wall mounted Echo Show 15 running a whole home">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://infinitysmartliving.com/images/echo-show-15-wall-panel-og.jpg">
 <link rel="preload" as="image" href="/images/echo-show-15-wall-panel.webp" type="image/webp" fetchpriority="high">
@@ -260,6 +260,10 @@ header.scrolled{border-color:var(--line);box-shadow:0 6px 20px -16px rgba(5,25,6
 footer{background:var(--ink);color:#b9c8e6;padding:64px 0 32px}
 .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
 footer img.flogo{width:170px;max-width:60%;height:auto;margin-bottom:18px}
+/* Square brand lockup in the footer. It carries the wordmark inside the house,
+   so it replaces the flat wordmark here rather than sitting next to it and
+   printing the name twice. Light ink variant, for the navy footer. */
+footer img.fmark{width:96px;height:96px;margin-bottom:16px;display:block}
 .foot-grid p{font-size:.94rem;max-width:30ch}
 footer h4{font-family:var(--font-display);color:#fff;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px}
 footer ul{list-style:none;display:flex;flex-direction:column;gap:11px}
@@ -328,8 +332,19 @@ footer ul a:hover{color:var(--cyan)}
 
 /* ---- consult lead form ---- */
 .lead-card{background:var(--white);border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:var(--shadow);position:relative}
+/* The CTA jumps here on a phone. The header is position:sticky, so without a
+   scroll margin the jump parks the card heading underneath it and the visitor
+   lands mid form with no context. 76px header plus breathing room. */
+.lead-card{scroll-margin-top:96px}
+/* Brief landing state after the jump, so the form announces itself instead of
+   silently appearing. No transition here: .lead-card also carries .reveal on
+   this page and a transition shorthand would cancel the reveal animation. */
+.lead-card.is-targeted{box-shadow:0 0 0 3px rgba(0,178,252,.28),var(--shadow)}
 .lead-card h3{font-size:1.3rem;margin-bottom:.3rem}
 .lead-card .sub{color:var(--slate);font-size:.95rem;margin-bottom:22px}
+.role-disclosure,.concept-legend{font-size:.78rem;line-height:1.55;text-align:left;border-radius:10px;padding:10px 12px;margin:0 0 12px}
+.role-disclosure{color:var(--ink);background:var(--surface);border:1px solid var(--line)}
+.concept-legend{color:var(--slate);background:#fff;border:1px solid var(--line)}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:.8rem;font-weight:600;color:var(--ink);margin-bottom:6px}
 .field input{width:100%;padding:.9rem 1rem;border:1.5px solid var(--line);border-radius:12px;font:inherit;font-size:1rem;color:var(--ink);background:var(--surface);transition:border-color .15s,background .15s}
@@ -499,9 +514,34 @@ footer ul a:hover{color:var(--cyan)}
 .gproof-link a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
 .land-serving{margin:1.2rem 0 0;padding:1.05rem 1.15rem;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--slate);font-size:.97rem;line-height:1.7}
 .land-serving a{color:var(--cyan-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+/* SHIP 4A compliance blocks on the landers. Same two classes the templates use,
+   so the disclosure looks identical everywhere it appears. See COMPLIANCE TEXT. */
+.role-disclosure,.concept-legend{font-size:.78rem;line-height:1.55;text-align:left;border-radius:10px;padding:10px 12px;margin:0 0 12px}
+.role-disclosure{color:var(--ink);background:var(--surface);border:1px solid var(--line)}
+.concept-legend{color:var(--slate);background:#fff;border:1px solid var(--line)}
 .land-cta-repeat{margin:34px 0 0;text-align:center}
 .land-cta-repeat .btn{width:100%}
-@media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}.land-fig-lead{margin-bottom:18px}}
+/* The landing card carries no .reveal class, so it is the one place the highlight
+   can be eased in without overriding the reveal transition. Scroll margin and the
+   highlight colour itself live in the templates, shared with home and city. */
+@media(prefers-reduced-motion:no-preference){.lead-card{transition:box-shadow .45s ease}}
+/* --- business identity block (Google Ads advertiser verification) ---
+   Same surface + line + radius as .land-serving and .land-rev above it, so it
+   reads as part of the page rather than a compliance strip bolted on the end.
+   The mark is the only place the square brand lockup appears at a size where it
+   is actually legible, which is the point: a reviewer checking who is behind the
+   ad should not have to hunt for it. */
+.biz-id{max-width:560px;margin:0 auto;padding:0 20px 38px}
+.biz-id-card{padding:1.6rem 1.35rem;border-radius:16px;background:var(--surface);border:1px solid var(--line);text-align:center}
+.biz-id-mark{width:88px;height:88px;margin:0 auto .95rem;display:block}
+.biz-id p,.biz-id address{margin:0;font-style:normal;color:var(--slate);font-size:.92rem;line-height:1.65}
+.biz-id-name{font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:var(--ink);letter-spacing:-.01em}
+.biz-id-legal{margin-top:.3rem;font-size:.86rem}
+.biz-id-addr{margin-top:.75rem}
+.biz-id-contact{margin-top:.35rem}
+.biz-id-contact a{color:var(--cyan-deep);font-weight:600}
+.biz-id-hours{margin-top:.35rem}
+@media(max-width:460px){.land-hero{padding:40px 0 32px}.land-main{padding:26px 16px 24px}.land-main .lead-card{padding:22px 18px}.land-fig-lead{margin-bottom:18px}.biz-id{padding:0 16px 32px}.biz-id-card{padding:1.4rem 1.15rem}.biz-id-mark{width:80px;height:80px}}
 </style>
 </head>
 <body>
@@ -525,13 +565,14 @@ footer ul a:hover{color:var(--cyan)}
   <figure class="land-fig land-fig-lead land-fig-panel">
     <!-- LCP element: sits inside the first screen at 390px, so it loads eagerly at
          high priority. Do not add loading="lazy" here, it defers the largest paint. -->
-    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home, installed by our team" width="1600" height="1067" fetchpriority="high" decoding="async">
-    <figcaption>One Echo Show 15 on the wall, running the whole home. Installed and set up by our team.</figcaption>
+    <img src="/images/echo-show-15-wall-panel.webp" alt="A wall mounted Echo Show 15 running a whole home" width="1600" height="1067" fetchpriority="high" decoding="async">
+    <figcaption>One Echo Show 15 on the wall, running the whole home.</figcaption>
   </figure>
   <div class="lead-card">
     <div id="formFields">
       <h3>Get the guide free</h3>
       <p class="sub">Tell us where to send it and the download opens right here.</p>
+      <p class="role-disclosure" data-compliance="role">Infinity Smart Living provides smart-home technology consultation, candidate product recommendations, and non-regulated device and app configuration. Infinity Smart Living is not an electrical, limited-energy, HVAC, alarm, or other licensed contractor and does not offer or contract for regulated work. If regulated work is needed, you independently select and contract directly with an appropriately Florida-licensed contractor.</p>
       <form id="leadForm" method="POST">
           <div class="field">
             <label for="name">First name</label>
@@ -555,6 +596,8 @@ footer ul a:hover{color:var(--cyan)}
             <option value="Pompano Beach">Pompano Beach</option>
             <option value="Coconut Creek">Coconut Creek</option>
             <option value="Deerfield Beach">Deerfield Beach</option>
+            <option value="Fort Lauderdale">Fort Lauderdale</option>
+            <option value="Margate">Margate</option>
             <option value="Other nearby">Other nearby</option>
             </select>
           </div>
@@ -581,7 +624,7 @@ footer ul a:hover{color:var(--cyan)}
       <h3>Your guide is ready</h3>
       <p>A copy is also on its way to your inbox.</p>
       <a href="/guides/alexa-starter-guide-k7m2.pdf" class="btn btn-primary btn-lg" style="width:100%;margin-top:12px" download>Download the Guide</a>
-      <p style="margin-top:16px;font-size:.95rem">Want it planned for your exact home? <a href="/free-floor-plan" style="color:var(--cyan-deep);font-weight:600">Get a free custom floor plan</a>.</p>
+      <p style="margin-top:16px;font-size:.95rem">Want it planned for your exact home? <a href="/free-floor-plan" style="color:var(--cyan-deep);font-weight:600">Get a free room-by-room concept</a>.</p>
     </div>
   </div>
   <ul class="land-points">
@@ -589,15 +632,26 @@ footer ul a:hover{color:var(--cyan)}
     <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Simple naming tips the whole household will actually remember</li>
     <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00B2FC" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Starter routines for good morning, good night, and leaving home, ready to copy</li>
   </ul>
-  <div class="land-cross">Prefer it done for you? Get a free 20 minute virtual consult and a <a href="/free-floor-plan">free custom floor plan</a> for your exact home.</div>
+  <div class="land-cross">Prefer it planned for you? Get a free virtual consultation and a <a href="/free-floor-plan">free room-by-room smart-home concept</a> for your home.</div>
 </div>
 </main>
+<aside class="biz-id" aria-labelledby="biz-id-name">
+  <div class="biz-id-card">
+    <img class="biz-id-mark" src="/images/logo-mark.webp" alt="Infinity Smart Living" width="256" height="256" loading="lazy" decoding="async">
+    <p class="biz-id-name" id="biz-id-name">Infinity Smart Living</p>
+    <!-- A2P 10DLC: same DBA sentence as the footer, word for word. Do not reword. -->
+    <p class="biz-id-legal">Infinity Smart Living is a registered DBA of SimpleSafe Technologies LLC.</p>
+    <address class="biz-id-addr">1509 N State Rd 7, Suite G<br>Margate, FL 33063</address>
+    <p class="biz-id-contact"><a href="tel:+17543454871">(754) 345-4871</a> · <a href="mailto:info@infinitysmartliving.com">info@infinitysmartliving.com</a></p>
+    <p class="biz-id-hours">Monday to Saturday, 9am to 6pm</p>
+  </div>
+</aside>
 <footer>
   <div class="wrap">
     <div class="foot-grid">
       <div>
         <img class="flogo" src="/images/logo-light.png" alt="infinity smart living">
-        <p>Professional smart home installation and support for real homes across South Florida.</p>
+        <p>Smart-home technology planning and non-regulated Alexa configuration for South Florida homes.</p>
         <div class="foot-social">
       <a href="https://www.facebook.com/profile.php?id=61590996226258" rel="me noopener" target="_blank" aria-label="Infinity Smart Living on Facebook" title="Infinity Smart Living on Facebook"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.45 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/></svg></a>
       <a href="https://www.instagram.com/infinitysmartliving/" rel="me noopener" target="_blank" aria-label="Infinity Smart Living on Instagram" title="Infinity Smart Living on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.8 3.8 0 0 1-1.38-.9 3.8 3.8 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07zm0 6.68a3.16 3.16 0 1 0 0 6.32 3.16 3.16 0 0 0 0-6.32zm0 5.21a2.05 2.05 0 1 1 0-4.1 2.05 2.05 0 0 1 0 4.1zm4.02-5.33a.74.74 0 1 1-1.47 0 .74.74 0 0 1 1.47 0z"/></svg></a>
@@ -611,7 +665,7 @@ footer ul a:hover{color:var(--cyan)}
         <ul>
           <li><a href="/">Home</a></li>
           <li><a href="/blog">Blog</a></li>
-          <li><a href="/guarantee">Guarantee</a></li>
+          <li><a href="/guarantee">Support</a></li>
         </ul>
       </div>
       <div>
@@ -624,17 +678,16 @@ footer ul a:hover{color:var(--cyan)}
         </ul>
       </div>
           </div>
-    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free consultation and custom floor plan · No obligation · <a href="/guarantee" style="color:inherit">30-Day Satisfaction Guarantee</a></div>
+    <div style="text-align:center;color:var(--cyan);font-weight:600;font-size:.9rem;padding:6px 0 16px">Free room-by-room smart-home concept · No purchase required · Yours to keep</div>
     <div class="foot-areas" style="padding:22px 0;margin-top:8px;border-top:1px solid rgba(255,255,255,.1)">
       <h4 style="margin-bottom:12px">Smart home services</h4>
-      <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0"><a href="/smart-lighting-installation" style="color:#cfe0ff">Smart lighting installation</a> · <a href="/smart-thermostat-installation" style="color:#cfe0ff">Smart thermostat installation</a> · <a href="/smart-lock-and-doorbell-installation" style="color:#cfe0ff">Smart lock and doorbell installation</a> · <a href="/alexa-setup-and-routines" style="color:#cfe0ff">Alexa setup and routines</a> · <a href="/whole-home-voice-control" style="color:#cfe0ff">Whole home voice control</a></p>
+      <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0"><a href="/smart-lighting-installation" style="color:#cfe0ff">Smart lighting planning</a> · <a href="/smart-thermostat-installation" style="color:#cfe0ff">Smart thermostat planning</a> · <a href="/smart-lock-and-doorbell-installation" style="color:#cfe0ff">Smart entry product planning</a> · <a href="/alexa-setup-and-routines" style="color:#cfe0ff">Alexa device and routine configuration</a> · <a href="/whole-home-voice-control" style="color:#cfe0ff">Whole-home voice planning</a></p>
     </div>
     <div class="foot-areas" style="padding:22px 0;border-top:1px solid rgba(255,255,255,.1)">
       <h4 style="margin-bottom:12px">Smart home service areas</h4>
       <p style="font-size:.9rem;line-height:2;color:#b9c8e6;margin:0"><a href="/coral-springs" style="color:#cfe0ff">Coral Springs</a> · <a href="/boca-raton" style="color:#cfe0ff">Boca Raton</a> · <a href="/parkland" style="color:#cfe0ff">Parkland</a> · <a href="/pompano-beach" style="color:#cfe0ff">Pompano Beach</a> · <a href="/coconut-creek" style="color:#cfe0ff">Coconut Creek</a> · <a href="/deerfield-beach" style="color:#cfe0ff">Deerfield Beach</a> · <a href="/delray-beach" style="color:#cfe0ff">Delray Beach</a> · <a href="/boynton-beach" style="color:#cfe0ff">Boynton Beach</a> · <a href="/fort-lauderdale" style="color:#cfe0ff">Fort Lauderdale</a> · <a href="/weston" style="color:#cfe0ff">Weston</a> · <a href="/plantation" style="color:#cfe0ff">Plantation</a> · <a href="/lighthouse-point" style="color:#cfe0ff">Lighthouse Point</a> · <a href="/margate" style="color:#cfe0ff">Margate</a> · <a href="/tamarac" style="color:#cfe0ff">Tamarac</a> · <a href="/sunrise" style="color:#cfe0ff">Sunrise</a> · <a href="/davie" style="color:#cfe0ff">Davie</a> · <a href="/pembroke-pines" style="color:#cfe0ff">Pembroke Pines</a> · <a href="/cooper-city" style="color:#cfe0ff">Cooper City</a> · <a href="/oakland-park" style="color:#cfe0ff">Oakland Park</a> · <a href="/wilton-manors" style="color:#cfe0ff">Wilton Manors</a></p>
     </div>
     <div class="foot-bot">
-      <!-- PROOF SLOT: electrician license number goes on the DBA line below once confirmed. -->
       <!-- A2P 10DLC: the DBA sentence is required on the page as its own plain statement. Do not reword or fold it back into the copyright line. -->
       <span>Infinity Smart Living is a registered DBA of SimpleSafe Technologies LLC.<br>© 2026 SimpleSafe Technologies LLC. All rights reserved.</span>
       <span><a href="/privacy" style="color:inherit">Privacy</a> · <a href="/terms" style="color:inherit">Terms</a></span>
@@ -732,6 +785,8 @@ footer ul a:hover{color:var(--cyan)}
     function a(k){ return attr[k] || params.get(k) || ''; }
 
     var now = new Date().toISOString();
+    var serviceConsent = isChecked('consentService');
+    var marketingConsent = isChecked('consentMarketing');
     var payload = {
       lead_source: LEAD_SOURCE,
       submission_id: submissionId,
@@ -746,17 +801,17 @@ footer ul a:hover{color:var(--cyan)}
       landing_url: session('isl_landing_url') || location.href,
       referrer: session('isl_referrer'),
       test_traffic: session('isl_test_traffic') === '1',
-      consent_service: isChecked('consentService'),
-      consent_marketing: isChecked('consentMarketing'),
+      consent_service: serviceConsent,
+      consent_marketing: marketingConsent,
       // Timestamps are per checkbox and only exist when that box was ticked. An
       // unticked box must not carry a time that looks like evidence of consent.
-      consent_service_timestamp: isChecked('consentService') ? now : '',
-      consent_marketing_timestamp: isChecked('consentMarketing') ? now : '',
-      consent_service_text: consentText('consentService'),
-      consent_marketing_text: consentText('consentMarketing'),
+      consent_service_timestamp: serviceConsent ? now : '',
+      consent_marketing_timestamp: marketingConsent ? now : '',
+      consent_service_text: serviceConsent ? consentText('consentService') : '',
+      consent_marketing_text: marketingConsent ? consentText('consentMarketing') : '',
       // Legacy single timestamp, still mapped in GHL. Kept alongside the per
       // checkbox ones rather than replaced.
-      consent_timestamp: now
+      consent_timestamp: serviceConsent || marketingConsent ? now : ''
     };
     ATTR_KEYS.forEach(function(k){ payload[k] = a(k); });
     // Identity fields are sent only when the page actually has that input, so the
@@ -809,8 +864,71 @@ footer ul a:hover{color:var(--cyan)}
     if (fields) fields.style.display = 'none';
     var success = el('formSuccess');
     if (success) success.classList.add('show');
+    // Marks the card as done so the guided jump stops trying to put the caret in
+    // fields that are now display:none.
+    var doneCard = document.getElementById('getPlan');
+    if (doneCard) doneCard.dataset.submitted = '1';
 
   });
+
+  // --- guided jump: CTA -> the form itself ---------------------------------
+  // Every "Get My Free Concept" button points at #book, which is the hero
+  // section. On desktop that is right: the hero is a two column grid and the form
+  // is already on screen in the right column. Under 960px the grid stacks, so the
+  // same jump lands the visitor on the headline with the form still a scroll away,
+  // which is the one place this funnel leaks on a phone. Below that width the jump
+  // is redirected to the form card and the caret goes in the first empty field.
+  // The markup keeps href="#book", so with JS off the anchor still works.
+  (function () {
+    var card = document.getElementById('getPlan');
+    if (!card) return;
+    var mqReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var isNarrow = function () { return window.matchMedia && window.matchMedia('(max-width: 960px)').matches; };
+
+    function firstEmpty() {
+      var fields = card.querySelectorAll('#formFields input:not([type="checkbox"]):not([type="hidden"]), #formFields select');
+      for (var i = 0; i < fields.length; i++) { if (!fields[i].value) return fields[i]; }
+      return fields[0] || null;
+    }
+
+    function guide(focus) {
+      try { card.scrollIntoView({ behavior: mqReduce ? 'auto' : 'smooth', block: 'start' }); }
+      catch (e) { card.scrollIntoView(); }
+      // Already submitted: the card now holds the booking step, so scrolling to it
+      // is the whole job. Nothing to fill in and nothing to highlight.
+      if (card.dataset.submitted === '1' || !focus) return;
+      card.classList.add('is-targeted');
+      setTimeout(function () { card.classList.remove('is-targeted'); }, 1400);
+      // Focus lands after the smooth scroll settles: focusing mid animation makes
+      // the on screen keyboard open and fight the scroll on a phone.
+      setTimeout(function () {
+        var f = firstEmpty();
+        if (!f) return;
+        try { f.focus({ preventScroll: true }); } catch (e2) { f.focus(); }
+      }, mqReduce ? 0 : 520);
+    }
+
+    document.addEventListener('click', function (ev) {
+      // Leave modified and non primary clicks to the browser: on a narrow desktop
+      // window a cmd/ctrl click on the CTA should still open a tab, not scroll.
+      if (ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+      var a = ev.target.closest && ev.target.closest('a[href="#book"], a[href="#getPlan"], [data-form-jump]');
+      if (!a) return;
+      // #book on a wide screen already shows the form beside the copy: leave the
+      // native anchor alone. data-form-jump is the lander's own repeat CTA and is
+      // always meant for the form.
+      var always = a.hasAttribute('data-form-jump') || a.getAttribute('href') === '#getPlan';
+      if (!always && !isNarrow()) return;
+      ev.preventDefault();
+      guide(true);
+    });
+
+    // Arriving from another page's CTA (/#book, e.g. from /packages) lands on the
+    // hero with the same problem, so the same redirect runs once on load.
+    if (location.hash === '#book' && isNarrow()) {
+      setTimeout(function () { guide(false); }, 60);
+    }
+  })();
 })();
 </script>
 </body>
