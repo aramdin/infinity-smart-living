@@ -29,18 +29,18 @@ const stamp = (tpl, vars) =>
 const DISCLOSURE_VERSION = '2026-08-17';
 
 // --- Google Ads direct conversion ---------------------------------------
-// Empty until Alvin creates the conversion action in Google Ads > Goals >
-// Conversions. While they are empty no gtag config call is emitted and the
-// conversion event stays inert behind a runtime guard. Fill both to light it up.
-//   AW_CONVERSION_ID    e.g. 'AW-123456789'  (the Ads account conversion ID)
+// Live. Blanking either constant switches the whole thing back off: no gtag
+// config call is emitted and the conversion event stays inert behind a runtime
+// guard, so the site keeps working with GA4 alone.
+//   AW_CONVERSION_ID    the Ads account conversion ID
 //   AW_CONVERSION_LABEL the "Lead Submitted" action label
 // DEDUP IS AN ADS-SIDE SETTING, NOT A TAG FIELD: set the conversion action's
 // Count to "One" in the Google Ads UI. We deliberately do NOT send
 // transaction_id, because Google treats UUID values as inappropriate transaction
 // IDs for lead conversions. submission_id still rides along in the GHL payload
 // and the dataLayer, which is what offline conversion imports match on.
-const AW_CONVERSION_ID = '';
-const AW_CONVERSION_LABEL = '';
+const AW_CONVERSION_ID = 'AW-18390047805';
+const AW_CONVERSION_LABEL = 'UMp4CM_uyuQcEL24h8FE';
 
 // gtag config for the Ads account, injected into <head> next to the GA4 config.
 // Empty string while the constants are blank, so nothing ships until they are set.
