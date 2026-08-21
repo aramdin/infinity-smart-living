@@ -1340,7 +1340,7 @@ console.log('✓ guarantee.html');
 // that the number arrives with the free concept instead.
 const CORE_CITY_LINKS = ['Coral Springs', 'Boca Raton', 'Parkland', 'Pompano Beach', 'Coconut Creek', 'Deerfield Beach']
   .map((c) => `<a href="/${slugify(c)}">${c}</a>`);
-const servingLine = (what) => `<p class="serving">We plan and install ${what} across South Florida, including ${CORE_CITY_LINKS.slice(0, -1).join(', ')}, and ${CORE_CITY_LINKS[CORE_CITY_LINKS.length - 1]}.</p>`;
+const servingLine = (what) => `<p class="serving">We provide planning and non-regulated configuration for ${what} across South Florida, including ${CORE_CITY_LINKS.slice(0, -1).join(', ')}, and ${CORE_CITY_LINKS[CORE_CITY_LINKS.length - 1]}.</p>`;
 
 const SERVICE_CSS = `<style>
 .svc-fig{margin:2rem 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
@@ -1514,7 +1514,7 @@ ${fig('blog-smart-thermostats-florida-cut-ac-bill.jpg', 'A smart thermostat moun
 
 <h2>Schedules that match your actual week</h2>
 <p>Most thermostats are installed with a schedule nobody has ever edited. If the house is empty from eight to five, that is a large stretch every weekday where the AC could be working less. If somebody works from home three days a week, it is not, and pretending otherwise just makes people uncomfortable.</p>
-<p>We set the schedule around the week you actually have. Away behaviour, an overnight setting that suits how you sleep, and a bedroom that is not an afterthought.</p>
+<p>We set the thermostat's schedule around the week you actually have, as part of app and Alexa configuration. Away behaviour, an overnight setting that suits how you sleep, and a bedroom that is not an afterthought.</p>
 
 <h2>More than one zone</h2>
 <p>Two storey homes in Parkland and Weston very often run two systems, and the upstairs one does most of the suffering. Two thermostats that know nothing about each other will happily work against one another. Bringing both into one place, with one voice command and one schedule that makes sense as a whole, is usually the single biggest comfort improvement in the house.</p>
@@ -1982,8 +1982,8 @@ const FLOOR_PLAN_FAQ = [
     a: 'Any regulated work requires a separate contractor that you select and hire directly.',
   },
   {
-    q: 'How long does installation take?',
-    a: 'Installation timing depends on the project scope and equipment availability. Your plan and written quote will include the expected installation schedule.',
+    q: 'How long does the process take?',
+    a: 'The consultation and your room-by-room concept move quickly. If regulated work is needed, the licensed contractor you select sets its own scope, schedule, and timing for that work under its own agreement with you.',
   },
   {
     q: 'Can we start with one room?',
@@ -2020,7 +2020,7 @@ const floorPlanJsonLd = JSON.stringify({
 // The serving line reuses the service page pattern and is the one place the paid
 // lander names cities. It covers the geo terms without a city modified heading,
 // which on a paid lander reads as a doorway signal.
-const landingServingLine = `<p class="land-serving">We plan and install smart home technology across South Florida, including ${CORE_CITY_LINKS.slice(0, -1).join(', ')}, and ${CORE_CITY_LINKS[CORE_CITY_LINKS.length - 1]}.</p>`;
+const landingServingLine = `<p class="land-serving">We provide smart-home technology planning and non-regulated configuration across South Florida, including ${CORE_CITY_LINKS.slice(0, -1).join(', ')}, and ${CORE_CITY_LINKS[CORE_CITY_LINKS.length - 1]}.</p>`;
 
 // Everything below the form. Order is deliberate: proof, then what they get, then
 // how it works, then objections, then the CTA again, then the photo.
@@ -2036,12 +2036,12 @@ const floorPlanSections = `${googleProof()}
   </ul>
 </section>
 <section class="land-sec">
-  <h2>How smart home installation works with us</h2>
+  <h2>How the smart-home planning process works</h2>
   <ol class="land-steps">
     <li>Request your concept using the form above.</li>
     <li>Choose a consultation time that suits you. The consultation runs by video.</li>
     <li>Receive your concept, and Infinity's written price for what Infinity itself offers.</li>
-    <li>Decide. If it is a yes, we book the install; if it is not, the plan is still yours.</li>
+    <li>Decide. If you move forward, Infinity can provide the products and technology services listed in its written order. Any regulated work is handled under a separate agreement with an appropriately Florida-licensed contractor you select. Either way the concept is yours.</li>
   </ol>
   ${landingServingLine}
 </section>
@@ -2057,7 +2057,7 @@ emit('free-floor-plan.html', landingShell({
   // Title serves "smart home installation" (18,100/mo, KD 47), the head term, while
   // leading with the offer so the ad headline and the page match.
   title: 'Free Room-by-Room Smart-Home Concept | Infinity Smart Living',
-  description: 'Get a free room-by-room smart-home concept before you book smart home installation. We map your South Florida home room by room and provide your price in writing before you decide.',
+  description: 'Get a free room-by-room smart-home concept for your South Florida home. Candidate products and Alexa routine ideas, room by room, with Infinity\u2019s written price for what Infinity itself offers. No purchase required.',
   canonical: 'free-floor-plan',
   jsonLd: floorPlanJsonLd,
   // Paid traffic only: no service links, no city links, no blog, no social.
